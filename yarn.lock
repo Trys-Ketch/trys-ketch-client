@@ -12390,9 +12390,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"trys-catch@workspace:.":
+"trys-ketch@workspace:.":
   version: 0.0.0-use.local
-  resolution: "trys-catch@workspace:."
+  resolution: "trys-ketch@workspace:."
   dependencies:
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.4.0

@@ -12,14 +12,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
     ],\
     "dependencyTreeRoots": [\
       {\
-        "name": "trys-catch",\
+        "name": "trys-ketch",\
         "reference": "workspace:."\
       }\
     ],\
     "enableTopLevelFallback": true,\
     "ignorePatternData": "(^(?:\\\\.yarn\\\\/sdks(?:\\\\/(?!\\\\.{1,2}(?:\\\\/|$))(?:(?:(?!(?:^|\\\\/)\\\\.{1,2}(?:\\\\/|$)).)*?)|$))$)",\
     "fallbackExclusionList": [\
-      ["trys-catch", ["workspace:."]]\
+      ["trys-ketch", ["workspace:."]]\
     ],\
     "fallbackPool": [\
     ],\
@@ -16827,11 +16827,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
-      ["trys-catch", [\
+      ["trys-ketch", [\
         ["workspace:.", {\
           "packageLocation": "./",\
           "packageDependencies": [\
-            ["trys-catch", "workspace:."],\
+            ["trys-ketch", "workspace:."],\
             ["@testing-library/jest-dom", "npm:5.16.5"],\
             ["@testing-library/react", "virtual:fde02e7e8f883cc39420bab4def7a63ab6981bf9be6912c4fb724ffd04c5ba9b953e75f8c768544bec69ea18c544e0cc125935fe5b08496344c1e08f2be9c0ac#npm:13.4.0"],\
             ["@testing-library/user-event", "virtual:fde02e7e8f883cc39420bab4def7a63ab6981bf9be6912c4fb724ffd04c5ba9b953e75f8c768544bec69ea18c544e0cc125935fe5b08496344c1e08f2be9c0ac#npm:13.5.0"],\
