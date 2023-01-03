@@ -1,7 +1,12 @@
 import React from 'react';
+import KakaoLoginBtn from '../components/login/KakaoLoginBtn';
 
 function Login() {
-  return <div>Login</div>;
+  return (
+    <div>
+      <KakaoLoginBtn />
+    </div>
+  );
 }
 
 export default Login;
