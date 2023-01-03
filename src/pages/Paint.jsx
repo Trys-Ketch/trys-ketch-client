@@ -21,19 +21,16 @@ function Paint() {
     '#9932CC',
     '#000000',
   ];
-  const opacity = ['1A', '33', '4D', '66', '80', '99', 'B3', 'CC', 'E6', 'FF'];
-  // const opacity = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1];
+  const opacity = ['1A', '33', '4D', '66', '80', '99', 'B3', 'CC', 'E6', 'FF']; // hex코드용 opacity
+  // const opacity = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]; // rgba용 opacity
 
   const canvasRef = useRef(null);
-  // const contextRef = useRef(null);
 
   const [ctx, setCtx] = useState();
   const [isDrawing, setIsDrawing] = useState();
   const [eventState, setEventState] = useState('drawing');
 
   const history = useRef([]).current;
-  const undoStack = useRef([]);
-  const redoStack = useRef([]);
 
   const startDrawing = () => {
     setIsDrawing(true);
@@ -43,6 +40,10 @@ function Paint() {
     setIsDrawing(false);
   };
 
+  /**
+   * 선을 그리는 함수입니다.
+   * @param {event} param0
+   */
   const drawing = ({ nativeEvent }) => {
     const { offsetX, offsetY } = nativeEvent;
 
@@ -57,6 +58,12 @@ function Paint() {
     }
   };
 
+  /**
+   * 원을 그리는 함수입니다.
+   * canvas에 클릭을 하고 마우스를 움직이지 않으면 아무것도 그려지지 않아 undo와 redo를 했을 때 동작하지 않는 것 처럼 보입니다.
+   * 이를 해결해기 위해 onclick시 펜의 굵기와 같은 반지름으로 원을 그려지게 하였습니다.
+   * @param {event} nativeEvent 이벤트 객체
+   */
   const drawCircle = ({ nativeEvent }) => {
     const { offsetX, offsetY } = nativeEvent;
 
@@ -70,6 +77,11 @@ function Paint() {
     }
   };
 
+  /**
+   * hex코드를 받아 rgb값으로 변환해주는 함수입니다.
+   * @param {string} hex #XXXXXX형태의 hex코드입니다.
+   * @returns {Array} 정수 값의 rgb가 담긴 배열
+   */
   const hexToRgb = (hex) =>
     hex
       .replace(/^#?([A-F\d])([A-F\d])([A-F\d])$/i, (m, r, g, b) => `#${r}${r}${g}${g}${b}${b}`)
@@ -77,6 +89,13 @@ function Paint() {
       .match(/.{2}/g)
       .map((x) => parseInt(x, 16));
 
+  /**
+   * rgb코드를 받아 hex코드를 반환하는 함수입니다.
+   * @param {short} r red값
+   * @param {short} g green값
+   * @param {short} b blue값
+   * @returns {String} #XXXXXX형태의 hex코드
+   */
   const rgbToHex = (r, g, b) =>
     `#${[r, g, b]
       .map((x) => {
@@ -85,18 +104,32 @@ function Paint() {
       })
       .join('')}`;
 
+  /**
+   * 선의 굵기를 지정하는 함수입니다.
+   * @param {int} pixel
+   */
   function setThickness(pixel) {
     const context = canvasRef.current.getContext('2d');
     context.lineWidth = pixel;
     setCtx(context);
   }
 
+  /**
+   * 선의 색상을 지정하는 함수입니다.
+   * hex코드 또는 rgb(x, x, x)의 형태의 파라미터를 받습니다.
+   * @param {string} c
+   */
   function setColor(c) {
     const context = canvasRef.current.getContext('2d');
     context.strokeStyle = c;
     setCtx(context);
   }
 
+  /**
+   * 선의 투명도를 설정하는 함수입니다.
+   * 0과 1 사이의 실수를 파라미터로 받습니다.
+   * @param {double} op
+   */
   function setOpacity(op) {
     const context = canvasRef.current.getContext('2d');
     context.strokeStyle += op;
@@ -107,12 +140,19 @@ function Paint() {
     setCtx(context);
   }
 
+  /**
+   * 해당 영역을 주어진 색으로 가득 채우는 함수입니다.
+   * @param {event} param0
+   */
   function fill({ nativeEvent }) {
     const { offsetX, offsetY } = nativeEvent;
     const rgb = hexToRgb(ctx.strokeStyle);
     floodFill(ctx, offsetX, offsetY, [rgb[0], rgb[1], rgb[2], 255]);
   }
 
+  /**
+   * 그림판을 이전의 상태로 되돌리는 함수입니다.
+   */
   function undo() {
     if (historyPointer === 0) return;
     if (historyPointer === history.length)
@@ -122,6 +162,9 @@ function Paint() {
     ctx.putImageData(img, 0, 0);
   }
 
+  /**
+   * undo한 그림판을 다시 되돌리는 함수입니다.
+   */
   function redo() {
     if (historyPointer >= history.length - 1) return;
     historyPointer += 1;
