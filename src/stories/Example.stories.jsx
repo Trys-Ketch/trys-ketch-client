@@ -2,12 +2,12 @@ import React from 'react';
 import Example from '../components/common/Example';
 
 export default {
-  title: 'Components',
-  componenet: Example,
+  title: 'Test',
+  component: Example,
 };
 
-export function Default() {
-  return <Example />;
+export function Default(args) {
+  return <Example {...args} />;
 }
 
 export function Blue() {
