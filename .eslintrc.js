@@ -24,7 +24,8 @@ module.exports = {
     'no-alert': 0, // alert 제한 규칙 해제
     'consistent-return': 0, // 화살표 함수에서 return이 안되는 규칙 해제
     'no-underscore-dangle': 0, // 함수 이름을 시작할 때 언더바를 사용할 수 없는 규칙 해제
-    'no-useless-escape' : 0, // 정규식 사용시 문제가 되는 규칙 해제
+    'no-useless-escape': 0, // 정규식 사용시 문제가 되는 규칙 해제
+    'prefer-destructuring': ['error', { object: true, array: false }], // 배열 인덱스에 접근 시 반드시 구조분해 할당을 사용해야하는 규칙 해제
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
   },
 };
