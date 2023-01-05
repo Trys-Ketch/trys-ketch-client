@@ -1,7 +1,12 @@
 import React from 'react';
+import Avatar from '../components/common/Avatar';
 
 function Main() {
-  return <div>메인 페이지는 추후에 수정 바랍니다.</div>;
+  return (
+    <div>
+      <Avatar width="100px" height="100px" />
+    </div>
+  );
 }
 
 export default Main;
