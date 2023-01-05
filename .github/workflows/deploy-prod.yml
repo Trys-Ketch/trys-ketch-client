@@ -1,6 +1,6 @@
-name: Test deploy                    # Workflow 이름
+name: deploy when push                    # Workflow 이름
 on:                                  # Event 감지
-  pull_request:                      # main, release 브랜치에 pr될 때
+  push:                      # main, release 브랜치에 push될 때
     branches:
       - main
       - release/*
