@@ -12,8 +12,8 @@ function Avatar({ width, height }) {
 
 const CircleContainer = styled.div`
   img {
-    width: ${(props) => props.width};
-    height: ${(props) => props.height};
+    width: ${(props) => props.width || '48px'};
+    height: ${(props) => props.height || '48px'};
     object-fit: cover;
     border-radius: 50%;
   }
