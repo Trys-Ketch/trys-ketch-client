@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import UserCard from '../user/UserCard';
+import EmptyCard from '../user/EmptyCard';
 
 const userList = [
   { id: 1, nickname: '영리한 붉은 박쥐' },
@@ -14,13 +15,17 @@ function AttendeeList() {
       {userList.map((user) => (
         <UserCard key={user.id} user={user} />
       ))}
+      {[...Array(parseInt(8 - userList.length, 10))].map((n) => (
+        <EmptyCard key={n} />
+      ))}
     </GridList>
   );
 }
 
 const GridList = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, minmax(100px, auto));
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(4, 1fr);
 `;
 
 export default AttendeeList;

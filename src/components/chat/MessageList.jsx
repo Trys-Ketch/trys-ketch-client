@@ -20,7 +20,7 @@ function MessageList() {
 
 const StMessageList = styled.div`
   border: 1px solid;
-  height: 600px;
+  height: 480px;
 `;
 
 export default MessageList;
