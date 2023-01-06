@@ -1,0 +1,31 @@
+name: deploy when push # Workflow 이름
+on: # Event 감지
+  push: # main, release 브랜치에 push될 때
+    branches:
+      - main
+      - release/*
+jobs: # Job 설정
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️ # Repo checkout
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies ➕ # 의존 파일 설치
+        run: yarn install --immutable --immutable-cache --check-cache
+
+      - name: Build 🛠 # React Build
+        run: yarn build
+
+      - name: Create .env.production file 🔑 # .env.production 파일 생성
+        run: |
+          jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' <<< "$SECRETS_CONTEXT" > .env.production
+        env:
+          SECRETS_CONTEXT: ${{ toJson(secrets) }}
+
+      - name: Deploy 🚀 # Upload build file to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws s3 cp --recursive --region ap-northeast-2 build s3://trys-ketch

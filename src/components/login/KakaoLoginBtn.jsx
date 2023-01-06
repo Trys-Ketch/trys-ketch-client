@@ -7,6 +7,7 @@ import { setCookie } from '../../utils/cookie';
 
 // TODO - test용 컴포넌트 추후 디자인 시안에 따라 변경 필요
 function KakaoLoginBtn() {
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_BASE_URL}/login&response_type=code`;
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -35,7 +36,7 @@ function KakaoLoginBtn() {
 
   return (
     <KakaoBox>
-      <a href={process.env.REACT_APP_KAKAO_AUTH_URL}>
+      <a href={KAKAO_AUTH_URL}>
         <img src={kakao} alt="kakao login" />
       </a>
       <Caption>kakao</Caption>
