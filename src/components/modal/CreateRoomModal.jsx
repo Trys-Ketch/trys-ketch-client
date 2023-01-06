@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import Input from '../common/Input';
 import Button from '../common/Button';
 
-function CreateRoomModal() {
+function CreateRoomModal({ setIsOpen }) {
   return (
     <ModalOverlay>
       <Modal>
         <Title>방 만들기</Title>
+        <CloseBtn onClick={() => setIsOpen()}>X</CloseBtn>
         <Input />
         <Button width="100%">만들기</Button>
       </Modal>
@@ -29,6 +30,7 @@ const ModalOverlay = styled.div`
 `;
 
 const Modal = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -39,6 +41,15 @@ const Modal = styled.div`
   background-color: #fff;
 `;
 
-const Title = styled.h3``;
+const Title = styled.h3`
+  font-size: 18px;
+  font-weight: 500;
+`;
+
+const CloseBtn = styled.button`
+  position: absolute;
+  top: 5px;
+  right: 5px;
+`;
 
 export default CreateRoomModal;
