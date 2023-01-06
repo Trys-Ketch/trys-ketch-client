@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import Avatar from '../common/Avatar';
 
-function UserCard() {
+function UserCard({ user }) {
   return (
     <StUserCard>
       <Avatar />
-      <Nickname>나는야피카소</Nickname>
+      <Nickname>{user.nickname}</Nickname>
     </StUserCard>
   );
 }

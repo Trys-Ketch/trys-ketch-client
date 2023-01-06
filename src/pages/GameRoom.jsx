@@ -1,12 +1,14 @@
 import React from 'react';
-import UserCard from '../components/user/UserCard';
-import ChatBox from '../components/chat/ChatBox';
+import MessageList from '../components/chat/MessageList';
+import MessageInput from '../components/chat/MessageForm';
+import AttendeeList from '../components/game/AttendeeList';
 
 function GameRoom() {
   return (
     <div>
-      <UserCard />
-      <ChatBox />
+      <AttendeeList />
+      <MessageList />
+      <MessageInput />
     </div>
   );
 }
