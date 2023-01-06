@@ -1,8 +1,8 @@
 import React from 'react';
 import CreateRoomModal from '../components/modal/CreateRoomModal';
 
-function Main() {
+function Lobby() {
   return <CreateRoomModal />;
 }
 
-export default Main;
+export default Lobby;
