@@ -12052,6 +12052,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"styled-reset@npm:^4.4.4":
+  version: 4.4.4
+  resolution: "styled-reset@npm:4.4.4"
+  peerDependencies:
+    styled-components: ">=4.0.0 || >=5.0.0"
+  checksum: f8329b583636a37f77615e1706802e37cdbd65243bf2957c77f2277857cd1959219ad6ccef51e62ded536b917bbeb3e419d817501acf1575c49604d769156831
+  languageName: node
+  linkType: hard
+
 "stylehacks@npm:^5.1.1":
   version: 5.1.1
   resolution: "stylehacks@npm:5.1.1"
@@ -12419,6 +12428,7 @@ __metadata:
     react-scripts: 5.0.1
     redux: ^4.2.0
     styled-components: ^5.3.6
+    styled-reset: ^4.4.4
     web-vitals: ^2.1.4
   languageName: unknown
   linkType: soft
