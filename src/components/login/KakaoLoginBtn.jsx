@@ -1,15 +1,19 @@
 import React, { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import kakao from '../../assets/icons/kakao_login.svg';
 import authAPI from '../../api/auth';
 import { setCookie } from '../../utils/cookie';
+import { setLogin } from '../../app/slices/loginSlice';
 
 // TODO - test용 컴포넌트 추후 디자인 시안에 따라 변경 필요
 function KakaoLoginBtn() {
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_BASE_URL}/login&response_type=code`;
+
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const code = searchParams.get('code');
 
@@ -18,6 +22,7 @@ function KakaoLoginBtn() {
       .kakaoLogin(code)
       .then((res) => {
         if (res.data.statusCode === 200) {
+          dispatch(setLogin('kakao'));
           setCookie(res.headers.authorization);
           alert(res.data.message);
           navigate('/');
@@ -26,7 +31,7 @@ function KakaoLoginBtn() {
         }
       })
       .catch((error) => alert(error.message));
-  }, [code, navigate]);
+  }, [code, dispatch, navigate]);
 
   useEffect(() => {
     if (code) {

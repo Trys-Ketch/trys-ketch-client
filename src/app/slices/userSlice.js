@@ -9,9 +9,9 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setNickname: (state, payload) => ({
+    setNickname: (state, action) => ({
       ...state,
-      nickname: payload,
+      nickname: action.payload,
     }),
   },
   extraReducers: {},

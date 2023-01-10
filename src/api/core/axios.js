@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getCookie } from '../../utils/cookie';
+import store from '../../app/configStore';
 
 // 인스턴스 생성
 const instance = axios.create({
@@ -15,9 +16,15 @@ instance.defaults.timeout = 2500;
 
 // 인스턴스 request header Authorization 설정
 instance.interceptors.request.use((config) => {
+  const { member } = store.getState().login;
   if (config.headers === undefined) return;
-  const token = getCookie();
-  config.headers.Authorization = `${token}`;
+  if (member === 'guest') {
+    const token = getCookie('guest');
+    config.headers.guest = token;
+  } else {
+    const token = getCookie();
+    config.headers.Authorization = `${token}`;
+  }
   return config;
 });
 
