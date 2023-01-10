@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { getCookie } from '../../utils/cookie';
-import store from '../../app/configStore';
+import { store } from '../../app/configStore';
 
 // 인스턴스 생성
 const instance = axios.create({
