@@ -13,9 +13,9 @@ function KakaoLoginBtn() {
 
   const code = searchParams.get('code');
 
-  const KakaoLogin = useCallback(async () => {
+  const kakaoLogin = useCallback(async () => {
     await authAPI
-      .KakaoLogin(code)
+      .kakaoLogin(code)
       .then((res) => {
         if (res.data.statusCode === 200) {
           setCookie(res.headers.authorization);
@@ -30,9 +30,9 @@ function KakaoLoginBtn() {
 
   useEffect(() => {
     if (code) {
-      KakaoLogin();
+      kakaoLogin();
     }
-  }, [KakaoLogin, code]);
+  }, [kakaoLogin, code]);
 
   return (
     <KakaoBox>
