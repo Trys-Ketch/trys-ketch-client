@@ -11,15 +11,16 @@ import InGame from '../pages/InGame';
 function Router() {
   return (
     <BrowserRouter>
+      {/* <AudioCall /> */}
       <Routes>
         <Route path="/" element={<Lobby />} />
         <Route path="/login" element={<Login />} />
         <Route path="/guest" element={<Guest />} />
         <Route path="room" element={<Navigate to="/" replace />} />
-        <Route path="room/:id" element={<GameRoom />} />
         <Route path="/myPage" element={<MyPage />} />
-        <Route path="/video/:roomName" element={<AudioCall />} />
-        <Route path="/ingame/:roomName" element={<InGame />} />
+        <Route path="/video/:id" element={<AudioCall />} />
+        <Route path="room/:id" element={<AudioCall />} />
+        <Route path="/ingame/:id" element={<InGame />} />
       </Routes>
     </BrowserRouter>
   );

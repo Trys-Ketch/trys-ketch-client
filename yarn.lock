@@ -12938,7 +12938,6 @@ __metadata:
     react-scripts: 5.0.1
     redux: ^4.2.0
     redux-persist: ^6.0.0
-    sockjs-client: ^1.6.1
     styled-components: ^5.3.6
     styled-reset: ^4.4.4
     web-vitals: ^2.1.4

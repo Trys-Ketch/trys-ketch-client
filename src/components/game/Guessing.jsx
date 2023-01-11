@@ -1,19 +1,34 @@
 import React from 'react';
 import styled from 'styled-components';
+import Input from '../common/Input';
+import Button from '../common/Button';
 
 function Guessing() {
   return (
     <>
       <h3 style={{ fontSize: '36px', textAlign: 'center' }}>정답을 작성해주세요!</h3>
       <Image src="/img/sanic.webp" alt="sanic" />
+      <div
+        style={{
+          position: 'absolute',
+          left: '50%',
+          bottom: '20px',
+          transform: 'translate(-50%, 0)',
+          width: '70%',
+        }}
+      >
+        <Input type="text" width="80%" value="싸닉" />
+        <Button style={{ marginLeft: '15px' }}>완료</Button>
+      </div>
     </>
   );
 }
 
 const Image = styled.img`
-  width: 80%;
   height: 80%;
-  text-align: center;
+  display: block;
+  margin: 0 auto;
+  aspect-ratio: auto 1/1;
 `;
 
 export default Guessing;

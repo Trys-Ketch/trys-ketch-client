@@ -1,18 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
 import Drawing from '../components/game/Drawing';
-import Guessing from '../components/game/Guessing';
+// import Guessing from '../components/game/Guessing';
 import MakeSentence from '../components/game/MakeSentence';
 
 function InGame() {
   return (
     <Wrapper>
-      {/* <MakeSentence /> */}
+      <MakeSentence />
       {/* <div>
         <h3 style={{ textAlign: 'center', fontSize: '42px' }}>제시어</h3>
         <Drawing />
       </div> */}
-      <Guessing />
+      {/* <Guessing /> */}
     </Wrapper>
   );
 }
