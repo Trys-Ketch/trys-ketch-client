@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import floodFill from '../utils/floodFill';
+import floodFill from '../../utils/floodFill';
 
 let historyPointer = 0;
 
