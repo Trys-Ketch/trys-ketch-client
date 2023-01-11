@@ -1,14 +1,20 @@
 import { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import React, { useState } from 'react';
+import axios from 'axios';
 
+import { useCookies } from 'react-cookie';
 import * as SockJS from 'sockjs-client';
 import Audio from './Audio';
+import instance from '../../api/core/axios';
 
 let pcs: any;
 let localStream: MediaStream;
+// let id;
 
 function AudioCall() {
+  const [cookies, setCookie, removeCookie] = useCookies(['access_token']);
+
   /**
    * socket을 관리하는 ref입니다.
    */
@@ -38,6 +44,7 @@ function AudioCall() {
     socket: any,
     peerConnectionLocalStream: MediaStream,
   ): RTCPeerConnection => {
+    const token = cookies.access_token;
     // create peer
     const pc = new RTCPeerConnection({
       iceServers: [
@@ -59,6 +66,7 @@ function AudioCall() {
         console.log('onicecandidate');
         socket.send(
           JSON.stringify({
+            token,
             type: 'candidate',
             candidate: e.candidate,
             receiver: socketID,
@@ -105,11 +113,28 @@ function AudioCall() {
   };
 
   useEffect(() => {
+    // async function init() {
+    //   console.log('init');
+    // try {
+    //   const data = await instance.post('api/room', {
+    //     title:
+    //       '나 아는사람 강다니엘 닮은 이모가 다시보게되는게 다시 그때처럼 안닮게 엄마보면 느껴지는걸수도 있는거임? 엄마도?',
+    //   });
+    //   console.log(data.data.data);
+    //   id = data.data.data.roomId;
+    //   console.log(id);
+    //   await instance.post(`api/room/${id}`);
+    // } catch (e) {
+    //   console.log(e);
+    // }
+
     // 시그널링 서버와 소켓 연결
     socketRef.current = new SockJS(`${process.env.REACT_APP_API_URL}signal`);
+    // socketRef.current = new SockJS(`http://13.209.6.230:8080/signal`);
+    const token = cookies.access_token;
 
     // 소켓이 연결되었을 때 실행
-    socketRef.current.onopen = () => {
+    socketRef.current.onopen = async () => {
       navigator.mediaDevices
         .getUserMedia({
           video: false,
@@ -119,8 +144,7 @@ function AudioCall() {
           if (audioRef.current) audioRef.current.srcObject = stream;
 
           localStream = stream;
-
-          socketRef.current?.send(JSON.stringify({ type: 'join_room', room: id }));
+          socketRef.current?.send(JSON.stringify({ type: 'join_room', room: id, token }));
         })
         .catch((error) => {
           console.log(`getUserMedia error: ${error}`);
@@ -156,6 +180,7 @@ function AudioCall() {
                   // signaling server에 i번째 유저에게 offer를 요청합니다.
                   socketRef.current?.send(
                     JSON.stringify({
+                      token,
                       type: 'offer',
                       sdp,
                       receiver: allUsers[i].id,
@@ -190,6 +215,7 @@ function AudioCall() {
                   // offer를 보낸 상대방에게 answer를 보냅니다.
                   socketRef.current?.send(
                     JSON.stringify({
+                      token,
                       type: 'answer',
                       sdp,
                       // answerSendID: newSocket.id,
@@ -245,8 +271,20 @@ function AudioCall() {
     socketRef.current.onerror = (event) => {
       console.log(`Error! : ${event}`);
     };
+    // }
+
+    // init();
+
+    // async function exit() {
+    //   try {
+    //     await instance.delete(`api/room/${id}/exit`);
+    //   } catch (e) {
+    //     console.log(e);
+    //   }
+    // }
 
     return () => {
+      // exit();
       // 컴포넌트가 unmount되면 socket연결을 종료합니다.
       if (socketRef.current) {
         console.log('close');
