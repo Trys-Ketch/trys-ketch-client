@@ -1,6 +1,5 @@
-import { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import React, { useState } from 'react';
 import axios from 'axios';
 
 import { useCookies } from 'react-cookie';

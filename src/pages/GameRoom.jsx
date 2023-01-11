@@ -1,16 +1,28 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import MessageList from '../components/chat/MessageList';
 import MessageInput from '../components/chat/MessageForm';
 import AttendeeList from '../components/game/AttendeeList';
 import Button from '../components/common/Button';
+import roomAPI from '../api/room';
 
 function GameRoom() {
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const handleOut = () => {
-    navigate('/');
+    roomAPI
+      .exitRoom(id)
+      .then((res) => {
+        if (res.data.statusCode === 200) {
+          alert(res.data.message);
+          navigate('/');
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
