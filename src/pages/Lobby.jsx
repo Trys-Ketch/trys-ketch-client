@@ -17,13 +17,17 @@ function Lobby() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [rooms, setRooms] = useState([]);
+  // lastPage는 1부터 page는 0부터
+  const [page, setPage] = useState(0);
+  const [lastPage, setLastPage] = useState(1);
 
-  const getRooms = () => {
-    const page = 0;
+  const getRooms = (currentPage) => {
+    console.log(currentPage);
     roomAPI
-      .getRoomList(page)
+      .getRoomList(currentPage)
       .then((res) => {
-        setRooms(res.data);
+        setLastPage(res.data.LastPage);
+        setRooms(res.data.Rooms);
       })
       .catch((err) => {
         console.log(err);
@@ -31,7 +35,7 @@ function Lobby() {
   };
 
   const handleRefresh = () => {
-    getRooms();
+    getRooms(page);
   };
 
   const LinkToMyPage = () => {
@@ -43,8 +47,8 @@ function Lobby() {
   };
 
   useEffect(() => {
-    getRooms();
-  }, []);
+    getRooms(page);
+  }, [page]);
 
   return (
     <>
@@ -59,7 +63,7 @@ function Lobby() {
         </Side>
         <Main>
           <RoomList rooms={rooms} />
-          <Pagination lastPage={5} page={1} setPage={() => console.log('setPage')} />
+          <Pagination lastPage={lastPage} page={page} setPage={setPage} />
           <BottomBtns>
             <Button>초대코드 입력</Button>
             <Button onClick={handleModal}>방만들기</Button>

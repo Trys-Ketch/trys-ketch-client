@@ -4,7 +4,7 @@ import styled from 'styled-components';
 function Pagination({ lastPage, page, setPage }) {
   return (
     <Nav>
-      <Button onClick={() => setPage(page - 1)} disabled={page === 1}>
+      <Button onClick={() => setPage(page - 1)} disabled={page === 0}>
         &lt;
       </Button>
       {Array(lastPage)
@@ -12,13 +12,13 @@ function Pagination({ lastPage, page, setPage }) {
         .map((_, i) => (
           <Button
             key={String(i + 1)}
-            onClick={() => setPage(i + 1)}
-            aria-current={page === i + 1 ? 'page' : null}
+            onClick={() => setPage(i)}
+            aria-current={page === i ? 'page' : null}
           >
             {i + 1}
           </Button>
         ))}
-      <Button onClick={() => setPage(page + 1)} disabled={page === lastPage}>
+      <Button onClick={() => setPage(page + 1)} disabled={page + 1 === lastPage}>
         &gt;
       </Button>
     </Nav>
