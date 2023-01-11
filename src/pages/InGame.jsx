@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Drawing from '../components/game/Drawing';
-import Guessing from '../components/game/Guessing';
+// import Guessing from '../components/game/Guessing';
 import MakeSentence from '../components/game/MakeSentence';
 
 function InGame() {
