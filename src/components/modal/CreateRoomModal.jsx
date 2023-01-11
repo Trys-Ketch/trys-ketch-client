@@ -1,16 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Input from '../common/Input';
 import Button from '../common/Button';
+import roomAPI from '../../api/room';
 
 function CreateRoomModal({ setIsOpen }) {
+  const navigate = useNavigate();
+  const [title, setTitle] = useState('');
+
+  const handleChange = (event) => {
+    setTitle(event.target.value);
+  };
+
+  const handleCreate = () => {
+    const trimedTitle = title.trim();
+    if (trimedTitle === '') {
+      alert('방 제목을 입력해주세요');
+    } else {
+      roomAPI
+        .createRoom(trimedTitle)
+        .then((res) => {
+          console.log(res.data);
+          navigate(`/room/${res.data.data.roomId}`);
+          alert('방 생성 완료!');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
   return (
     <ModalOverlay>
       <Modal>
         <Title>방 만들기</Title>
         <CloseBtn onClick={() => setIsOpen()}>X</CloseBtn>
-        <Input />
-        <Button width="100%">만들기</Button>
+        <Input onChange={handleChange} value={title} />
+        <Button onClick={handleCreate} width="100%">
+          만들기
+        </Button>
       </Modal>
     </ModalOverlay>
   );
