@@ -26,6 +26,7 @@ module.exports = {
     'no-underscore-dangle': 0, // 함수 이름을 시작할 때 언더바를 사용할 수 없는 규칙 해제
     'no-useless-escape': 0, // 정규식 사용시 문제가 되는 규칙 해제
     'prefer-destructuring': ['error', { object: true, array: false }], // 배열 인덱스에 접근 시 반드시 구조분해 할당을 사용해야하는 규칙 해제
+    'react/jsx-filename-extension': [2, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
   },
 };
