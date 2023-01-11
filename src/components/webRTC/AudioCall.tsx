@@ -128,7 +128,7 @@ function AudioCall() {
     // }
 
     // 시그널링 서버와 소켓 연결
-    socketRef.current = new SockJS(`${process.env.REACT_APP_API_URL}signal`);
+    socketRef.current = new SockJS(`${process.env.REACT_APP_API_URL}/signal`);
     // socketRef.current = new SockJS(`http://13.209.6.230:8080/signal`);
     const token = cookies.access_token;
 
@@ -143,6 +143,7 @@ function AudioCall() {
           if (audioRef.current) audioRef.current.srcObject = stream;
 
           localStream = stream;
+          console.log(localStream);
           socketRef.current?.send(JSON.stringify({ type: 'join_room', room: id, token }));
         })
         .catch((error) => {
@@ -157,6 +158,7 @@ function AudioCall() {
         // 1. all_users로 서버에서 같은 방에 존재하는 나를 제외한 모든 user를 받아옵니다.
         case 'all_users': {
           const { allUsers } = data;
+          console.log(allUsers);
           // 나를 제외했으므로 방에 나밖에 없으면 length는 0
           const len = allUsers.length;
           for (let i = 0; i < len; i += 1) {
@@ -294,7 +296,7 @@ function AudioCall() {
 
   return (
     <div>
-      <audio ref={audioRef} autoPlay>
+      <audio ref={audioRef} muted>
         <track kind="captions" />
       </audio>
       {users.map((user) => {
