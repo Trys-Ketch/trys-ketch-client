@@ -5841,7 +5841,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-import@npm:^2.25.3":
+"eslint-plugin-import@npm:^2.25.3, eslint-plugin-import@npm:^2.26.0":
   version: 2.26.0
   resolution: "eslint-plugin-import@npm:2.26.0"
   dependencies:
@@ -12530,6 +12530,7 @@ __metadata:
     eslint-plugin: ^1.0.1
     eslint-plugin-eslint-plugin: ^5.0.7
     eslint-plugin-html: ^7.1.0
+    eslint-plugin-import: ^2.26.0
     eslint-plugin-jsx-a11y: ^6.6.1
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-react: ^7.31.11
