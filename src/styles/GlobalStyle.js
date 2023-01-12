@@ -1,15 +1,27 @@
 import reset from 'styled-reset';
 import { createGlobalStyle } from 'styled-components';
+import Pretendard from '../assets/fonts/PretendardVariable.woff2';
+import TTTogether from '../assets/fonts/TTTogether.otf';
 
 const Globalstyle = createGlobalStyle`
 ${reset}
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url(${Pretendard});
+}
+
+@font-face {
+  font-family: 'TTTogether';
+  src: url(${TTTogether});
+}
 
 * {
     box-sizing: border-box;
 }
 
 body {
-    // font-family
+    font-family: 'Pretendard', sans-serif;
 }
 
 ol, ul {
