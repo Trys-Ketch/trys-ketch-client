@@ -6,15 +6,18 @@ const ButtonBlock = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-weight: 300;
+  font-family: 'TTTogether';
   cursor: pointer;
   outline: none;
-  border: none;
-  color: white;
-  background: ${(props) => props.bgcolor || 'blue'};
-  color: ${(props) => props.color || 'white'};
+  border-bottom: 5px solid #746b5f;
+  background: ${(props) => props.bgcolor || '#FFF8ED'};
+  color: ${(props) => props.color || '#4E473F'};
+  transition: 0.2s ease;
   &:active {
-    background: ${(props) => props.bgcolor || 'blue'};
+    background: ${(props) => props.bgcolor || '#DFD8CD'};
+  }
+  &:hover {
+    scale: 1.03;
   }
   border-radius: 10px;
   padding-top: 0;
@@ -29,16 +32,16 @@ const ButtonBlock = styled.button`
   ${(props) =>
     props.size === 'medium' &&
     css`
-      height: 2rem;
-      padding-left: 1.25rem;
-      padding-right: 1.25rem;
+      height: 4rem;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
       font-size: 1rem;
     `}
 
   ${(props) =>
     props.size === 'large' &&
     css`
-      height: 2.5rem;
+      height: 5rem;
       padding-left: 1.125rem;
       padding-right: 1.125rem;
       & + & {
