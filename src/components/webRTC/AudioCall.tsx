@@ -12,7 +12,7 @@ let localStream: MediaStream;
 // let id;
 
 function AudioCall() {
-  const [cookies, setCookie, removeCookie] = useCookies(['access_token']);
+  const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
 
   /**
    * socket을 관리하는 ref입니다.
@@ -130,7 +130,15 @@ function AudioCall() {
     // 시그널링 서버와 소켓 연결
     socketRef.current = new SockJS(`${process.env.REACT_APP_API_URL}/signal`);
     // socketRef.current = new SockJS(`http://13.209.6.230:8080/signal`);
-    const token = cookies.access_token;
+    let token;
+
+    if (cookies.access_token) {
+      token = cookies.access_token;
+      console.log('user', token);
+    } else if (cookies.guest) {
+      token = cookies.guest;
+      console.log('guest', token);
+    }
 
     // 소켓이 연결되었을 때 실행
     socketRef.current.onopen = async () => {
@@ -143,7 +151,7 @@ function AudioCall() {
           if (audioRef.current) audioRef.current.srcObject = stream;
 
           localStream = stream;
-          console.log(localStream);
+          console.log('join_room');
           socketRef.current?.send(JSON.stringify({ type: 'join_room', room: id, token }));
         })
         .catch((error) => {
