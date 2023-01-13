@@ -7,8 +7,7 @@ import userAPI from '../api/user';
 import Avatar from '../components/common/Avatar';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
-import Layout from '../components/common/Layout';
-import Panel from '../components/common/Panel';
+import Panel from '../components/layout/Panel';
 import { setLogin } from '../app/slices/loginSlice';
 import { setNickname } from '../app/slices/userSlice';
 import { setCookie } from '../utils/cookie';
@@ -51,32 +50,30 @@ function Guest() {
   }, []);
 
   return (
-    <Layout>
-      <Panel>
-        <ProfileBox>
-          <Avatar width="128px" height="128px" />
-          {/* TODO - refresh function 추가 필요 */}
-          <ProfileRefreshBtn>
-            <img src={refreshIcon} alt="refresh" />
-          </ProfileRefreshBtn>
-        </ProfileBox>
-        <InputBox>
-          <Input
-            maxLength="25"
-            width="500px"
-            value={name}
-            onChange={handleInput}
-            placeholder="닉네임을 입력해주세요"
-          />
-          <NameRefreshBtn onClick={getRandomNickname}>
-            <img src={refreshIcon} alt="refresh" />
-          </NameRefreshBtn>
-        </InputBox>
-        <Button width="350px" onClick={handleSubmit}>
-          완료
-        </Button>
-      </Panel>
-    </Layout>
+    <Panel>
+      <ProfileBox>
+        <Avatar width="128px" height="128px" />
+        {/* TODO - refresh function 추가 필요 */}
+        <ProfileRefreshBtn>
+          <img src={refreshIcon} alt="refresh" />
+        </ProfileRefreshBtn>
+      </ProfileBox>
+      <InputBox>
+        <Input
+          maxLength="25"
+          width="500px"
+          value={name}
+          onChange={handleInput}
+          placeholder="닉네임을 입력해주세요"
+        />
+        <NameRefreshBtn onClick={getRandomNickname}>
+          <img src={refreshIcon} alt="refresh" />
+        </NameRefreshBtn>
+      </InputBox>
+      <Button width="350px" onClick={handleSubmit}>
+        완료
+      </Button>
+    </Panel>
   );
 }
 

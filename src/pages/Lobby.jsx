@@ -22,7 +22,6 @@ function Lobby() {
   const [lastPage, setLastPage] = useState(1);
 
   const getRooms = (currentPage) => {
-    console.log(currentPage);
     roomAPI
       .getRoomList(currentPage)
       .then((res) => {
@@ -52,24 +51,29 @@ function Lobby() {
 
   return (
     <>
-      <Layout>
-        <Side>
-          <Profile>
-            <Avatar />
-            <Nickname>{userInfo.nickname}</Nickname>
-          </Profile>
-          <Button onClick={LinkToMyPage}>마이페이지</Button>
-          <Button onClick={handleRefresh}>새로고침</Button>
-        </Side>
-        <Main>
-          <RoomList rooms={rooms} />
-          <Pagination lastPage={lastPage} page={page} setPage={setPage} />
-          <BottomBtns>
-            <Button>초대코드 입력</Button>
-            <Button onClick={handleModal}>방만들기</Button>
-          </BottomBtns>
-        </Main>
-      </Layout>
+      <Side>
+        <Profile>
+          <Avatar />
+          <Nickname>{userInfo.nickname}</Nickname>
+        </Profile>
+        <Button onClick={LinkToMyPage}>마이페이지</Button>
+        <Button onClick={handleRefresh}>새로고침</Button>
+      </Side>
+      <Main>
+        {rooms ? (
+          <>
+            <RoomList rooms={rooms} />
+            <Pagination lastPage={lastPage} page={page} setPage={setPage} />
+          </>
+        ) : (
+          // TODO - 비어있는 화면 구현 필요
+          <div>empty</div>
+        )}
+        <BottomBtns>
+          <Button>초대코드 입력</Button>
+          <Button onClick={handleModal}>방만들기</Button>
+        </BottomBtns>
+      </Main>
       {isOpen && <CreateRoomModal setIsOpen={setIsOpen} />}
     </>
   );
