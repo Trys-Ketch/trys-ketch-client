@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import roomAPI from '../api/room';
+import Container from '../components/layout/Container';
 import Avatar from '../components/common/Avatar';
 import Button from '../components/common/Button';
-import RoomList from '../components/game/RoomList';
+import FlatButton from '../components/common/FlatButton';
+import RoomList from '../components/room/RoomList';
+import Pagination from '../components/room/Pagination';
+import EmptyRoomList from '../components/room/EmptyRoomList';
 import CreateRoomModal from '../components/modal/CreateRoomModal';
-import roomAPI from '../api/room';
-import Pagination from '../components/Pagination';
 
 const userInfo = {
   nickname: '내이름은피카소',
@@ -22,12 +25,12 @@ function Lobby() {
   const [lastPage, setLastPage] = useState(1);
 
   const getRooms = (currentPage) => {
-    console.log(currentPage);
     roomAPI
       .getRoomList(currentPage)
       .then((res) => {
         setLastPage(res.data.LastPage);
         setRooms(res.data.Rooms);
+        console.log(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -51,45 +54,46 @@ function Lobby() {
   }, [page]);
 
   return (
-    <>
-      <Layout>
-        <Side>
-          <Profile>
-            <Avatar />
-            <Nickname>{userInfo.nickname}</Nickname>
-          </Profile>
-          <Button onClick={LinkToMyPage}>마이페이지</Button>
-          <Button onClick={handleRefresh}>새로고침</Button>
-        </Side>
-        <Main>
-          <RoomList rooms={rooms} />
-          <Pagination lastPage={lastPage} page={page} setPage={setPage} />
-          <BottomBtns>
-            <Button>초대코드 입력</Button>
-            <Button onClick={handleModal}>방만들기</Button>
-          </BottomBtns>
-        </Main>
-      </Layout>
+    <Container>
+      <Side>
+        <Profile>
+          <Avatar width="80px" height="80px" />
+          <Nickname>{userInfo.nickname}</Nickname>
+        </Profile>
+        <FlatButton size="small" onClick={LinkToMyPage}>
+          마이페이지
+        </FlatButton>
+        <Button onClick={handleRefresh}>새로고침</Button>
+      </Side>
+      <Main>
+        <TopBtns>
+          <Button onClick={handleModal}>방 만들기</Button>
+          <Button inline>초대 코드</Button>
+        </TopBtns>
+        <RoomContainer>
+          {rooms.length !== 0 ? (
+            <>
+              <RoomList rooms={rooms} />
+              <Pagination lastPage={lastPage} page={page} setPage={setPage} />
+            </>
+          ) : (
+            <EmptyRoomList />
+          )}
+        </RoomContainer>
+      </Main>
       {isOpen && <CreateRoomModal setIsOpen={setIsOpen} />}
-    </>
+    </Container>
   );
 }
 
-const Layout = styled.div`
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: start;
-`;
-
 const Side = styled.div`
+  width: 20%;
+  height: 100%;
+  margin-top: 30px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  width: 30%;
 `;
 
 const Profile = styled.div`
@@ -100,15 +104,32 @@ const Profile = styled.div`
 `;
 
 const Nickname = styled.h3`
-  font-size: 20px;
-  font-weight: 500;
-  margin: 10px 0;
+  font-family: 'Pretendard';
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #4e473f;
+  margin: 10px 0 20px 0;
 `;
 
 const Main = styled.div`
-  width: 70%;
+  width: 80%;
 `;
 
-const BottomBtns = styled.div``;
+const TopBtns = styled.div`
+  display: flex;
+  width: 100%;
+  margin-bottom: 10px;
+
+  Button {
+    width: 50%;
+    flex-grow: 1;
+  }
+`;
+
+const RoomContainer = styled.div`
+  background: #f5ebda;
+  padding: 20px;
+  border-radius: 10px;
+`;
 
 export default Lobby;

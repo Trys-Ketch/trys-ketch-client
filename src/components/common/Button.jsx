@@ -6,51 +6,65 @@ const ButtonBlock = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-weight: 300;
+  font-family: 'TTTogether';
   cursor: pointer;
   outline: none;
-  border: none;
-  color: white;
-  background: ${(props) => props.bgcolor || 'blue'};
-  color: ${(props) => props.color || 'white'};
-  &:active {
-    background: ${(props) => props.bgcolor || 'blue'};
-  }
+  border-bottom: 5px solid #746b5f;
+  background: ${(props) => props.bgcolor || '#FFF8ED'};
+  color: ${(props) => props.color || '#4E473F'};
   border-radius: 10px;
   padding-top: 0;
   padding-bottom: 0;
+  transition: 0.2s ease;
+
+  &:active {
+    background: ${(props) => props.bgcolor || '#DFD8CD'};
+  }
+
+  &:hover {
+    scale: 1.03;
+  }
+
   ${(props) =>
     props.inline &&
     css`
       & + & {
-        margin-left: 0.5rem;
+        margin-left: 0.75rem;
       }
     `}
+
+  ${(props) =>
+    props.size === 'small' &&
+    css`
+      height: 3rem;
+      padding-left: 2rem;
+      padding-right: 2rem;
+      font-size: 1rem;
+    `}
+
   ${(props) =>
     props.size === 'medium' &&
     css`
-      height: 2rem;
-      padding-left: 1.25rem;
-      padding-right: 1.25rem;
-      font-size: 1rem;
+      height: 4rem;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+      font-size: 1.125rem;
     `}
 
   ${(props) =>
     props.size === 'large' &&
     css`
-      height: 2.5rem;
+      height: 5rem;
       padding-left: 1.125rem;
       padding-right: 1.125rem;
       & + & {
         margin-left: 0.875rem;
       }
-      font-size: 1.125rem;
+      font-size: 1.25rem;
     `}
 
   &:disabled {
     cursor: not-allowed;
-    background: 'white';
-    color: 'gray';
   }
 `;
 
@@ -62,8 +76,6 @@ function Button({
   inline,
   size = 'medium',
   width = 'auto',
-  responsive = false,
-  outlined = false,
   ...rest
 }) {
   const htmlProps = rest;
@@ -74,8 +86,6 @@ function Button({
       inline={inline}
       width={width}
       size={size}
-      responsive={responsive}
-      outlined={outlined}
       {...htmlProps}
       onClick={(e) => {
         if (htmlProps.onClick) {

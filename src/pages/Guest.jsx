@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import authAPI from '../api/auth';
+import userAPI from '../api/user';
 import Avatar from '../components/common/Avatar';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
-import authAPI from '../api/auth';
-import userAPI from '../api/user';
+import Panel from '../components/layout/Panel';
 import { setLogin } from '../app/slices/loginSlice';
 import { setNickname } from '../app/slices/userSlice';
 import { setCookie } from '../utils/cookie';
+import refreshIcon from '../assets/icons/refresh-icon.svg';
 
 function Guest() {
   const [name, setName] = useState('');
@@ -48,24 +50,63 @@ function Guest() {
   }, []);
 
   return (
-    <Layout>
-      <Avatar width="68px" height="68px" />
-      <Input value={name} onChange={handleInput} />
-      <Button onClick={getRandomNickname}>새로고침</Button>
-      <Button onClick={handleSubmit}>완료</Button>
-    </Layout>
+    <Panel>
+      <ProfileBox>
+        <Avatar width="128px" height="128px" />
+        {/* TODO - refresh function 추가 필요 */}
+        <ProfileRefreshBtn>
+          <img src={refreshIcon} alt="refresh" />
+        </ProfileRefreshBtn>
+      </ProfileBox>
+      <InputBox>
+        <Input
+          maxLength="25"
+          width="500px"
+          value={name}
+          onChange={handleInput}
+          placeholder="닉네임을 입력해주세요"
+        />
+        <NameRefreshBtn onClick={getRandomNickname}>
+          <img src={refreshIcon} alt="refresh" />
+        </NameRefreshBtn>
+      </InputBox>
+      <Button width="350px" onClick={handleSubmit}>
+        완료
+      </Button>
+    </Panel>
   );
 }
 
-const Layout = styled.div`
+const ProfileBox = styled.div`
+  position: relative;
+  margin-bottom: 38px;
+`;
+
+const InputBox = styled.div`
+  position: relative;
+  margin-bottom: 38px;
+`;
+
+const RefreshBtn = styled.button`
+  transition: 0.15s linear;
+  img {
+    width: 38px;
+  }
+  &:active {
+    transform: rotate(360deg);
+  }
+`;
+
+const ProfileRefreshBtn = styled(RefreshBtn)`
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  right: 0;
+  bottom: 0;
+`;
+
+const NameRefreshBtn = styled(RefreshBtn)`
+  position: absolute;
+  right: 12px;
+  top: 9px;
 `;
 
 export default Guest;

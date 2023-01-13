@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
 import MessageList from '../components/chat/MessageList';
 import MessageInput from '../components/chat/MessageForm';
-import AttendeeList from '../components/game/AttendeeList';
+import AttendeeList from '../components/room/AttendeeList';
 import Button from '../components/common/Button';
 import roomAPI from '../api/room';
 

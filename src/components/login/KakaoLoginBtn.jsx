@@ -2,12 +2,11 @@ import React, { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import kakao from '../../assets/icons/kakao_login.svg';
+import kakao from '../../assets/icons/kakao-icon.svg';
 import authAPI from '../../api/auth';
 import { setCookie } from '../../utils/cookie';
 import { setLogin } from '../../app/slices/loginSlice';
 
-// TODO - test용 컴포넌트 추후 디자인 시안에 따라 변경 필요
 function KakaoLoginBtn() {
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_BASE_URL}/login&response_type=code`;
 
@@ -40,32 +39,26 @@ function KakaoLoginBtn() {
   }, [kakaoLogin, code]);
 
   return (
-    <KakaoBox>
+    <IconBox>
       <a href={KAKAO_AUTH_URL}>
         <img src={kakao} alt="kakao login" />
       </a>
-      <Caption>kakao</Caption>
-    </KakaoBox>
+    </IconBox>
   );
 }
 
-const KakaoBox = styled.div`
+const IconBox = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 50px;
-`;
+  width: fit-content;
+  block-size: fit-content;
 
-const Caption = styled.p`
-  width: 100%;
-  color: #939393;
-  font-weight: 600;
-  text-align: center;
-  font-size: 12px;
-  line-height: 16px;
-  margin-top: 5px;
-  margin-bottom: 15px;
+  & img {
+    width: 50px;
+    height: 50px;
+  }
 `;
 
 export default KakaoLoginBtn;
