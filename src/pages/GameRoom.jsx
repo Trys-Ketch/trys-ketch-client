@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useCookies } from 'react-cookie';
 import MessageList from '../components/chat/MessageList';
 import MessageInput from '../components/chat/MessageForm';
 import AttendeeList from '../components/room/AttendeeList';
@@ -10,6 +12,8 @@ import roomAPI from '../api/room';
 function GameRoom() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
+  const socket = useSelector((state) => state.socket.socket);
 
   const handleOut = () => {
     roomAPI

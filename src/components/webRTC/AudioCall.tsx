@@ -1,19 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 
+import { useDispatch } from 'react-redux';
 import { useCookies } from 'react-cookie';
 import * as SockJS from 'sockjs-client';
 import Audio from './Audio';
-import instance from '../../api/core/axios';
+import { setSocket } from '../../app/slices/socketSlice';
 
 let pcs: any;
 let localStream: MediaStream;
-// let id;
+let token: string;
 
 function AudioCall() {
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
-
+  const dispatch = useDispatch();
   /**
    * socket을 관리하는 ref입니다.
    */
@@ -43,7 +43,6 @@ function AudioCall() {
     socket: any,
     peerConnectionLocalStream: MediaStream,
   ): RTCPeerConnection => {
-    const token = cookies.access_token;
     // create peer
     const pc = new RTCPeerConnection({
       iceServers: [
@@ -128,17 +127,10 @@ function AudioCall() {
     // }
 
     // 시그널링 서버와 소켓 연결
-    socketRef.current = new SockJS(`${process.env.REACT_APP_API_URL}/signal`);
-    // socketRef.current = new SockJS(`http://13.209.6.230:8080/signal`);
-    let token;
+    socketRef.current = new SockJS(`${process.env.REACT_APP_API_URL}signal`);
 
-    if (cookies.access_token) {
-      token = cookies.access_token;
-      console.log('user', token);
-    } else if (cookies.guest) {
-      token = cookies.guest;
-      console.log('guest', token);
-    }
+    if (cookies.access_token) token = cookies.access_token;
+    else if (cookies.guest) token = cookies.guest;
 
     // 소켓이 연결되었을 때 실행
     socketRef.current.onopen = async () => {
@@ -157,6 +149,7 @@ function AudioCall() {
         .catch((error) => {
           console.log(`getUserMedia error: ${error}`);
         });
+      dispatch(setSocket(socketRef.current));
     };
 
     // 서버로부터 메세지가 왔을 때 실행
@@ -166,7 +159,6 @@ function AudioCall() {
         // 1. all_users로 서버에서 같은 방에 존재하는 나를 제외한 모든 user를 받아옵니다.
         case 'all_users': {
           const { allUsers } = data;
-          console.log(allUsers);
           // 나를 제외했으므로 방에 나밖에 없으면 length는 0
           const len = allUsers.length;
           for (let i = 0; i < len; i += 1) {
@@ -189,7 +181,6 @@ function AudioCall() {
                   // signaling server에 i번째 유저에게 offer를 요청합니다.
                   socketRef.current?.send(
                     JSON.stringify({
-                      token,
                       type: 'offer',
                       sdp,
                       receiver: allUsers[i].id,
@@ -280,6 +271,9 @@ function AudioCall() {
     socketRef.current.onerror = (event) => {
       console.log(`Error! : ${event}`);
     };
+    socketRef.current.onclose = () => {
+      console.log('socket is closed');
+    };
     // }
 
     // init();
@@ -296,7 +290,6 @@ function AudioCall() {
       // exit();
       // 컴포넌트가 unmount되면 socket연결을 종료합니다.
       if (socketRef.current) {
-        console.log('close');
         socketRef.current.close();
       }
     };
