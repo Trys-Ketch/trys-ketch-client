@@ -18,9 +18,6 @@ ${reset}
 
 * {
     box-sizing: border-box;
-}
-
-body {
     font-family: 'Pretendard', sans-serif;
 }
 

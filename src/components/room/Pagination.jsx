@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import rightArrow from '../assets/icons/right-arrow.svg';
+import rightArrow from '../../assets/icons/right-arrow.svg';
 
 function Pagination({ lastPage, page, setPage }) {
   return (
