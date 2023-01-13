@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
+import rightArrow from '../assets/icons/right-arrow.svg';
 
 function Pagination({ lastPage, page, setPage }) {
   return (
     <Nav>
       <Button onClick={() => setPage(page - 1)} disabled={page === 0}>
-        &lt;
+        <img src={rightArrow} alt="left-arrow" style={{ transform: 'rotate(180deg)' }} />
       </Button>
       {Array(lastPage)
         .fill()
@@ -19,7 +20,7 @@ function Pagination({ lastPage, page, setPage }) {
           </Button>
         ))}
       <Button onClick={() => setPage(page + 1)} disabled={page + 1 === lastPage}>
-        &gt;
+        <img src={rightArrow} alt="right-arrow" />
       </Button>
     </Nav>
   );
@@ -30,35 +31,40 @@ const Nav = styled.nav`
   justify-content: center;
   align-items: center;
   gap: 4px;
-  margin: 16px;
 `;
 
 const Button = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: none;
-  border-radius: 8px;
-  padding: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
   margin: 0;
-  background: black;
-  color: white;
+  align-items: center;
   font-size: 1rem;
+  color: #746b5f;
 
-  &:hover {
-    background: tomato;
-    cursor: pointer;
-    transform: translateY(-2px);
+  &:hover:not([disabled]):not([aria-current]) {
+    background-color: rgba(116, 107, 95, 0.1);
   }
 
   &[disabled] {
-    background: grey;
+    opacity: 0.5;
     cursor: revert;
     transform: revert;
   }
 
   &[aria-current] {
-    background: deeppink;
-    font-weight: bold;
+    background-color: #746b5f;
+    color: #fff;
     cursor: revert;
     transform: revert;
+  }
+
+  img {
+    width: 8px;
   }
 `;
 
