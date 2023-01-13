@@ -10,7 +10,7 @@ function RoomList({ rooms }) {
           key={room.id}
           id={room.id}
           title={room.title}
-          status={room.status}
+          isPlaying={room.isPlaying}
           cur={room.gameRoomUserCount}
           max={8}
           host={room.hostNick}

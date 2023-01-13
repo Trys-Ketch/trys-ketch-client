@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import roomAPI from '../../api/room';
 import crown from '../../assets/icons/crown.png';
 
-function Room({ id, title, status, cur, max, host }) {
+function Room({ id, title, isPlaying, cur, max, host }) {
   const navigate = useNavigate();
 
   const handleEnter = () => {
@@ -22,11 +22,11 @@ function Room({ id, title, status, cur, max, host }) {
   };
 
   return (
-    <StRoom onClick={handleEnter} disabled={!status || cur === max}>
+    <StRoom onClick={handleEnter} disabled={isPlaying || cur === max}>
       <LeftSide>
         <Title>{title}</Title>
-        <StatusBadge className={status ? 'wait' : 'game'}>
-          {status ? '대기중' : '진행중'}
+        <StatusBadge className={isPlaying ? 'game' : 'wait'}>
+          {isPlaying ? '진행중' : '대기중'}
         </StatusBadge>
         <Quota>{`${cur}/${max}`}</Quota>
       </LeftSide>

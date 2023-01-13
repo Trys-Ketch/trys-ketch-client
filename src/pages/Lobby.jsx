@@ -15,7 +15,6 @@ const userInfo = {
   nickname: '내이름은피카소',
 };
 
-// TODO - pagination 처리 필요
 function Lobby() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
