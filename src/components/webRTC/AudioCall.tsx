@@ -112,21 +112,6 @@ function AudioCall() {
   };
 
   useEffect(() => {
-    // async function init() {
-    //   console.log('init');
-    // try {
-    //   const data = await instance.post('api/room', {
-    //     title:
-    //       '나 아는사람 강다니엘 닮은 이모가 다시보게되는게 다시 그때처럼 안닮게 엄마보면 느껴지는걸수도 있는거임? 엄마도?',
-    //   });
-    //   console.log(data.data.data);
-    //   id = data.data.data.roomId;
-    //   console.log(id);
-    //   await instance.post(`api/room/${id}`);
-    // } catch (e) {
-    //   console.log(e);
-    // }
-
     // 시그널링 서버와 소켓 연결
     socketRef.current = new SockJS(`${process.env.REACT_APP_API_URL}signal`);
 
@@ -156,7 +141,6 @@ function AudioCall() {
     // 서버로부터 메세지가 왔을 때 실행
     socketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      // console.log(data);
       switch (data.type) {
         // 1. all_users로 서버에서 같은 방에 존재하는 나를 제외한 모든 user를 받아옵니다.
         case 'rtc/all_users': {
@@ -278,20 +262,8 @@ function AudioCall() {
       dispatch(closeSocket());
       console.log('socket is closed');
     };
-    // }
-
-    // init();
-
-    // async function exit() {
-    //   try {
-    //     await instance.delete(`api/room/${id}/exit`);
-    //   } catch (e) {
-    //     console.log(e);
-    //   }
-    // }
 
     return () => {
-      // exit();
       // 컴포넌트가 unmount되면 socket연결을 종료합니다.
       if (socketRef.current) {
         socketRef.current.close();

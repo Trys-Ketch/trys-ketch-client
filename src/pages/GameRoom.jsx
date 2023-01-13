@@ -8,10 +8,12 @@ import MessageInput from '../components/chat/MessageForm';
 import AttendeeList from '../components/room/AttendeeList';
 import Button from '../components/common/Button';
 import roomAPI from '../api/room';
-import { RTCOnmessageFunction } from '../components/webRTC/AudioCall.tsx';
 
 function GameRoom() {
   const [isReady, setIsReady] = useState(false);
+  const [isHost, setIsHost] = useState(false);
+  const [hostID, setHostID] = useState('');
+  const [allReady, setAllReady] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
@@ -39,14 +41,19 @@ function GameRoom() {
   useEffect(() => {
     const gameRoomEventHandler = (event) => {
       const data = JSON.parse(event.data);
-      // console.log(data);
+      console.log(data);
       switch (data.type) {
         case 'ingame/ready': {
           if (socketID === data.sender) setIsReady(data.status);
           break;
         }
         case 'ingame/all_ready': {
-          console.log(data);
+          setAllReady(data.status);
+          break;
+        }
+        case 'ingame/is_host': {
+          setIsHost(data.host);
+          setHostID(data.hostId);
           break;
         }
         default: {
@@ -54,7 +61,6 @@ function GameRoom() {
         }
       }
     };
-    console.log(gameRoomEventHandler);
     if (socket) {
       console.log('event listener is added');
       socket.addEventListener('message', gameRoomEventHandler);
@@ -82,7 +88,7 @@ function GameRoom() {
         <Side>
           <Explain>게임설명</Explain>
           <SetTime>시간설정</SetTime>
-          <Button>게임시작</Button>
+          {isHost ? <Button disabled={!allReady}>게임 시작</Button> : null}
           <Button onClick={() => toggleReady()}>{isReady ? '취소' : '준비'}</Button>
         </Side>
       </Layout>
