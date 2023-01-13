@@ -12,7 +12,7 @@ import Panel from '../components/common/Panel';
 import { setLogin } from '../app/slices/loginSlice';
 import { setNickname } from '../app/slices/userSlice';
 import { setCookie } from '../utils/cookie';
-import refreshIcon from '../assets/icons/refresh-icon.png';
+import refreshIcon from '../assets/icons/refresh-icon.svg';
 
 function Guest() {
   const [name, setName] = useState('');

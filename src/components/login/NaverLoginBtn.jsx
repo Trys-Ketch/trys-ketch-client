@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import naver from '../../assets/icons/naver-round-icon.png';
+import naver from '../../assets/icons/naver-icon.svg';
 
 function NaverLoginBtn() {
   return (

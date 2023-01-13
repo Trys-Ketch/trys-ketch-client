@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import google from '../../assets/icons/google-round-icon.png';
+import google from '../../assets/icons/google-icon.svg';
 
 function GoogleLoginBtn() {
   return (

@@ -7,7 +7,7 @@ import NaverLoginBtn from '../components/login/NaverLoginBtn';
 import GoogleLoginBtn from '../components/login/GoogleLoginBtn';
 import Layout from '../components/common/Layout';
 import Panel from '../components/common/Panel';
-import logo from '../assets/images/logo.png';
+import logo from '../assets/images/ribbon-logo.svg';
 
 function Login() {
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ function Login() {
 const Logo = styled.img`
   max-width: 600px;
   min-width: 450px;
-  width: 50%;
+  filter: drop-shadow(0 10px 12px #9f978b);
   margin-bottom: 30px;
 `;
 

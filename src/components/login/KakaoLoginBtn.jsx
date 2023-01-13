@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import kakao from '../../assets/icons/kakao-round-icon.png';
+import kakao from '../../assets/icons/kakao-icon.svg';
 import authAPI from '../../api/auth';
 import { setCookie } from '../../utils/cookie';
 import { setLogin } from '../../app/slices/loginSlice';

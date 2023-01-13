@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import panel from '../../assets/images/panel.png';
+import panel from '../../assets/images/panel.svg';
 
 const Panel = styled.div`
   display: flex;
