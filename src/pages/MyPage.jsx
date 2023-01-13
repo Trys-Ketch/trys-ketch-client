@@ -1,7 +1,8 @@
 import React from 'react';
+import Container from '../components/layout/Container';
 
 function MyPage() {
-  return <div>MyPage</div>;
+  return <Container>Mypage</Container>;
 }
 
 export default MyPage;
