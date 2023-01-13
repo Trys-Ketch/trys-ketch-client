@@ -6,24 +6,19 @@ const ButtonBlock = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: 'TTTogether';
+  font-family: 'Pretendard';
+  font-weight: 700;
   cursor: pointer;
   outline: none;
-  border-bottom: 5px solid #746b5f;
-  background: ${(props) => props.bgcolor || '#FFF8ED'};
-  color: ${(props) => props.color || '#4E473F'};
+  background: ${(props) => props.bgcolor || '#746b5f'};
+  color: ${(props) => props.color || '#ffffff'};
+  transition: 0.2s ease;
+  &:active {
+    /* background: ${(props) => props.bgcolor || '#DFD8CD'}; */
+  }
   border-radius: 10px;
   padding-top: 0;
   padding-bottom: 0;
-  transition: 0.2s ease;
-
-  &:active {
-    background: ${(props) => props.bgcolor || '#DFD8CD'};
-  }
-
-  &:hover {
-    scale: 1.03;
-  }
 
   ${(props) =>
     props.inline &&
@@ -48,7 +43,7 @@ const ButtonBlock = styled.button`
       height: 4rem;
       padding-left: 1.5rem;
       padding-right: 1.5rem;
-      font-size: 1.125rem;
+      font-size: 1rem;
     `}
 
   ${(props) =>
@@ -60,7 +55,7 @@ const ButtonBlock = styled.button`
       & + & {
         margin-left: 0.875rem;
       }
-      font-size: 1.25rem;
+      font-size: 1.125rem;
     `}
 
   &:disabled {
@@ -68,7 +63,7 @@ const ButtonBlock = styled.button`
   }
 `;
 
-function Button({
+function FlatButton({
   children,
   ref,
   bgcolor,
@@ -99,4 +94,4 @@ function Button({
   );
 }
 
-export default Button;
+export default FlatButton;
