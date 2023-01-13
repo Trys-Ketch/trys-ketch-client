@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   socket: null,
+  id: '',
 };
 
 const socketSlice = createSlice({
@@ -15,10 +16,15 @@ const socketSlice = createSlice({
     closeSocket: (state) => ({
       ...state,
       socket: null,
+      id: '',
+    }),
+    setID: (state, action) => ({
+      ...state,
+      id: action.payload,
     }),
   },
   extraReducers: {},
 });
 
-export const { setSocket, closeSocket } = socketSlice.actions;
+export const { setSocket, closeSocket, setID } = socketSlice.actions;
 export default socketSlice.reducer;

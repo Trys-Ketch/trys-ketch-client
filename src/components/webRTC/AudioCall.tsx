@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { useCookies } from 'react-cookie';
 import * as SockJS from 'sockjs-client';
 import Audio from './Audio';
-import { setSocket } from '../../app/slices/socketSlice';
+import { closeSocket, setID, setSocket } from '../../app/slices/socketSlice';
 
 let pcs: any;
 let localStream: MediaStream;
@@ -38,6 +38,7 @@ function AudioCall() {
    * @param {MediaStream} peerConnectionLocalStream local MediaStream 객체입니다.
    * @returns {RTCPeerConnection} 생성된 RTCPeerConnection 객체입니다.
    */
+
   const createPeerConnection = (
     socketID: string,
     socket: any,
@@ -65,7 +66,7 @@ function AudioCall() {
         socket.send(
           JSON.stringify({
             token,
-            type: 'candidate',
+            type: 'rtc/candidate',
             candidate: e.candidate,
             receiver: socketID,
           }),
@@ -144,7 +145,7 @@ function AudioCall() {
 
           localStream = stream;
           console.log('join_room');
-          socketRef.current?.send(JSON.stringify({ type: 'join_room', room: id, token }));
+          socketRef.current?.send(JSON.stringify({ type: 'ingame/join_room', room: id, token }));
         })
         .catch((error) => {
           console.log(`getUserMedia error: ${error}`);
@@ -155,10 +156,12 @@ function AudioCall() {
     // 서버로부터 메세지가 왔을 때 실행
     socketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
+      // console.log(data);
       switch (data.type) {
         // 1. all_users로 서버에서 같은 방에 존재하는 나를 제외한 모든 user를 받아옵니다.
-        case 'all_users': {
-          const { allUsers } = data;
+        case 'rtc/all_users': {
+          const { allUsers, sender } = data;
+          dispatch(setID(sender));
           // 나를 제외했으므로 방에 나밖에 없으면 length는 0
           const len = allUsers.length;
           for (let i = 0; i < len; i += 1) {
@@ -181,7 +184,7 @@ function AudioCall() {
                   // signaling server에 i번째 유저에게 offer를 요청합니다.
                   socketRef.current?.send(
                     JSON.stringify({
-                      type: 'offer',
+                      type: 'rtc/offer',
                       sdp,
                       receiver: allUsers[i].id,
                     }),
@@ -195,7 +198,7 @@ function AudioCall() {
           break;
         }
         // 2. 상대방이 offer를 받으면
-        case 'offer': {
+        case 'rtc/offer': {
           console.log('get offer');
           // offer를 요청한 상대방과의 peer connection을 생성합니다.
           createPeerConnection(data.sender, socketRef.current, localStream);
@@ -216,7 +219,7 @@ function AudioCall() {
                   socketRef.current?.send(
                     JSON.stringify({
                       token,
-                      type: 'answer',
+                      type: 'rtc/answer',
                       sdp,
                       // answerSendID: newSocket.id,
                       receiver: data.sender,
@@ -230,7 +233,7 @@ function AudioCall() {
           }
           break;
         }
-        case 'answer': {
+        case 'rtc/answer': {
           console.log('get answer');
           // answer에서 사용하는 peer connection, answer를 보낸 상대방과의 peer connection 입니다.
           const answerPc: RTCPeerConnection = pcs[data.sender];
@@ -241,7 +244,7 @@ function AudioCall() {
           }
           break;
         }
-        case 'candidate': {
+        case 'rtc/candidate': {
           console.log('get candidate');
           // candidate에서 사용하는 peer connection, candidate 요청을 보낸 상대방과의 peer connection 입니다.
           const candidatePc: RTCPeerConnection = pcs[data.sender];
@@ -255,7 +258,7 @@ function AudioCall() {
           break;
         }
         // 유저가 연결을 종료하면
-        case 'user_exit': {
+        case 'rtc/user_exit': {
           // 해당 유저와의 peer connection을 종료하고
           pcs[data.sender].close();
           // pcs 배열에서 해당 user를 삭제합니다.
@@ -272,6 +275,7 @@ function AudioCall() {
       console.log(`Error! : ${event}`);
     };
     socketRef.current.onclose = () => {
+      dispatch(closeSocket());
       console.log('socket is closed');
     };
     // }
