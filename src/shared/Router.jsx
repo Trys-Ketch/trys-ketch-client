@@ -13,30 +13,32 @@ function Router() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Lobby />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/guest" element={<Guest />} />
-        <Route path="room" element={<Navigate to="/" replace />} />
-        <Route path="/myPage" element={<MyPage />} />
-        <Route path="/video/:id" element={<AudioCall />} />
-        <Route
-          path="/room/:id"
-          element={
-            <>
-              <GameRoom />
-              <AudioCall />
-            </>
-          }
-        />
-        <Route
-          path="/ingame/:id"
-          element={
-            <>
-              <InGame />
-              <AudioCall />
-            </>
-          }
-        />
+        <Route element={<Layout />}>
+          <Route path="/" element={<Lobby />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/guest" element={<Guest />} />
+          <Route path="room" element={<Navigate to="/" replace />} />
+          <Route path="/myPage" element={<MyPage />} />
+          <Route path="/video/:id" element={<AudioCall />} />
+          <Route
+            path="/room/:id"
+            element={
+              <>
+                <GameRoom />
+                <AudioCall />
+              </>
+            }
+          />
+          <Route
+            path="/ingame/:id"
+            element={
+              <>
+                <InGame />
+                <AudioCall />
+              </>
+            }
+          />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

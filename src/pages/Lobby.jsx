@@ -36,6 +36,8 @@ function Lobby() {
       });
   };
 
+  console.log(rooms);
+
   const handleRefresh = () => {
     getRooms(page);
   };
