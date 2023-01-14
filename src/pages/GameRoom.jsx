@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useCookies } from 'react-cookie';
 import MessageList from '../components/chat/MessageList';
 import MessageInput from '../components/chat/MessageForm';
 import AttendeeList from '../components/room/AttendeeList';
@@ -8,8 +10,15 @@ import Button from '../components/common/Button';
 import roomAPI from '../api/room';
 
 function GameRoom() {
+  const [isReady, setIsReady] = useState(false);
+  const [isHost, setIsHost] = useState(false);
+  const [hostID, setHostID] = useState('');
+  const [allReady, setAllReady] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
+  const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
+  const socket = useSelector((state) => state.socket.socket);
+  const socketID = useSelector((state) => state.socket.id);
 
   const handleOut = () => {
     roomAPI
@@ -24,6 +33,45 @@ function GameRoom() {
         console.log(err);
       });
   };
+
+  function toggleReady() {
+    socket.send(JSON.stringify({ type: 'ingame/toggle_ready', room: id }));
+  }
+
+  useEffect(() => {
+    const gameRoomEventHandler = (event) => {
+      const data = JSON.parse(event.data);
+      console.log(data);
+      switch (data.type) {
+        case 'ingame/ready': {
+          if (socketID === data.sender) setIsReady(data.status);
+          break;
+        }
+        case 'ingame/all_ready': {
+          setAllReady(data.status);
+          break;
+        }
+        case 'ingame/is_host': {
+          setIsHost(data.host);
+          setHostID(data.hostId);
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+    };
+    if (socket) {
+      console.log('event listener is added');
+      socket.addEventListener('message', gameRoomEventHandler);
+    }
+    return () => {
+      if (socket) {
+        console.log('event listener is removed');
+        socket.removeEventListener('message', gameRoomEventHandler);
+      }
+    };
+  }, [socket, socketID]);
 
   return (
     <StRoom>
@@ -40,7 +88,8 @@ function GameRoom() {
         <Side>
           <Explain>게임설명</Explain>
           <SetTime>시간설정</SetTime>
-          <Button>게임시작</Button>
+          {isHost ? <Button disabled={!allReady}>게임 시작</Button> : null}
+          <Button onClick={() => toggleReady()}>{isReady ? '취소' : '준비'}</Button>
         </Side>
       </Layout>
     </StRoom>

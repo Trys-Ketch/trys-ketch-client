@@ -12,7 +12,6 @@ import Layout from '../components/layout/Layout';
 function Router() {
   return (
     <BrowserRouter>
-      {/* <AudioCall /> */}
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Lobby />} />
@@ -21,8 +20,24 @@ function Router() {
           <Route path="room" element={<Navigate to="/" replace />} />
           <Route path="/myPage" element={<MyPage />} />
           <Route path="/video/:id" element={<AudioCall />} />
-          <Route path="room/:id" element={<AudioCall />} />
-          <Route path="/ingame/:id" element={<InGame />} />
+          <Route
+            path="/room/:id"
+            element={
+              <>
+                <GameRoom />
+                <AudioCall />
+              </>
+            }
+          />
+          <Route
+            path="/ingame/:id"
+            element={
+              <>
+                <InGame />
+                <AudioCall />
+              </>
+            }
+          />
         </Route>
       </Routes>
     </BrowserRouter>
