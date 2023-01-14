@@ -7,11 +7,11 @@ const ButtonBlock = styled.button`
   align-items: center;
   justify-content: center;
   font-family: 'Pretendard';
-  font-weight: 700;
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
   cursor: pointer;
   outline: none;
-  background: ${(props) => props.bgcolor || '#746b5f'};
-  color: ${(props) => props.color || '#ffffff'};
+  background: ${(props) => props.bgcolor || props.theme.colors.DIM_GRAY};
+  color: ${(props) => props.color || props.theme.colors.WHITE};
   transition: 0.2s ease;
   &:active {
     /* background: ${(props) => props.bgcolor || '#DFD8CD'}; */
@@ -34,7 +34,7 @@ const ButtonBlock = styled.button`
       height: 3rem;
       padding-left: 2rem;
       padding-right: 2rem;
-      font-size: 1rem;
+      font-size: ${({ theme }) => theme.fontSizes.md};
     `}
 
   ${(props) =>
@@ -43,7 +43,7 @@ const ButtonBlock = styled.button`
       height: 4rem;
       padding-left: 1.5rem;
       padding-right: 1.5rem;
-      font-size: 1rem;
+      font-size: ${({ theme }) => theme.fontSizes.lg};
     `}
 
   ${(props) =>
@@ -55,7 +55,7 @@ const ButtonBlock = styled.button`
       & + & {
         margin-left: 0.875rem;
       }
-      font-size: 1.125rem;
+      font-size: ${({ theme }) => theme.fontSizes.xl};
     `}
 
   &:disabled {

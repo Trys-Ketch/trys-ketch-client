@@ -39,16 +39,13 @@ const Logo = styled.img`
 `;
 
 const Typography = styled.span`
-  color: '#4e473f';
-  font-weight: 600;
+  color: ${({ theme }) => theme.colors.DARK_LAVA};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
 `;
 
 const ButtonBox = styled.div`
   width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  ${({ theme }) => theme.common.flexCenter};
   margin-top: 20px;
   margin-bottom: 30px;
 

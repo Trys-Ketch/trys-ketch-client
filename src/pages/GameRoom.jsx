@@ -107,9 +107,7 @@ const Layout = styled.div`
 `;
 
 const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  ${({ theme }) => theme.common.flexBetween};
 `;
 
 const Main = styled.main`

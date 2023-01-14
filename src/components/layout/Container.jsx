@@ -11,7 +11,7 @@ const Container = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #d1e5af;
+  background-color: ${({ theme }) => theme.colors.TEA_GREEN};
   padding: 10px;
   border-radius: 10px 10px 0 0;
   border-bottom: 15px solid #6fab81;

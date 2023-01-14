@@ -46,6 +46,7 @@ function CreateRoomModal({ setIsOpen }) {
 }
 
 const ModalOverlay = styled.div`
+  ${({ theme }) => theme.common.flexCenter};
   position: absolute;
   top: 0%;
   left: 0%;
@@ -53,9 +54,6 @@ const ModalOverlay = styled.div`
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   transition: opacity 0.2s ease;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 const Modal = styled.div`
@@ -67,12 +65,12 @@ const Modal = styled.div`
   width: 500px;
   height: 500px;
   border-radius: 3px;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colors.WHITE};
 `;
 
 const Title = styled.h3`
-  font-size: 18px;
-  font-weight: 500;
+  font-size: ${({ theme }) => theme.fontSizes.lg};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
 `;
 
 const CloseBtn = styled.button`

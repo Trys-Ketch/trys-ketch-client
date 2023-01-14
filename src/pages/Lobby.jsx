@@ -9,7 +9,7 @@ import FlatButton from '../components/common/FlatButton';
 import RoomList from '../components/room/RoomList';
 import Pagination from '../components/room/Pagination';
 import EmptyRoomList from '../components/room/EmptyRoomList';
-import CreateRoomModal from '../components/modal/CreateRoomModal';
+import Modal from '../components/common/Modal';
 
 const userInfo = {
   nickname: '내이름은피카소',
@@ -82,7 +82,7 @@ function Lobby() {
           )}
         </RoomContainer>
       </Main>
-      {isOpen && <CreateRoomModal setIsOpen={setIsOpen} />}
+      {isOpen && <Modal title="설정" onClose={setIsOpen} />}
     </Container>
   );
 }
@@ -98,17 +98,14 @@ const Side = styled.div`
 `;
 
 const Profile = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  ${({ theme }) => theme.common.flexCenterColumn};
 `;
 
 const Nickname = styled.h3`
   font-family: 'Pretendard';
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #4e473f;
+  font-size: ${({ theme }) => theme.fontSizes.xxl};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  color: ${({ theme }) => theme.colors.DARK_LAVA};
   margin: 10px 0 20px 0;
 `;
 

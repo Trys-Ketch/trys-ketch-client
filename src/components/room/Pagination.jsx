@@ -34,17 +34,15 @@ const Nav = styled.nav`
 `;
 
 const Button = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  ${({ theme }) => theme.common.flexCenter};
   border: none;
   width: 28px;
   height: 28px;
   border-radius: 50%;
   margin: 0;
   align-items: center;
-  font-size: 1rem;
-  color: #746b5f;
+  font-size: ${({ theme }) => theme.fontSizes.md};
+  color: ${({ theme }) => theme.colors.DIM_GRAY};
 
   &:hover:not([disabled]):not([aria-current]) {
     background-color: rgba(116, 107, 95, 0.1);
@@ -57,8 +55,8 @@ const Button = styled.button`
   }
 
   &[aria-current] {
-    background-color: #746b5f;
-    color: #fff;
+    background-color: ${({ theme }) => theme.colors.DIM_GRAY};
+    color: ${({ theme }) => theme.colors.WHITE};
     cursor: revert;
     transform: revert;
   }

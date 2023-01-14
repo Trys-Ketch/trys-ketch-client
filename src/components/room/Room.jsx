@@ -39,13 +39,11 @@ function Room({ id, title, isPlaying, cur, max, host }) {
 }
 
 const StRoom = styled.button`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #fff8ed;
+  ${({ theme }) => theme.common.flexBetween};
+  background-color: ${({ theme }) => theme.colors.FLORAL_WHITE};
   padding: 10px 10px 10px 15px;
   margin-bottom: 10px;
-  font-weight: 700;
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
   // color: #746B5F, opacity : 0.5
   border-radius: 10px;
   border-bottom: 5px solid rgba(116, 107, 95, 0.5);
@@ -53,7 +51,7 @@ const StRoom = styled.button`
   transition: 0.3s ease;
 
   &:disabled {
-    background-color: #d6c6b2;
+    background-color: ${({ theme }) => theme.colors.BONE};
   }
 
   &:hover:not([disabled]) {
@@ -81,8 +79,8 @@ const RightSide = styled.div`
 `;
 
 const Title = styled.h3`
-  font-size: 1.2rem;
-  color: #4e473f;
+  font-size: ${({ theme }) => theme.fontSizes.lg};
+  color: ${({ theme }) => theme.colors.DARK_LAVA};
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -98,18 +96,18 @@ const StatusBadge = styled.div`
   border-radius: 13px;
 
   &.game {
-    background-color: #96d01c;
-    color: #ffffff;
+    background-color: ${({ theme }) => theme.colors.SHEEN_GREEN};
+    color: ${({ theme }) => theme.colors.WHITE};
   }
 
   &.wait {
-    background-color: #e9e9e9;
-    color: #6a6a6a;
+    background-color: ${({ theme }) => theme.colors.PLATINUM};
+    color: ${({ theme }) => theme.colors.DIM_GRAY2};
   }
 `;
 
 const Quota = styled.span`
-  color: #4e473f;
+  color: ${({ theme }) => theme.colors.DARK_LAVA};
 `;
 
 const Host = styled.span`
