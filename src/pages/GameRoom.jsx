@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCookies } from 'react-cookie';
+import Stomp from '@stomp/stompjs';
 import MessageList from '../components/chat/MessageList';
 import MessageInput from '../components/chat/MessageForm';
 import AttendeeList from '../components/room/AttendeeList';
@@ -17,8 +18,6 @@ function GameRoom() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
-  const socket = useSelector((state) => state.socket.socket);
-  const socketID = useSelector((state) => state.socket.id);
 
   const handleOut = () => {
     roomAPI
@@ -34,44 +33,64 @@ function GameRoom() {
       });
   };
 
-  function toggleReady() {
-    socket.send(JSON.stringify({ type: 'ingame/toggle_ready', room: id }));
-  }
+  // function toggleReady() {
+  //   socket.send(JSON.stringify({ type: 'ingame/toggle_ready', room: id }));
+  // }
+
+  // useEffect(() => {
+  //   const gameRoomEventHandler = (event) => {
+  //     const data = JSON.parse(event.data);
+  //     console.log(data);
+  //     switch (data.type) {
+  //       case 'ingame/ready': {
+  //         if (socketID === data.sender) setIsReady(data.status);
+  //         break;
+  //       }
+  //       case 'ingame/all_ready': {
+  //         setAllReady(data.status);
+  //         break;
+  //       }
+  //       case 'ingame/is_host': {
+  //         setIsHost(data.host);
+  //         setHostID(data.hostId);
+  //         break;
+  //       }
+  //       default: {
+  //         break;
+  //       }
+  //     }
+  //   };
+  //   if (socket) {
+  //     console.log('event listener is added');
+  //     socket.addEventListener('message', gameRoomEventHandler);
+  //   }
+  //   return () => {
+  //     if (socket) {
+  //       console.log('event listener is removed');
+  //       socket.removeEventListener('message', gameRoomEventHandler);
+  //     }
+  //   };
+  // }, [socket, socketID]);
 
   useEffect(() => {
-    const gameRoomEventHandler = (event) => {
-      const data = JSON.parse(event.data);
-      console.log(data);
-      switch (data.type) {
-        case 'ingame/ready': {
-          if (socketID === data.sender) setIsReady(data.status);
-          break;
-        }
-        case 'ingame/all_ready': {
-          setAllReady(data.status);
-          break;
-        }
-        case 'ingame/is_host': {
-          setIsHost(data.host);
-          setHostID(data.hostId);
-          break;
-        }
-        default: {
-          break;
-        }
-      }
+    const client = new Stomp.Client({
+      brokerURL: process.env.REACT_APP_API_URL,
+      debug: (str) => {
+        console.log(str);
+      },
+    });
+    client.onConnect = (frame) => {
+      console.log(frame);
     };
-    if (socket) {
-      console.log('event listener is added');
-      socket.addEventListener('message', gameRoomEventHandler);
-    }
-    return () => {
-      if (socket) {
-        console.log('event listener is removed');
-        socket.removeEventListener('message', gameRoomEventHandler);
-      }
+    client.onStompError = (frame) => {
+      console.err('Stomp Error!: ', frame.headers.message);
+      console.err('Additional details: ', frame.body);
     };
-  }, [socket, socketID]);
+    client.onDisconnect = (frame) => {
+      console.log('Stomp Disconnected');
+    };
+    client.activate();
+  }, []);
 
   return (
     <StRoom>
@@ -89,7 +108,7 @@ function GameRoom() {
           <Explain>게임설명</Explain>
           <SetTime>시간설정</SetTime>
           {isHost ? <Button disabled={!allReady}>게임 시작</Button> : null}
-          <Button onClick={() => toggleReady()}>{isReady ? '취소' : '준비'}</Button>
+          {/* <Button onClick={() => toggleReady()}>{isReady ? '취소' : '준비'}</Button> */}
         </Side>
       </Layout>
     </StRoom>

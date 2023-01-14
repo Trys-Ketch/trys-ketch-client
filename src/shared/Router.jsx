@@ -20,24 +20,10 @@ function Router() {
           <Route path="room" element={<Navigate to="/" replace />} />
           <Route path="/myPage" element={<MyPage />} />
           <Route path="/video/:id" element={<AudioCall />} />
-          <Route
-            path="/room/:id"
-            element={
-              <>
-                <GameRoom />
-                <AudioCall />
-              </>
-            }
-          />
-          <Route
-            path="/ingame/:id"
-            element={
-              <>
-                <InGame />
-                <AudioCall />
-              </>
-            }
-          />
+          <Route element={<AudioCall />}>
+            <Route path="/room/:id" element={<GameRoom />} />
+            <Route path="/ingame/:id" element={<InGame />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

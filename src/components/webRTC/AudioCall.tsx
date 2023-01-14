@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { Outlet, useParams } from 'react-router-dom';
 
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 import { useCookies } from 'react-cookie';
 import * as SockJS from 'sockjs-client';
 import Audio from './Audio';
-import { closeSocket, setID, setSocket } from '../../app/slices/socketSlice';
 
 let pcs: any;
 let localStream: MediaStream;
@@ -13,7 +12,7 @@ let token: string;
 
 function AudioCall() {
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   /**
    * socket을 관리하는 ref입니다.
    */
@@ -135,7 +134,7 @@ function AudioCall() {
         .catch((error) => {
           console.log(`getUserMedia error: ${error}`);
         });
-      dispatch(setSocket(socketRef.current));
+      // dispatch(setSocket(socketRef.current));
     };
 
     // 서버로부터 메세지가 왔을 때 실행
@@ -145,7 +144,7 @@ function AudioCall() {
         // 1. all_users로 서버에서 같은 방에 존재하는 나를 제외한 모든 user를 받아옵니다.
         case 'rtc/all_users': {
           const { allUsers, sender } = data;
-          dispatch(setID(sender));
+          // dispatch(setID(sender));
           // 나를 제외했으므로 방에 나밖에 없으면 length는 0
           const len = allUsers.length;
           for (let i = 0; i < len; i += 1) {
@@ -259,7 +258,7 @@ function AudioCall() {
       console.log(`Error! : ${event}`);
     };
     socketRef.current.onclose = () => {
-      dispatch(closeSocket());
+      // dispatch(closeSocket());
       console.log('socket is closed');
     };
 
@@ -273,6 +272,7 @@ function AudioCall() {
 
   return (
     <div>
+      <Outlet />
       <audio ref={audioRef} muted>
         <track kind="captions" />
       </audio>
