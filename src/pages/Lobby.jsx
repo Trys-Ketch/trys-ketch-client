@@ -29,14 +29,11 @@ function Lobby() {
       .then((res) => {
         setLastPage(res.data.LastPage);
         setRooms(res.data.Rooms);
-        console.log(res.data);
       })
       .catch((err) => {
         console.log(err);
       });
   };
-
-  console.log(rooms);
 
   const handleRefresh = () => {
     getRooms(page);

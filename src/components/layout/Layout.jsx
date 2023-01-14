@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import background from '../../assets/images/background.svg';
 
 function Layout() {
-  console.log(background);
   return (
     <StLayout>
       <Outlet />

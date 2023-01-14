@@ -3,7 +3,6 @@ function getPixel(imageData, x, y) {
     return [-1, -1, -1, -1]; // impossible color
   }
   const offset = (y * imageData.width + x) * 4;
-  // console.log(x, y, offset, imageData.width, imageData.data);
   return imageData.data.slice(offset, offset + 4);
 }
 
