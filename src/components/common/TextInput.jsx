@@ -22,7 +22,7 @@ const InputBlock = styled.input`
   }
 `;
 
-function Input({ placeholder, onChange, value, width, ...rest }) {
+function TextInput({ placeholder, onChange, value, width, ...rest }) {
   const htmlProps = rest;
   return (
     <InputBlock
@@ -36,4 +36,4 @@ function Input({ placeholder, onChange, value, width, ...rest }) {
   );
 }
 
-export default Input;
+export default TextInput;
