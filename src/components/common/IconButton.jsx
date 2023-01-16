@@ -113,7 +113,7 @@ function IconButton({ icon, text, size = 'medium', selected, ...rest }) {
       >
         <img src={icon} alt="setting" />
       </ButtonBlock>
-      <Typography size={size}>{text}</Typography>
+      {text && <Typography size={size}>{text}</Typography>}
     </ButtonWrapper>
   );
 }
