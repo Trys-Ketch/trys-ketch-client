@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Input from '../common/Input';
+import TextInput from '../common/TextInput';
 import Button from '../common/Button';
 
 function MessageForm() {
@@ -18,7 +18,7 @@ function MessageForm() {
 
   return (
     <StMessageForm>
-      <Input value={message} onChange={handleInput} />
+      <TextInput value={message} onChange={handleInput} />
       <Button onClick={handleSubmit}>보내기</Button>
     </StMessageForm>
   );

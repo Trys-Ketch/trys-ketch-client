@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Input from '../common/Input';
+import TextInput from '../common/TextInput';
 import Button from '../common/Button';
 
 function Guessing() {
@@ -17,7 +17,7 @@ function Guessing() {
           width: '70%',
         }}
       >
-        <Input type="text" width="80%" value="싸닉" />
+        <TextInput type="text" width="80%" value="싸닉" />
         <Button style={{ marginLeft: '15px' }}>완료</Button>
       </div>
     </>

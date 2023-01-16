@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Input from '../common/Input';
+import TextInput from '../common/TextInput';
 import Button from '../common/Button';
 
 function MakeSentence() {
@@ -43,7 +43,7 @@ function MakeSentence() {
           width: '70%',
         }}
       >
-        <Input type="text" width="80%" />
+        <TextInput type="text" width="80%" />
         <Button style={{ marginLeft: '15px' }}>완료</Button>
       </div>
     </div>
@@ -51,10 +51,7 @@ function MakeSentence() {
 }
 
 const Text = styled.p`
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  ${({ theme }) => theme.common.absoluteCenter};
 `;
 
 const Image = styled.div`

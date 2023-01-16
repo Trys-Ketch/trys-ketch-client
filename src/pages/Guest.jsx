@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import authAPI from '../api/auth';
 import userAPI from '../api/user';
 import Avatar from '../components/common/Avatar';
-import Input from '../components/common/Input';
+import TextInput from '../components/common/TextInput';
 import Button from '../components/common/Button';
 import Panel from '../components/layout/Panel';
 import { setLogin } from '../app/slices/loginSlice';
@@ -59,8 +59,8 @@ function Guest() {
         </ProfileRefreshBtn>
       </ProfileBox>
       <InputBox>
-        <Input
-          maxLength="25"
+        <TextInput
+          maxLength="12"
           width="500px"
           value={name}
           onChange={handleInput}

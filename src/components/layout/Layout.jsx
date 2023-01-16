@@ -2,10 +2,12 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import background from '../../assets/images/background.svg';
+import ModalContainer from '../modal/ModalContainer';
 
 function Layout() {
   return (
     <StLayout>
+      <ModalContainer />
       <Outlet />
     </StLayout>
   );

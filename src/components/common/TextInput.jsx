@@ -4,11 +4,11 @@ import styled from 'styled-components';
 const InputBlock = styled.input`
   width: ${(props) => props.width || '100%'};
   height: 3.5rem;
-  font-size: 1rem;
+  font-size: ${({ theme }) => theme.fontSizes.md};
   text-indent: 12px;
   border: none;
   border-radius: 10px;
-  background-color: '#FFFAF0';
+  background-color: ${({ theme }) => theme.colors.FLORAL_WHITE2};
 
   &:focus {
     outline: none;
@@ -16,13 +16,13 @@ const InputBlock = styled.input`
   }
 
   &::placeholder {
-    color: '#746B5F';
+    color: ${({ theme }) => theme.colors.DIM_GRAY};
     opacity: 50%;
-    font-size: 0.9rem;
+    font-size: ${({ theme }) => theme.fontSizes.sm};
   }
 `;
 
-function Input({ placeholder, onChange, value, width, ...rest }) {
+function TextInput({ placeholder, onChange, value, width, ...rest }) {
   const htmlProps = rest;
   return (
     <InputBlock
@@ -36,4 +36,4 @@ function Input({ placeholder, onChange, value, width, ...rest }) {
   );
 }
 
-export default Input;
+export default TextInput;

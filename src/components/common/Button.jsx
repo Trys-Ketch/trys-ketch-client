@@ -10,15 +10,15 @@ const ButtonBlock = styled.button`
   cursor: pointer;
   outline: none;
   border-bottom: 5px solid #746b5f;
-  background: ${(props) => props.bgcolor || '#FFF8ED'};
-  color: ${(props) => props.color || '#4E473F'};
+  background: ${(props) => props.bgcolor || props.theme.colors.FLORAL_WHITE};
+  color: ${(props) => props.color || props.theme.colors.DARK_LAVA};
   border-radius: 10px;
   padding-top: 0;
   padding-bottom: 0;
   transition: 0.2s ease;
 
   &:active {
-    background: ${(props) => props.bgcolor || '#DFD8CD'};
+    background: ${(props) => props.bgcolor || props.theme.colors.BONE2};
   }
 
   &:hover {
@@ -39,7 +39,7 @@ const ButtonBlock = styled.button`
       height: 3rem;
       padding-left: 2rem;
       padding-right: 2rem;
-      font-size: 1rem;
+      font-size: ${({ theme }) => theme.fontSizes.md};
     `}
 
   ${(props) =>
@@ -48,7 +48,7 @@ const ButtonBlock = styled.button`
       height: 4rem;
       padding-left: 1.5rem;
       padding-right: 1.5rem;
-      font-size: 1.125rem;
+      font-size: ${({ theme }) => theme.fontSizes.lg};
     `}
 
   ${(props) =>
@@ -60,7 +60,7 @@ const ButtonBlock = styled.button`
       & + & {
         margin-left: 0.875rem;
       }
-      font-size: 1.25rem;
+      font-size: ${({ theme }) => theme.fontSizes.xl};
     `}
 
   &:disabled {

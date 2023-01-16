@@ -40,7 +40,7 @@ const Body = styled.div`
 `;
 
 const Nickname = styled.span`
-  font-weight: 700;
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
 `;
 
 const Content = styled.span``;

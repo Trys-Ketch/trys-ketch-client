@@ -11,18 +11,15 @@ function EmptyRoomList() {
 }
 
 const Empty = styled.div`
+  ${({ theme }) => theme.common.flexCenterColumn};
   width: 100%;
   height: 520px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 `;
 
 const Typography = styled.h3`
   font-family: 'TTTogether';
-  font-weight: 400;
-  font-size: 1.5rem;
+  font-weight: ${({ theme }) => theme.fontWeight.regular};
+  font-size: ${({ theme }) => theme.fontSizes.xxl};
   color: rgba(78, 71, 63, 0.2);
 `;
 

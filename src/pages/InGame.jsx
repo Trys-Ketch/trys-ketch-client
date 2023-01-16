@@ -18,13 +18,10 @@ function InGame() {
 }
 
 const Wrapper = styled.div`
+  ${({ theme }) => theme.common.absoluteCenter};
   width: 65%;
   height: 80%;
   padding: 20px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
   border: 2px solid black;
   border-radius: 16px;
 `;

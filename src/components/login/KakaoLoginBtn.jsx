@@ -48,10 +48,7 @@ function KakaoLoginBtn() {
 }
 
 const IconBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  ${({ theme }) => theme.common.flexCenterColumn};
   width: fit-content;
   block-size: fit-content;
 

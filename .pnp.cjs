@@ -28,6 +28,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         [null, {\
           "packageLocation": "./",\
           "packageDependencies": [\
+            ["@loadable/babel-plugin", "virtual:45855c1d5bd4ae8cc201c13451c5159b361646346a2de2576e1aa312a6221de703da82eb7576720ff730f005683d77af14a8d8288abc3f09c7a8043957e00efb#npm:5.13.2"],\
+            ["@loadable/component", "virtual:45855c1d5bd4ae8cc201c13451c5159b361646346a2de2576e1aa312a6221de703da82eb7576720ff730f005683d77af14a8d8288abc3f09c7a8043957e00efb#npm:5.15.2"],\
             ["@reduxjs/toolkit", "virtual:45855c1d5bd4ae8cc201c13451c5159b361646346a2de2576e1aa312a6221de703da82eb7576720ff730f005683d77af14a8d8288abc3f09c7a8043957e00efb#npm:1.9.1"],\
             ["@stomp/stompjs", "npm:6.1.2"],\
             ["@testing-library/jest-dom", "npm:5.16.5"],\
@@ -1185,6 +1187,20 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@babel/plugin-syntax-dynamic-import", "npm:7.8.3"]\
           ],\
           "linkType": "SOFT"\
+        }],\
+        ["virtual:46bd834cc8b5b3f2bce32bd04b48c8f25431a3900872b1dd29b2a73096206a3181b4b9df399052c729a2ecd2748d0b1c026d0618bb151a2c120ba64d099d69e6#npm:7.8.3", {\
+          "packageLocation": "./.yarn/__virtual__/@babel-plugin-syntax-dynamic-import-virtual-c279c65b6f/0/cache/@babel-plugin-syntax-dynamic-import-npm-7.8.3-fb9ff5634a-ce307af83c.zip/node_modules/@babel/plugin-syntax-dynamic-import/",\
+          "packageDependencies": [\
+            ["@babel/plugin-syntax-dynamic-import", "virtual:46bd834cc8b5b3f2bce32bd04b48c8f25431a3900872b1dd29b2a73096206a3181b4b9df399052c729a2ecd2748d0b1c026d0618bb151a2c120ba64d099d69e6#npm:7.8.3"],\
+            ["@babel/core", null],\
+            ["@babel/helper-plugin-utils", "npm:7.20.2"],\
+            ["@types/babel__core", null]\
+          ],\
+          "packagePeers": [\
+            "@babel/core",\
+            "@types/babel__core"\
+          ],\
+          "linkType": "HARD"\
         }],\
         ["virtual:935ae223ffeed58721a901e8e59590507f0f15ed4e8252a5458358f65a0d119cf0e237d318ec693111bece8a54146247f30c8056a1897786d05563bc8bbc8e73#npm:7.8.3", {\
           "packageLocation": "./.yarn/__virtual__/@babel-plugin-syntax-dynamic-import-virtual-a475acb0d3/0/cache/@babel-plugin-syntax-dynamic-import-npm-7.8.3-fb9ff5634a-ce307af83c.zip/node_modules/@babel/plugin-syntax-dynamic-import/",\
@@ -3730,6 +3746,54 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@leichtgewicht-ip-codec-npm-2.0.4-dd4d657af8-468de1f04d.zip/node_modules/@leichtgewicht/ip-codec/",\
           "packageDependencies": [\
             ["@leichtgewicht/ip-codec", "npm:2.0.4"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@loadable/babel-plugin", [\
+        ["npm:5.13.2", {\
+          "packageLocation": "./.yarn/cache/@loadable-babel-plugin-npm-5.13.2-b7650ded1a-c7e8376d97.zip/node_modules/@loadable/babel-plugin/",\
+          "packageDependencies": [\
+            ["@loadable/babel-plugin", "npm:5.13.2"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:45855c1d5bd4ae8cc201c13451c5159b361646346a2de2576e1aa312a6221de703da82eb7576720ff730f005683d77af14a8d8288abc3f09c7a8043957e00efb#npm:5.13.2", {\
+          "packageLocation": "./.yarn/__virtual__/@loadable-babel-plugin-virtual-46bd834cc8/0/cache/@loadable-babel-plugin-npm-5.13.2-b7650ded1a-c7e8376d97.zip/node_modules/@loadable/babel-plugin/",\
+          "packageDependencies": [\
+            ["@loadable/babel-plugin", "virtual:45855c1d5bd4ae8cc201c13451c5159b361646346a2de2576e1aa312a6221de703da82eb7576720ff730f005683d77af14a8d8288abc3f09c7a8043957e00efb#npm:5.13.2"],\
+            ["@babel/core", null],\
+            ["@babel/plugin-syntax-dynamic-import", "virtual:46bd834cc8b5b3f2bce32bd04b48c8f25431a3900872b1dd29b2a73096206a3181b4b9df399052c729a2ecd2748d0b1c026d0618bb151a2c120ba64d099d69e6#npm:7.8.3"],\
+            ["@types/babel__core", null]\
+          ],\
+          "packagePeers": [\
+            "@babel/core",\
+            "@types/babel__core"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@loadable/component", [\
+        ["npm:5.15.2", {\
+          "packageLocation": "./.yarn/cache/@loadable-component-npm-5.15.2-9e852903c2-dd027f3f9f.zip/node_modules/@loadable/component/",\
+          "packageDependencies": [\
+            ["@loadable/component", "npm:5.15.2"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:45855c1d5bd4ae8cc201c13451c5159b361646346a2de2576e1aa312a6221de703da82eb7576720ff730f005683d77af14a8d8288abc3f09c7a8043957e00efb#npm:5.15.2", {\
+          "packageLocation": "./.yarn/__virtual__/@loadable-component-virtual-cfa822993c/0/cache/@loadable-component-npm-5.15.2-9e852903c2-dd027f3f9f.zip/node_modules/@loadable/component/",\
+          "packageDependencies": [\
+            ["@loadable/component", "virtual:45855c1d5bd4ae8cc201c13451c5159b361646346a2de2576e1aa312a6221de703da82eb7576720ff730f005683d77af14a8d8288abc3f09c7a8043957e00efb#npm:5.15.2"],\
+            ["@babel/runtime", "npm:7.20.7"],\
+            ["@types/react", null],\
+            ["hoist-non-react-statics", "npm:3.3.2"],\
+            ["react", "npm:18.2.0"],\
+            ["react-is", "npm:16.13.1"]\
+          ],\
+          "packagePeers": [\
+            "@types/react",\
+            "react"\
           ],\
           "linkType": "HARD"\
         }]\
@@ -17545,6 +17609,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",\
           "packageDependencies": [\
             ["trys-ketch", "workspace:."],\
+            ["@loadable/babel-plugin", "virtual:45855c1d5bd4ae8cc201c13451c5159b361646346a2de2576e1aa312a6221de703da82eb7576720ff730f005683d77af14a8d8288abc3f09c7a8043957e00efb#npm:5.13.2"],\
+            ["@loadable/component", "virtual:45855c1d5bd4ae8cc201c13451c5159b361646346a2de2576e1aa312a6221de703da82eb7576720ff730f005683d77af14a8d8288abc3f09c7a8043957e00efb#npm:5.15.2"],\
             ["@reduxjs/toolkit", "virtual:45855c1d5bd4ae8cc201c13451c5159b361646346a2de2576e1aa312a6221de703da82eb7576720ff730f005683d77af14a8d8288abc3f09c7a8043957e00efb#npm:1.9.1"],\
             ["@stomp/stompjs", "npm:6.1.2"],\
             ["@testing-library/jest-dom", "npm:5.16.5"],\

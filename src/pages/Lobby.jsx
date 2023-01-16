@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import roomAPI from '../api/room';
@@ -9,7 +9,10 @@ import FlatButton from '../components/common/FlatButton';
 import RoomList from '../components/room/RoomList';
 import Pagination from '../components/room/Pagination';
 import EmptyRoomList from '../components/room/EmptyRoomList';
-import CreateRoomModal from '../components/modal/CreateRoomModal';
+import SettingButton from '../components/button/SettingButton';
+import FloatBox from '../components/layout/FloatBox';
+import MikeButton from '../components/button/MikeButton';
+import useModal from '../hooks/useModal';
 
 const userInfo = {
   nickname: '내이름은피카소',
@@ -17,7 +20,7 @@ const userInfo = {
 
 function Lobby() {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
+  const { openModal } = useModal();
   const [rooms, setRooms] = useState([]);
   // lastPage는 1부터 page는 0부터
   const [page, setPage] = useState(0);
@@ -39,12 +42,16 @@ function Lobby() {
     getRooms(page);
   };
 
-  const LinkToMyPage = () => {
-    navigate('/myPage');
+  const handleOpenCreateRoom = () => {
+    openModal('createRoom');
   };
 
-  const handleModal = () => {
-    setIsOpen(!isOpen);
+  const handleOpenInvite = () => {
+    openModal('inviteCode');
+  };
+
+  const LinkToMyPage = () => {
+    navigate('/myPage');
   };
 
   useEffect(() => {
@@ -52,35 +59,42 @@ function Lobby() {
   }, [page]);
 
   return (
-    <Container>
-      <Side>
-        <Profile>
-          <Avatar width="80px" height="80px" />
-          <Nickname>{userInfo.nickname}</Nickname>
-        </Profile>
-        <FlatButton size="small" onClick={LinkToMyPage}>
-          마이페이지
-        </FlatButton>
-        <Button onClick={handleRefresh}>새로고침</Button>
-      </Side>
-      <Main>
-        <TopBtns>
-          <Button onClick={handleModal}>방 만들기</Button>
-          <Button inline>초대 코드</Button>
-        </TopBtns>
-        <RoomContainer>
-          {rooms.length !== 0 ? (
-            <>
-              <RoomList rooms={rooms} />
-              <Pagination lastPage={lastPage} page={page} setPage={setPage} />
-            </>
-          ) : (
-            <EmptyRoomList />
-          )}
-        </RoomContainer>
-      </Main>
-      {isOpen && <CreateRoomModal setIsOpen={setIsOpen} />}
-    </Container>
+    <>
+      <FloatBox>
+        <SettingButton size="medium" />
+        <MikeButton size="medium" />
+      </FloatBox>
+      <Container>
+        <Side>
+          <Profile>
+            <Avatar width="80px" height="80px" />
+            <Nickname>{userInfo.nickname}</Nickname>
+          </Profile>
+          <FlatButton size="small" onClick={LinkToMyPage}>
+            마이페이지
+          </FlatButton>
+          <Button onClick={handleRefresh}>새로고침</Button>
+        </Side>
+        <Main>
+          <TopBtns>
+            <Button onClick={handleOpenCreateRoom}>방 만들기</Button>
+            <Button inline onClick={handleOpenInvite}>
+              초대 코드
+            </Button>
+          </TopBtns>
+          <RoomContainer>
+            {rooms.length !== 0 ? (
+              <>
+                <RoomList rooms={rooms} />
+                <Pagination lastPage={lastPage} page={page} setPage={setPage} />
+              </>
+            ) : (
+              <EmptyRoomList />
+            )}
+          </RoomContainer>
+        </Main>
+      </Container>
+    </>
   );
 }
 
@@ -95,17 +109,14 @@ const Side = styled.div`
 `;
 
 const Profile = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  ${({ theme }) => theme.common.flexCenterColumn};
 `;
 
 const Nickname = styled.h3`
   font-family: 'Pretendard';
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #4e473f;
+  font-size: ${({ theme }) => theme.fontSizes.xxl};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  color: ${({ theme }) => theme.colors.DARK_LAVA};
   margin: 10px 0 20px 0;
 `;
 

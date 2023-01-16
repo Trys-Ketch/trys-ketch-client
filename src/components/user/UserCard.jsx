@@ -20,8 +20,8 @@ const StUserCard = styled.div`
 `;
 
 const Nickname = styled.span`
-  font-size: 18px;
-  font-weight: 500;
+  font-size: ${({ theme }) => theme.fontSizes.lg};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
 `;
 
 export default UserCard;
