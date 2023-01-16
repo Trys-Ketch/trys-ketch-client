@@ -113,7 +113,7 @@ function AudioCall() {
 
   useEffect(() => {
     // 시그널링 서버와 소켓 연결
-    socketRef.current = new SockJS(`${process.env.REACT_APP_API_URL}signal`);
+    socketRef.current = new SockJS(`${process.env.REACT_APP_API_URL}/signal`);
 
     if (cookies.access_token) token = cookies.access_token;
     else if (cookies.guest) token = cookies.guest;

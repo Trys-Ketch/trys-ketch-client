@@ -21,7 +21,6 @@ function CreateRoomModal({ setIsOpen }) {
       roomAPI
         .createRoom(trimedTitle)
         .then((res) => {
-          console.log(res.data);
           navigate(`/room/${res.data.data.roomId}`);
           alert('방 생성 완료!');
         })

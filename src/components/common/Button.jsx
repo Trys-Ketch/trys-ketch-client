@@ -76,9 +76,6 @@ function Button({
   inline,
   size = 'medium',
   width = 'auto',
-  responsive = false,
-  outlined = false,
-  disabled = false,
   ...rest
 }) {
   const htmlProps = rest;
@@ -89,9 +86,6 @@ function Button({
       inline={inline}
       width={width}
       size={size}
-      responsive={responsive}
-      outlined={outlined}
-      disabled={disabled}
       {...htmlProps}
       onClick={(e) => {
         if (htmlProps.onClick) {

@@ -68,7 +68,6 @@ function Paint() {
     const { offsetX, offsetY } = nativeEvent;
 
     if (ctx) {
-      console.log(ctx.lineWidth);
       ctx.beginPath();
       ctx.arc(offsetX, offsetY, ctx.lineWidth / 64, 0, 2 * Math.PI);
       ctx.stroke();
