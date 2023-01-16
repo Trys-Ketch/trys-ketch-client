@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
-// import { useDispatch } from 'react-redux';
 import { useCookies } from 'react-cookie';
 import * as SockJS from 'sockjs-client';
 import Audio from './Audio';
+import { setID } from '../../app/slices/ingameSlice';
+import { closeSocket, setSocket } from '../../app/slices/socketSlice';
 
 let pcs: any;
 let localStream: MediaStream;
 let token: string;
 
 function AudioCall() {
+  const dispatch = useDispatch();
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
   // const dispatch = useDispatch();
   /**
@@ -144,7 +147,7 @@ function AudioCall() {
         // 1. all_users로 서버에서 같은 방에 존재하는 나를 제외한 모든 user를 받아옵니다.
         case 'rtc/all_users': {
           const { allUsers, sender } = data;
-          // dispatch(setID(sender));
+          dispatch(setID(sender));
           // 나를 제외했으므로 방에 나밖에 없으면 length는 0
           const len = allUsers.length;
           for (let i = 0; i < len; i += 1) {
@@ -253,12 +256,13 @@ function AudioCall() {
         default:
           break;
       }
+      dispatch(setSocket(socketRef.current));
     };
     socketRef.current.onerror = (event) => {
       console.log(`Error! : ${event}`);
     };
     socketRef.current.onclose = () => {
-      // dispatch(closeSocket());
+      dispatch(closeSocket());
       console.log('socket is closed');
     };
 
