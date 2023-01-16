@@ -83,7 +83,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/eslint-parser@npm:^7.16.3":
+"@babel/eslint-parser@npm:^7.16.3, @babel/eslint-parser@npm:^7.19.1":
   version: 7.19.1
   resolution: "@babel/eslint-parser@npm:7.19.1"
   dependencies:
@@ -675,7 +675,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-syntax-dynamic-import@npm:^7.7.4, @babel/plugin-syntax-dynamic-import@npm:^7.8.3":
+"@babel/plugin-syntax-dynamic-import@npm:^7.8.3":
   version: 7.8.3
   resolution: "@babel/plugin-syntax-dynamic-import@npm:7.8.3"
   dependencies:
@@ -1431,7 +1431,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-react@npm:^7.12.5, @babel/preset-react@npm:^7.16.0":
+"@babel/preset-react@npm:^7.12.5, @babel/preset-react@npm:^7.16.0, @babel/preset-react@npm:^7.18.6":
   version: 7.18.6
   resolution: "@babel/preset-react@npm:7.18.6"
   dependencies:
@@ -2137,17 +2137,6 @@ __metadata:
   version: 2.0.4
   resolution: "@leichtgewicht/ip-codec@npm:2.0.4"
   checksum: 468de1f04d33de6d300892683d7c8aecbf96d1e2c5fe084f95f816e50a054d45b7c1ebfb141a1447d844b86a948733f6eebd92234da8581c84a1ad4de2946a2d
-  languageName: node
-  linkType: hard
-
-"@loadable/babel-plugin@npm:^5.13.2":
-  version: 5.13.2
-  resolution: "@loadable/babel-plugin@npm:5.13.2"
-  dependencies:
-    "@babel/plugin-syntax-dynamic-import": ^7.7.4
-  peerDependencies:
-    "@babel/core": ^7.0.0-0
-  checksum: c7e8376d97d66f03a440e6d9e09d64234713a71403d418af2c551c4e4fdfc5943be7ac506ef2425701f6ceb971941822edb7b224e75b6d94bddbeb3492f5da34
   languageName: node
   linkType: hard
 
@@ -6334,9 +6323,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "eslint@npm:^8.3.0, eslint@npm:^8.31.0":
   version: 8.32.0
   resolution: "eslint@npm:8.32.0"
+=======
+"eslint@npm:8.31.0, eslint@npm:^8.3.0":
+  version: 8.31.0
+  resolution: "eslint@npm:8.31.0"
+>>>>>>> cd73df9 (🚨 Fix babel eslint)
   dependencies:
     "@eslint/eslintrc": ^1.4.1
     "@humanwhocodes/config-array": ^0.11.8
@@ -12944,7 +12939,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "trys-ketch@workspace:."
   dependencies:
-    "@loadable/babel-plugin": ^5.13.2
+    "@babel/eslint-parser": ^7.19.1
+    "@babel/preset-react": ^7.18.6
     "@loadable/component": ^5.15.2
     "@reduxjs/toolkit": ^1.9.1
     "@stomp/stompjs": ^6.1.2
@@ -12954,7 +12950,7 @@ __metadata:
     "@types/sockjs-client": ^1.5.1
     "@yarnpkg/pnpify": ^4.0.0-rc.35
     axios: ^1.2.2
-    eslint: ^8.31.0
+    eslint: 8.31.0
     eslint-config-airbnb: ^19.0.4
     eslint-config-airbnb-base: ^15.0.0
     eslint-config-prettier: ^8.5.0
