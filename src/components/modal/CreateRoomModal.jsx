@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import Input from '../common/Input';
-import Button from '../common/Button';
+import TextInput from '../common/TextInput';
 import roomAPI from '../../api/room';
+import Modal from '../common/Modal';
 
-function CreateRoomModal({ setIsOpen }) {
+function CreateRoomModal() {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
 
@@ -21,7 +20,6 @@ function CreateRoomModal({ setIsOpen }) {
       roomAPI
         .createRoom(trimedTitle)
         .then((res) => {
-          console.log(res.data);
           navigate(`/room/${res.data.data.roomId}`);
           alert('방 생성 완료!');
         })
@@ -32,51 +30,10 @@ function CreateRoomModal({ setIsOpen }) {
   };
 
   return (
-    <ModalOverlay>
-      <Modal>
-        <Title>방 만들기</Title>
-        <CloseBtn onClick={() => setIsOpen()}>X</CloseBtn>
-        <Input onChange={handleChange} value={title} />
-        <Button onClick={handleCreate} width="100%">
-          만들기
-        </Button>
-      </Modal>
-    </ModalOverlay>
+    <Modal title="방 만들기" btnText="만들기" onConfirm={handleCreate}>
+      <TextInput placeholder="방 이름을 입력해주세요" value={title} onChange={handleChange} />
+    </Modal>
   );
 }
-
-const ModalOverlay = styled.div`
-  ${({ theme }) => theme.common.flexCenter};
-  position: absolute;
-  top: 0%;
-  left: 0%;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  transition: opacity 0.2s ease;
-`;
-
-const Modal = styled.div`
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  width: 500px;
-  height: 500px;
-  border-radius: 3px;
-  background-color: ${({ theme }) => theme.colors.WHITE};
-`;
-
-const Title = styled.h3`
-  font-size: ${({ theme }) => theme.fontSizes.lg};
-  font-weight: ${({ theme }) => theme.fontWeight.bold};
-`;
-
-const CloseBtn = styled.button`
-  position: absolute;
-  top: 5px;
-  right: 5px;
-`;
 
 export default CreateRoomModal;
