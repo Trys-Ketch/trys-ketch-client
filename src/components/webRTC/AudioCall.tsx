@@ -6,7 +6,7 @@ import { useCookies } from 'react-cookie';
 import * as SockJS from 'sockjs-client';
 import Audio from './Audio';
 import { setID } from '../../app/slices/ingameSlice';
-import { closeSocket, setSocket } from '../../app/slices/socketSlice';
+import { closeSocket, setSocket } from '../../app/slices/ingameSlice';
 
 let pcs: any;
 let localStream: MediaStream;

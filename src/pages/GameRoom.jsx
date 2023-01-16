@@ -13,6 +13,7 @@ import roomAPI from '../api/room';
 import { setStomp } from '../app/slices/ingameSlice';
 
 let token;
+const subArray = [];
 
 function GameRoom() {
   const [isReady, setIsReady] = useState(false);
@@ -26,7 +27,7 @@ function GameRoom() {
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
   const ingameStompClient = useSelector((state) => state.ingame.stomp);
   const socketID = useSelector((state) => state.ingame.id);
-  const socket = useSelector((state) => state.socket.socket);
+  const socket = useSelector((state) => state.ingame.socket);
 
   const handleOut = () => {
     roomAPI
@@ -50,7 +51,6 @@ function GameRoom() {
   function start() {
     if (cookies.access_token) token = cookies.access_token;
     else if (cookies.guest) token = cookies.guest;
-    console.log(id);
     ingameStompClient.publish({
       destination: '/app/game/start',
       body: JSON.stringify({ roomId: id * 1, token }),
@@ -94,6 +94,7 @@ function GameRoom() {
   }, [socket, socketID]);
 
   useEffect(() => {
+    console.log(ingameStompClient);
     if (ingameStompClient) ingameStompClient.activate();
   }, [ingameStompClient]);
 
@@ -107,16 +108,16 @@ function GameRoom() {
       debug: (str) => {
         console.log(str);
       },
-      // webSocketFactory: () => new SockJS(`${process.env.REACT_APP_API_URL}/signal`),
-      webSocketFactory: () => new WebSocket(`${process.env.REACT_APP_STOMP_URL}`),
+      webSocketFactory: () => new SockJS(`${process.env.REACT_APP_API_URL}/ws`),
+      // webSocketFactory: () => new WebSocket(`${process.env.REACT_APP_STOMP_URL}`),
     });
     client.onConnect = (frame) => {
-      client.subscribe(`/topic/game/room/${id}`, (message) => {
-        const data = JSON.parse(message.body);
-
-        setIsIngame(data.isIngame);
-      });
-      client.subscribe('ingame/start');
+      subArray.push(
+        client.subscribe(`/topic/game/start/${id}`, (message) => {
+          const data = JSON.parse(message.body);
+          setIsIngame(data.isIngame);
+        }),
+      );
     };
     client.onStompError = (frame) => {
       console.err('Stomp Error!: ', frame.headers.message);
@@ -127,9 +128,9 @@ function GameRoom() {
     };
     dispatch(setStomp(client));
     return () => {
-      if (ingameStompClient) {
-        console.log('ingameStompClient unsubscribes');
-        ingameStompClient.unsubscribe();
+      if (client) {
+        console.log('client unsubscribes');
+        for (let i = 0; i < subArray.length; i += 1) subArray[i].unsubscribe();
       }
     };
   }, []);
