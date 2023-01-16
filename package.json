@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@loadable/component": "^5.15.2",
     "@reduxjs/toolkit": "^1.9.1",
     "@stomp/stompjs": "^6.1.2",
     "@testing-library/jest-dom": "^5.16.5",
@@ -50,6 +51,7 @@
   },
   "packageManager": "yarn@3.3.1",
   "devDependencies": {
+    "@loadable/babel-plugin": "^5.13.2",
     "@types/sockjs-client": "^1.5.1",
     "@yarnpkg/pnpify": "^4.0.0-rc.35",
     "eslint": "^8.31.0",

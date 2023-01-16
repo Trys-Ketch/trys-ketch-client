@@ -675,7 +675,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-syntax-dynamic-import@npm:^7.8.3":
+"@babel/plugin-syntax-dynamic-import@npm:^7.7.4, @babel/plugin-syntax-dynamic-import@npm:^7.8.3":
   version: 7.8.3
   resolution: "@babel/plugin-syntax-dynamic-import@npm:7.8.3"
   dependencies:
@@ -1460,7 +1460,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.7.7, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
   version: 7.20.7
   resolution: "@babel/runtime@npm:7.20.7"
   dependencies:
@@ -2137,6 +2137,30 @@ __metadata:
   version: 2.0.4
   resolution: "@leichtgewicht/ip-codec@npm:2.0.4"
   checksum: 468de1f04d33de6d300892683d7c8aecbf96d1e2c5fe084f95f816e50a054d45b7c1ebfb141a1447d844b86a948733f6eebd92234da8581c84a1ad4de2946a2d
+  languageName: node
+  linkType: hard
+
+"@loadable/babel-plugin@npm:^5.13.2":
+  version: 5.13.2
+  resolution: "@loadable/babel-plugin@npm:5.13.2"
+  dependencies:
+    "@babel/plugin-syntax-dynamic-import": ^7.7.4
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: c7e8376d97d66f03a440e6d9e09d64234713a71403d418af2c551c4e4fdfc5943be7ac506ef2425701f6ceb971941822edb7b224e75b6d94bddbeb3492f5da34
+  languageName: node
+  linkType: hard
+
+"@loadable/component@npm:^5.15.2":
+  version: 5.15.2
+  resolution: "@loadable/component@npm:5.15.2"
+  dependencies:
+    "@babel/runtime": ^7.7.7
+    hoist-non-react-statics: ^3.3.1
+    react-is: ^16.12.0
+  peerDependencies:
+    react: ">=16.3.0"
+  checksum: dd027f3f9fb684613506fe48dcb656367a13731c139134fb71c2bc1734df4218fdb64e5ca80fa2575fdf52e1be0e0a2ec770f0ca77275706e66d1074d0835401
   languageName: node
   linkType: hard
 
@@ -7243,7 +7267,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hoist-non-react-statics@npm:^3.0.0, hoist-non-react-statics@npm:^3.3.0, hoist-non-react-statics@npm:^3.3.2":
+"hoist-non-react-statics@npm:^3.0.0, hoist-non-react-statics@npm:^3.3.0, hoist-non-react-statics@npm:^3.3.1, hoist-non-react-statics@npm:^3.3.2":
   version: 3.3.2
   resolution: "hoist-non-react-statics@npm:3.3.2"
   dependencies:
@@ -11237,7 +11261,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-is@npm:^16.13.1, react-is@npm:^16.7.0":
+"react-is@npm:^16.12.0, react-is@npm:^16.13.1, react-is@npm:^16.7.0":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
   checksum: f7a19ac3496de32ca9ae12aa030f00f14a3d45374f1ceca0af707c831b2a6098ef0d6bdae51bd437b0a306d7f01d4677fcc8de7c0d331eb47ad0f46130e53c5f
@@ -12907,6 +12931,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "trys-ketch@workspace:."
   dependencies:
+    "@loadable/babel-plugin": ^5.13.2
+    "@loadable/component": ^5.15.2
     "@reduxjs/toolkit": ^1.9.1
     "@stomp/stompjs": ^6.1.2
     "@testing-library/jest-dom": ^5.16.5
@@ -12938,6 +12964,7 @@ __metadata:
     react-scripts: 5.0.1
     redux: ^4.2.0
     redux-persist: ^6.0.0
+    sockjs-client: ^1.6.1
     styled-components: ^5.3.6
     styled-reset: ^4.4.4
     web-vitals: ^2.1.4
