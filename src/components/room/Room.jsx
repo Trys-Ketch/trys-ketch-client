@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import roomAPI from '../../api/room';
 import crown from '../../assets/icons/crown.png';
+import person from '../../assets/icons/person-icon.svg';
 
 function Room({ randomCode, id, title, isPlaying, cur, max, host }) {
   const navigate = useNavigate();
@@ -11,8 +12,7 @@ function Room({ randomCode, id, title, isPlaying, cur, max, host }) {
     roomAPI
       .enterRoom(randomCode)
       .then((res) => {
-        alert(res.data.statusMsg);
-        if (res.data.httpStatus === 'OK') {
+        if (res.data.statusCode === 200) {
           navigate(`/room/${id}`);
         }
       })
@@ -25,12 +25,13 @@ function Room({ randomCode, id, title, isPlaying, cur, max, host }) {
     <StRoom onClick={handleEnter} disabled={isPlaying || cur === max}>
       <LeftSide>
         <Title>{title}</Title>
+      </LeftSide>
+      <RightSide>
         <StatusBadge className={isPlaying ? 'game' : 'wait'}>
           {isPlaying ? '진행중' : '대기중'}
         </StatusBadge>
+        <img src={person} alt="person" />
         <Quota>{`${cur}/${max}`}</Quota>
-      </LeftSide>
-      <RightSide>
         <img src={crown} alt="crown" />
         <Host>{host}</Host>
       </RightSide>
@@ -50,7 +51,7 @@ const StRoom = styled.button`
   transition: 0.3s ease;
 
   &:disabled {
-    background-color: ${({ theme }) => theme.colors.BONE};
+    opacity: 0.5;
   }
 
   &:hover:not([disabled]) {
@@ -59,7 +60,6 @@ const StRoom = styled.button`
 `;
 
 const LeftSide = styled.div`
-  max-width: 300px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -69,8 +69,6 @@ const RightSide = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  width: 130px;
-
   img {
     width: 1rem;
     margin: 0 3px;
@@ -86,12 +84,13 @@ const Title = styled.h3`
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   line-height: 1.2em;
+  margin-left: 10px;
 `;
 
 const StatusBadge = styled.div`
   padding: 5px;
   white-space: nowrap;
-  margin: 0 4px;
+  margin-right: 10px;
   border-radius: 13px;
 
   &.game {
@@ -107,9 +106,12 @@ const StatusBadge = styled.div`
 
 const Quota = styled.span`
   color: ${({ theme }) => theme.colors.DARK_LAVA};
+  margin-right: 10px;
 `;
 
 const Host = styled.span`
+  min-width: 150px;
+  text-align: left;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
