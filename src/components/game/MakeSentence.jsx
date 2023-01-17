@@ -3,7 +3,10 @@ import styled from 'styled-components';
 import TextInput from '../common/TextInput';
 import Button from '../common/Button';
 
-function MakeSentence() {
+function MakeSentence({ submitKeyword, keyword, setKeyword }) {
+  function onKeywordChangeHandler(event) {
+    setKeyword(event.target.value);
+  }
   return (
     <div>
       <p style={{ position: 'absolute', left: '5%', top: '5%', fontSize: '35px' }}>1/1</p>
@@ -43,8 +46,15 @@ function MakeSentence() {
           width: '70%',
         }}
       >
-        <TextInput type="text" width="80%" />
-        <Button style={{ marginLeft: '15px' }}>완료</Button>
+        <TextInput
+          onChange={(event) => onKeywordChangeHandler(event)}
+          value={keyword}
+          type="text"
+          width="80%"
+        />
+        <Button onClick={submitKeyword} style={{ marginLeft: '15px' }}>
+          완료
+        </Button>
       </div>
     </div>
   );

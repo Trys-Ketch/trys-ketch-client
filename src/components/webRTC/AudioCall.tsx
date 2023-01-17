@@ -1,19 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
-
+import { Outlet, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+
 import { useCookies } from 'react-cookie';
 import * as SockJS from 'sockjs-client';
 import Audio from './Audio';
-import { closeSocket, setID, setSocket } from '../../app/slices/socketSlice';
+import { setID } from '../../app/slices/ingameSlice';
+import { closeSocket, setSocket } from '../../app/slices/ingameSlice';
 
 let pcs: any;
 let localStream: MediaStream;
 let token: string;
 
 function AudioCall() {
-  const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
   const dispatch = useDispatch();
+  const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
+  // const dispatch = useDispatch();
   /**
    * socket을 관리하는 ref입니다.
    */
@@ -135,7 +137,7 @@ function AudioCall() {
         .catch((error) => {
           console.log(`getUserMedia error: ${error}`);
         });
-      dispatch(setSocket(socketRef.current));
+      // dispatch(setSocket(socketRef.current));
     };
 
     // 서버로부터 메세지가 왔을 때 실행
@@ -254,6 +256,7 @@ function AudioCall() {
         default:
           break;
       }
+      dispatch(setSocket(socketRef.current));
     };
     socketRef.current.onerror = (event) => {
       console.log(`Error! : ${event}`);
@@ -273,6 +276,7 @@ function AudioCall() {
 
   return (
     <div>
+      <Outlet />
       <audio ref={audioRef} muted>
         <track kind="captions" />
       </audio>

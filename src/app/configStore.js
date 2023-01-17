@@ -3,8 +3,8 @@ import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import login from './slices/loginSlice';
 import user from './slices/userSlice';
+import ingame from './slices/ingameSlice';
 import modal from './slices/modalSlice';
-import socket from './slices/socketSlice';
 
 const persistConfig = {
   key: 'root',
@@ -18,8 +18,8 @@ const persistConfig = {
 const rootReducer = combineReducers({
   login,
   user,
+  ingame,
   modal,
-  socket,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

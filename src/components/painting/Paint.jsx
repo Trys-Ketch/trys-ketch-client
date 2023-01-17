@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import floodFill from '../../utils/floodFill';
+import Button from '../common/Button';
 
 let historyPointer = 0;
 
-function Paint() {
+function Paint({ submitImg }) {
   const thickness = [5, 7.5, 10, 12.5, 15];
   const color = [
     '#0000FF',
@@ -158,6 +159,7 @@ function Paint() {
       history.push(ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height));
     historyPointer -= 1;
     const img = history[historyPointer];
+    console.log(img);
     ctx.putImageData(img, 0, 0);
   }
 
@@ -190,7 +192,7 @@ function Paint() {
       <Canvas
         ref={canvasRef}
         onClick={(event) => {
-          drawCircle(event);
+          if (eventState === 'drawing') drawCircle(event);
         }}
         onMouseDown={(event) => {
           history.push(ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height));
@@ -267,6 +269,13 @@ function Paint() {
       <button type="button" onClick={() => redo()}>
         redo
       </button>
+      <Button
+        onClick={() => {
+          submitImg(canvasRef.current);
+        }}
+      >
+        제출
+      </Button>
     </Wrapper>
   );
 }
@@ -313,6 +322,7 @@ const Wrapper = styled.div`
 `;
 
 const Canvas = styled.canvas`
+  background-color: white;
   border: 2px solid black;
   border-radius: 18px;
 `;

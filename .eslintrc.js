@@ -12,7 +12,7 @@ module.exports = {
     'eslint:recommended',
     'prettier',
   ],
-  plugins: ['react', 'import', 'prettier', '@loadable/babel-plugin'],
+  plugins: ['react', 'import', 'prettier'],
   rules: {
     'no-unused-vars': ['off'], // 사용하지 않는 변수가 있을때 빌드에러가 나던 규칙 해제
     'no-console': ['off'], // 콘솔을 쓰면 에러가 나던 규칙 해제
