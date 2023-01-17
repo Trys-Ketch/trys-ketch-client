@@ -86,14 +86,7 @@ function Modal({ children, title, btnText, onConfirm }) {
           <Title>{title}</Title>
           <Content>{children}</Content>
           <BtnArea>
-            <FlatButton
-              onClick={async () => {
-                await onConfirm();
-                closeModal();
-              }}
-            >
-              {btnText}
-            </FlatButton>
+            <FlatButton onClick={onConfirm}>{btnText}</FlatButton>
           </BtnArea>
         </ContentsWrap>
       </ModalWrap>

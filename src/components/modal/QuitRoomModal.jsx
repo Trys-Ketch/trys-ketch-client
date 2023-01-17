@@ -2,10 +2,12 @@ import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Modal from '../common/Modal';
 import roomAPI from '../../api/room';
+import useModal from '../../hooks/useModal';
 
 function QuitRoomModal() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { closeModal } = useModal();
 
   const handleQuit = () => {
     roomAPI
@@ -13,6 +15,7 @@ function QuitRoomModal() {
       .then((res) => {
         if (res.data.statusCode === 200) {
           alert(res.data.message);
+          closeModal();
           navigate('/');
         }
       })
