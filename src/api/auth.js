@@ -15,8 +15,8 @@ const kakaoLogin = async (code) => {
  * @param {string} nickname 닉네임
  * @returns {response} response
  */
-const guestLogin = async (nickname) => {
-  const response = await instance.post(`/api/users/guest`, { nickname });
+const guestLogin = async (nickname, imgUrl) => {
+  const response = await instance.post(`/api/users/guest`, { nickname, imgUrl });
   return response;
 };
 

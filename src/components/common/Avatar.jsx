@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import DefaultProfile from '../../assets/icons/user.png';
 
-function Avatar({ width, height }) {
+function Avatar({ src, width, height }) {
   return (
     <CircleContainer width={width} height={height}>
-      <img src={DefaultProfile} alt="profile" />
+      <img src={src || DefaultProfile} alt="profile" />
     </CircleContainer>
   );
 }
