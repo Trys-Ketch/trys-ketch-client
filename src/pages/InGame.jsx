@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Drawing from '../components/game/Drawing';
 import Guessing from '../components/game/Guessing';
@@ -16,10 +16,14 @@ function InGame() {
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
   const { id } = useParams();
   const [keyword, setKeyword] = useState('');
+  const [image, setImage] = useState('');
   const [gameState, setGameState] = useState('keyword');
   const [completeKeywordSubmit, setCompleteKeywordSubmit] = useState(false);
+  const [completeImageSubmit, setCompleteImageSubmit] = useState(false);
+  const [result, setResult] = useState(false);
   const keywordIndex = useRef();
   const round = useRef(1);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (cookies.access_token) token = cookies.access_token;
@@ -38,7 +42,6 @@ function InGame() {
       ingameStompClient.subscribe(`/topic/game/submit-word/${id}`, (message) => {
         const data = JSON.parse(message.body);
         setCompleteKeywordSubmit(data.completeSubmit);
-        round.current += 1;
       }),
     );
     subArray.push(
@@ -47,6 +50,25 @@ function InGame() {
         const data = JSON.parse(message.body);
         setKeyword(data.keyword);
         keywordIndex.current = data.keywordIndex;
+        round.current += 1;
+      }),
+    );
+    subArray.push(
+      // game state가 guessing이 됐을 때 다른 플레이어가 그린 이미지를 받아옵니다.
+      ingameStompClient.subscribe(`/queue/game/before-image/${socketID}`, (message) => {
+        const data = JSON.parse(message.body);
+        setCompleteImageSubmit(true);
+        setKeyword('');
+        setImage(data.image);
+        keywordIndex.current = data.keywordIndex;
+        round.current += 1;
+      }),
+    );
+    subArray.push(
+      // 게임이 끝났다는 정보를 서버로부터 받아옵니다.
+      ingameStompClient.subscribe(`/topic/game/before-result/${id}`, (message) => {
+        const data = JSON.parse(message.body);
+        setResult(data.isResult);
       }),
     );
 
@@ -72,11 +94,25 @@ function InGame() {
     }
   }, [completeKeywordSubmit]);
 
+  // 모든 사람들이 그림을 제출했다면 gameState를 guessing으로 바꿉니다.
+  useEffect(() => {
+    if (completeImageSubmit) {
+      setGameState('guessing');
+      setCompleteImageSubmit(false);
+    }
+  }, [completeImageSubmit]);
+
+  // 게임이 끝났다면 결과 페이지로 이동합니다.
+  useEffect(() => {
+    if (result) navigate(`/result/${id}`);
+  }, [result]);
+
   /**
    * canvas 문서 객체를 받아와 서버에 그림을 제출합니다.
    * @param {HTMLCanvasElement} canvas 그림을 그린 canvas 문서객체입니다.
    */
   function submitImg(canvas) {
+    // console.log(token, round.current, id, keywordIndex.current, socketID);
     ingameStompClient.publish({
       destination: '/app/game/submit-image',
       body: JSON.stringify({
@@ -85,6 +121,7 @@ function InGame() {
         round: round.current,
         roomId: id,
         keywordIndex: keywordIndex.current,
+        webSessionId: socketID,
       }),
     });
   }
@@ -123,7 +160,15 @@ function InGame() {
               <Drawing submitImg={(canvas) => submitImg(canvas)} />
             </div>
           ),
-          guessing: <Guessing />,
+          guessing: (
+            <Guessing
+              submitKeyword={() => submitKeyword()}
+              keyword={keyword}
+              setKeyword={setKeyword}
+              image={image}
+              socketID={socketID}
+            />
+          ),
         }[gameState]
       }
     </Wrapper>

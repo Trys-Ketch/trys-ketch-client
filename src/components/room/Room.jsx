@@ -11,8 +11,8 @@ function Room({ randomCode, id, title, isPlaying, cur, max, host }) {
     roomAPI
       .enterRoom(randomCode)
       .then((res) => {
-        alert(res.data.statusMsg);
-        if (res.data.httpStatus === 'OK') {
+        alert(res.data.message);
+        if (res.data.statusCode === 200) {
           navigate(`/room/${id}`);
         }
       })
