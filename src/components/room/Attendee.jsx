@@ -5,17 +5,19 @@ import Avatar from '../common/Avatar';
 function Attendee({ user }) {
   return (
     <StUserCard>
-      <Avatar width="35px" height="35px" />
-      <Nickname>{user.nickname}</Nickname>
+      <UserInfo>
+        <Avatar width="35px" height="35px" />
+        <Nickname>{user.nickname}</Nickname>
+      </UserInfo>
     </StUserCard>
   );
 }
 
 const StUserCard = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: flex-start;
-  align-items: center;
+  height: 100%;
   border-radius: 10px;
   background-color: ${({ theme }) => theme.colors.FLORAL_WHITE};
   padding: 10px;
@@ -23,6 +25,10 @@ const StUserCard = styled.div`
   & > *:not(:first-child) {
     margin-left: 10px;
   }
+`;
+
+const UserInfo = styled.div`
+  display: flex;
 `;
 
 const Nickname = styled.span`
