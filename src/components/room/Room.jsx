@@ -4,15 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import roomAPI from '../../api/room';
 import crown from '../../assets/icons/crown.png';
 
-function Room({ id, title, isPlaying, cur, max, host }) {
+function Room({ randomCode, id, title, isPlaying, cur, max, host }) {
   const navigate = useNavigate();
 
   const handleEnter = () => {
     roomAPI
-      .enterRoom(id)
+      .enterRoom(randomCode)
       .then((res) => {
-        alert(res.data.message);
-        if (res.data.statusCode === 200) {
+        alert(res.data.statusMsg);
+        if (res.data.httpStatus === 'OK') {
           navigate(`/room/${id}`);
         }
       })

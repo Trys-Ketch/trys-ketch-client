@@ -8,6 +8,7 @@ import GameRoom from '../pages/GameRoom';
 import AudioCall from '../components/webRTC/AudioCall.tsx';
 import InGame from '../pages/InGame';
 import Layout from '../components/layout/Layout';
+import GameResult from '../pages/GameResult';
 
 function Router() {
   return (
@@ -23,6 +24,7 @@ function Router() {
           <Route element={<AudioCall />}>
             <Route path="/room/:id" element={<GameRoom />} />
             <Route path="/ingame/:id" element={<InGame />} />
+            <Route path="/result/:id" element={<GameResult />} />
           </Route>
         </Route>
       </Routes>

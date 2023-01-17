@@ -30,6 +30,7 @@ function Lobby() {
     roomAPI
       .getRoomList(currentPage)
       .then((res) => {
+        console.log(res.data);
         setLastPage(res.data.LastPage);
         setRooms(res.data.Rooms);
       })

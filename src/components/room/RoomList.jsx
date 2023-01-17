@@ -7,6 +7,7 @@ function RoomList({ rooms }) {
     <StContainer>
       {rooms.map((room) => (
         <Room
+          randomCode={room.randomCode}
           key={room.id}
           id={room.id}
           title={room.title}

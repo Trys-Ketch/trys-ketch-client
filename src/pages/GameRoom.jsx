@@ -108,6 +108,7 @@ function GameRoom() {
       debug: (str) => {
         console.log(str);
       },
+      splitLargeFrames: true,
       webSocketFactory: () => new SockJS(`${process.env.REACT_APP_API_URL}/ws`),
       // webSocketFactory: () => new WebSocket(`${process.env.REACT_APP_STOMP_URL}`),
     });
