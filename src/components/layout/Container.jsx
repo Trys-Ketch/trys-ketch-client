@@ -5,8 +5,8 @@ const Container = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: flex-start;
-  min-width: 1180px;
-  min-height: 620px;
+  width: 1180px;
+  height: 620px;
   position: absolute;
   top: 50%;
   left: 50%;
