@@ -4,6 +4,7 @@ import loadable from '@loadable/component';
 
 const MODAL_COMPONENTS = {
   createRoom: loadable(() => import('./CreateRoomModal')),
+  quitRoom: loadable(() => import('./QuitRoomModal')),
   inviteCode: loadable(() => import('./InviteCodeModal')),
   setting: loadable(() => import('./SettingModal')),
 };
