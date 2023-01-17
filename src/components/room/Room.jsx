@@ -42,7 +42,6 @@ const StRoom = styled.button`
   ${({ theme }) => theme.common.flexBetween};
   background-color: ${({ theme }) => theme.colors.FLORAL_WHITE};
   padding: 10px 10px 10px 15px;
-  margin-bottom: 10px;
   font-weight: ${({ theme }) => theme.fontWeight.bold};
   // color: #746B5F, opacity : 0.5
   border-radius: 10px;
@@ -79,7 +78,7 @@ const RightSide = styled.div`
 `;
 
 const Title = styled.h3`
-  font-size: ${({ theme }) => theme.fontSizes.lg};
+  font-size: ${({ theme }) => theme.fontSizes.xl};
   color: ${({ theme }) => theme.colors.DARK_LAVA};
   overflow: hidden;
   text-overflow: ellipsis;

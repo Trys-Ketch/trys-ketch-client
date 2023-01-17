@@ -22,7 +22,7 @@ const InputBlock = styled.input`
   }
 `;
 
-function TextInput({ placeholder, onChange, value, width, ...rest }) {
+function TextInput({ placeholder, onChange, value, width, maxlength, ...rest }) {
   const htmlProps = rest;
   return (
     <InputBlock
@@ -31,6 +31,7 @@ function TextInput({ placeholder, onChange, value, width, ...rest }) {
       onChange={onChange}
       value={value}
       width={width}
+      maxlength={maxlength}
       {...htmlProps}
     />
   );

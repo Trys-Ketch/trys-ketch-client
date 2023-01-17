@@ -12,7 +12,7 @@ const Container = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: ${({ theme }) => theme.colors.TEA_GREEN};
-  padding: 10px;
+  padding: 15px;
   border-radius: 10px 10px 0 0;
   border-bottom: 15px solid #6fab81;
 `;

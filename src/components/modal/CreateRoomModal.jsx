@@ -31,7 +31,12 @@ function CreateRoomModal() {
 
   return (
     <Modal title="방 만들기" btnText="만들기" onConfirm={handleCreate}>
-      <TextInput placeholder="방 이름을 입력해주세요" value={title} onChange={handleChange} />
+      <TextInput
+        maxlength="15"
+        placeholder="방 이름을 입력해주세요"
+        value={title}
+        onChange={handleChange}
+      />
     </Modal>
   );
 }

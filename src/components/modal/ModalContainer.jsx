@@ -11,9 +11,9 @@ const MODAL_COMPONENTS = {
 function ModalContainer() {
   const modalList = useSelector((state) => state.modal);
 
-  const renderModal = modalList.map(({ type, props }) => {
+  const renderModal = modalList.map(({ type }) => {
     const ModalComponent = MODAL_COMPONENTS[type];
-    return <ModalComponent key={type} {...props} />;
+    return <ModalComponent key={type} />;
   });
 
   return <div className="modals">{renderModal}</div>;
