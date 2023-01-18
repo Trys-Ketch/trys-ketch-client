@@ -23,6 +23,7 @@ function ChatBox() {
   const chatSubscribe = () => {
     client.subscribe(CHAT_SERVER_URL, (message) => {
       const data = JSON.parse(message.body);
+      console.log(data);
       setMessages((messages) => [...messages, data]);
     });
   };
@@ -45,21 +46,23 @@ function ChatBox() {
       chatSubscribe();
       chatPublish(types.chat.enter, `${nickname}님이 입장하셨습니다.`);
     };
-    client.onDisconnect = (frame) => {
-      console.log(frame);
-      console.log('onDisconnect');
-      chatPublish(types.chat.leave, `${nickname}님이 퇴장하셨습니다.`);
-    };
   };
 
   const handleSubmit = (e) => {
+    const message = input.trim();
+    if (!message) {
+      // 예외 처리 알림
+      return;
+    }
     e.preventDefault();
-    chatPublish(types.chat.chat, input.trim());
+    chatPublish(types.chat.chat, message);
     setInput('');
   };
 
   useEffect(() => {
-    chatServerEvents();
+    if (client) {
+      chatServerEvents();
+    }
   }, [client]);
 
   return (
