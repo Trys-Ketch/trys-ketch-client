@@ -30,5 +30,6 @@ module.exports = {
     'prefer-destructuring': ['error', { object: true, array: false }], // 배열 인덱스에 접근 시 반드시 구조분해 할당을 사용해야하는 규칙 해제
     'react/jsx-filename-extension': [2, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
+    'no-shadow': 0, // 변수명의 쉐도잉을 제한하는 규칙 해제,
   },
 };
