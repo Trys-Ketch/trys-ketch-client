@@ -9,12 +9,12 @@ import TextInput from '../components/common/TextInput';
 import Button from '../components/common/Button';
 import Panel from '../components/layout/Panel';
 import { setLogin } from '../app/slices/loginSlice';
-import { setNickname } from '../app/slices/userSlice';
 import { setCookie } from '../utils/cookie';
 import refreshIcon from '../assets/icons/refresh-icon.svg';
 
 function Guest() {
   const [name, setName] = useState('');
+  const [image, setImage] = useState('');
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -28,10 +28,9 @@ function Guest() {
     }
 
     const trimedName = name.trim();
-    await authAPI.guestLogin(trimedName).then((res) => {
+    await authAPI.guestLogin(trimedName, image).then((res) => {
       if (res.data.statusCode === 200) {
         dispatch(setLogin('guest'));
-        dispatch(setNickname(trimedName));
         setCookie(res.headers.guest, 'guest');
         navigate('/');
         alert('게스트로그인 성공');
@@ -45,16 +44,25 @@ function Guest() {
     });
   };
 
+  const getRandomImage = () => {
+    userAPI.getRandomImage().then((res) => {
+      setImage(res.data.message);
+    });
+  };
+
   useEffect(() => {
     getRandomNickname();
+  }, []);
+
+  useEffect(() => {
+    getRandomImage();
   }, []);
 
   return (
     <Panel>
       <ProfileBox>
-        <Avatar width="128px" height="128px" />
-        {/* TODO - refresh function 추가 필요 */}
-        <ProfileRefreshBtn>
+        <Avatar src={image} width="128px" height="128px" />
+        <ProfileRefreshBtn onClick={getRandomImage}>
           <img src={refreshIcon} alt="refresh" />
         </ProfileRefreshBtn>
       </ProfileBox>

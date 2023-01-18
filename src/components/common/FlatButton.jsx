@@ -10,6 +10,7 @@ const ButtonBlock = styled.button`
   font-weight: ${({ theme }) => theme.fontWeight.bold};
   cursor: pointer;
   outline: none;
+  white-space: nowrap;
   background: ${(props) => props.bgcolor || props.theme.colors.DIM_GRAY};
   color: ${(props) => props.color || props.theme.colors.WHITE};
   transition: 0.2s ease;
@@ -31,7 +32,7 @@ const ButtonBlock = styled.button`
   ${(props) =>
     props.size === 'small' &&
     css`
-      height: 3rem;
+      height: 3.5rem;
       padding-left: 2rem;
       padding-right: 2rem;
       font-size: ${({ theme }) => theme.fontSizes.md};
@@ -52,9 +53,6 @@ const ButtonBlock = styled.button`
       height: 5rem;
       padding-left: 1.125rem;
       padding-right: 1.125rem;
-      & + & {
-        margin-left: 0.875rem;
-      }
       font-size: ${({ theme }) => theme.fontSizes.xl};
     `}
 
@@ -68,7 +66,7 @@ function FlatButton({
   ref,
   bgcolor,
   color,
-  inline,
+  inline = false,
   size = 'medium',
   width = 'auto',
   ...rest

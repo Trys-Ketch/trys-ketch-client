@@ -56,8 +56,6 @@ const ContentsWrap = styled.div`
 
 const Content = styled.div`
   ${({ theme }) => theme.common.flexCenterColumn};
-  // TODO - 정사각형 모달 적용할지 말지 논의
-  /* min-height: 200px; */
   margin: 20px 0;
   & > *:not(:first-child) {
     margin-top: 15px;
@@ -88,14 +86,7 @@ function Modal({ children, title, btnText, onConfirm }) {
           <Title>{title}</Title>
           <Content>{children}</Content>
           <BtnArea>
-            <FlatButton
-              onClick={async () => {
-                await onConfirm();
-                closeModal();
-              }}
-            >
-              {btnText}
-            </FlatButton>
+            <FlatButton onClick={onConfirm}>{btnText}</FlatButton>
           </BtnArea>
         </ContentsWrap>
       </ModalWrap>

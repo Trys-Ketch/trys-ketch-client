@@ -25,6 +25,10 @@ const ButtonBlock = styled.button`
     scale: 1.03;
   }
 
+  & > * {
+    margin-left: 5px;
+  }
+
   ${(props) =>
     props.inline &&
     css`
@@ -57,9 +61,6 @@ const ButtonBlock = styled.button`
       height: 5rem;
       padding-left: 1.125rem;
       padding-right: 1.125rem;
-      & + & {
-        margin-left: 0.875rem;
-      }
       font-size: ${({ theme }) => theme.fontSizes.xl};
     `}
 
@@ -73,7 +74,7 @@ function Button({
   ref,
   bgcolor,
   color,
-  inline,
+  inline = false,
   size = 'medium',
   width = 'auto',
   ...rest

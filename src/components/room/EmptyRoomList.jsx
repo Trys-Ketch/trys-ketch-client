@@ -13,7 +13,7 @@ function EmptyRoomList() {
 const Empty = styled.div`
   ${({ theme }) => theme.common.flexCenterColumn};
   width: 100%;
-  height: 520px;
+  height: 100%;
 `;
 
 const Typography = styled.h3`
