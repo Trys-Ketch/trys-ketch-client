@@ -23,10 +23,11 @@ function RoomList({ rooms }) {
 
 const StContainer = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(5, 80px);
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(5, 1fr);
   gap: 12px 12px;
   width: 100%;
+  height: 100%;
   margin-bottom: 10px;
 `;
 

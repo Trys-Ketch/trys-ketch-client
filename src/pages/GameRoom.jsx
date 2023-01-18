@@ -3,14 +3,20 @@ import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCookies } from 'react-cookie';
-import * as SockJS from 'sockjs-client';
+import SockJS from 'sockjs-client';
 import * as Stomp from '@stomp/stompjs';
 import MessageList from '../components/chat/MessageList';
 import MessageInput from '../components/chat/MessageForm';
 import AttendeeList from '../components/room/AttendeeList';
 import Button from '../components/common/Button';
-import roomAPI from '../api/room';
 import { setStomp } from '../app/slices/ingameSlice';
+import Container from '../components/layout/Container';
+import FloatBox from '../components/layout/FloatBox';
+import SettingButton from '../components/button/SettingButton';
+import MikeButton from '../components/button/MikeButton';
+import copy from '../assets/icons/copy-icon.svg';
+import QuitButton from '../components/button/QuitButton';
+import RoomTitle from '../components/room/RoomTitle';
 
 let token;
 const subArray = [];
@@ -29,19 +35,9 @@ function GameRoom() {
   const socketID = useSelector((state) => state.ingame.id);
   const socket = useSelector((state) => state.ingame.socket);
 
-  const handleOut = () => {
-    roomAPI
-      .exitRoom(id)
-      .then((res) => {
-        if (res.data.statusCode === 200) {
-          alert(res.data.message);
-          navigate('/');
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  // const chatEndPoint = `${process.env.REACT_APP_API_URL}/ws`;
+  // const SockJs = new SockJS(chatEndPoint);
+  // const stomp = Stomp.over(SockJs);
 
   function toggleReady() {
     console.log(socket);
@@ -56,6 +52,53 @@ function GameRoom() {
       body: JSON.stringify({ roomId: id * 1, token }),
     });
   }
+
+  // const recvMessage = (recv) => {
+  //   console.log('메세지 수신');
+  //   messages.push({
+  //     type: recv.type,
+  //     sender: recv.type === 'ENTER' ? '' : recv.sender,
+  //     message: recv.type === 'ENTER' ? `[알림] ${recv.message}` : recv.message,
+  //   });
+  //   setViewMessages([...messages]);
+  // };
+
+  // function roomSubscribe() {
+  //   stomp.connect(
+  //     {},
+  //     (frame) => {
+  //       // roomId = 1
+  //       // stomp.subscribe(`/sub/chat/room/${id}`, (response) => {
+  //         const recv = JSON.parse(response.body);
+  //         // recvMessage(recv);
+  //         console.log(recv);
+  //       });
+  //       // stomp.send(
+  //       //   '/app/chat/message',
+  //       //   {},
+  //       //   JSON.stringify({
+  //       //     type: 'ENTER',
+  //       //     roomId: roomId,
+  //       //     sender: sender,
+  //       //   }),
+  //       // );
+  //     },
+  //     // function (error) {
+  //     //   if (reconnect++ <= 5) {
+  //     //     setTimeout(function () {
+  //     //       console.log('connection reconnect');
+  //     //       SockJs = new SockJS('http://localhost:8080/ws/chat');
+  //     //       ws = Stomp.over(SockJs);
+  //     //       roomSubscribe();
+  //     //     }, 10 * 1000);
+  //     //   }
+  //     // },
+  //   );
+  // }
+
+  // useEffect(() => {
+  //   roomSubscribe();
+  // }, []);
 
   useEffect(() => {
     const gameRoomEventHandler = (event) => {
@@ -137,64 +180,101 @@ function GameRoom() {
   }, []);
 
   return (
-    <StRoom>
-      <Header>
-        <Button onClick={handleOut}>나가기</Button>
-        <Button>세팅</Button>
-      </Header>
-      <Layout>
+    <>
+      <FloatBox
+        top={
+          <>
+            <SettingButton />
+            <MikeButton />
+          </>
+        }
+        bottom={<QuitButton />}
+      />
+      <Container>
         <Main>
+          <RoomTitle>가나다라마바사아자차카타파하</RoomTitle>
           <AttendeeList />
-          <MessageList />
-          <MessageInput />
+          <ChatBox>
+            <MessageList />
+            <MessageInput />
+          </ChatBox>
         </Main>
         <Side>
-          <Explain>게임설명</Explain>
-          <SetTime>시간설정</SetTime>
+          <Explain>
+            <Subtitle>게임 방법</Subtitle>
+          </Explain>
+          <SetTime>
+            <Subtitle>제한 시간</Subtitle>
+          </SetTime>
+          <Button width="100%">
+            초대코드 복사
+            <img src={copy} alt="copy" />
+          </Button>
           {isHost ? (
-            <Button onClick={() => start()} disabled={!allReady}>
-              게임 시작
+            <Button disabled={!allReady}>게임 시작</Button>
+          ) : (
+            <Button width="100%" size="large" onClick={() => toggleReady()}>
+              {isReady ? '취소' : '준비 완료'}
             </Button>
-          ) : null}
-          {isHost ? null : (
-            <Button onClick={() => toggleReady()}>{isReady ? '취소' : '준비'}</Button>
           )}
         </Side>
-      </Layout>
-    </StRoom>
+      </Container>
+    </>
   );
 }
 
-const StRoom = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const Layout = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-
-const Header = styled.div`
-  ${({ theme }) => theme.common.flexBetween};
-`;
-
 const Main = styled.main`
-  width: 70%;
+  ${({ theme }) => theme.common.flexCenterColumn};
+  width: 75%;
+  height: 100%;
+  margin-right: 15px;
+
+  & > *:not(:first-child) {
+    margin-top: 10px;
+  }
 `;
 
 const Side = styled.aside`
-  width: 30%;
+  ${({ theme }) => theme.common.flexCenterColumn};
+  width: 25%;
+  height: 100%;
+
+  & > *:not(:first-child) {
+    margin-top: 10px;
+  }
 `;
 
-const Explain = styled.div`
-  border: 1px solid;
+const ChatBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 40%;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: ${({ theme }) => theme.colors.ANTIQUE_WHITE};
+`;
+
+const Box = styled.div`
+  width: 100%;
+  border-radius: 10px;
+  background-color: ${({ theme }) => theme.colors.FLORAL_WHITE};
+  padding: 10px;
+`;
+
+const Explain = styled(Box)`
   height: 60%;
 `;
 
-const SetTime = styled.div`
-  border: 1px solid;
+const SetTime = styled(Box)`
   height: 30%;
+`;
+
+const Subtitle = styled.h3`
+  width: 100%;
+  text-align: center;
+  font-family: 'TTTogether';
+  font-size: ${({ theme }) => theme.fontSizes.xl};
+  color: ${({ theme }) => theme.colors.DARK_LAVA};
 `;
 
 export default GameRoom;

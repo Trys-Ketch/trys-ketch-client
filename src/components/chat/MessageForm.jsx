@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import TextInput from '../common/TextInput';
-import Button from '../common/Button';
+import FlatButton from '../common/FlatButton';
 
 function MessageForm() {
   const [message, setMessage] = useState('');
@@ -18,8 +18,10 @@ function MessageForm() {
 
   return (
     <StMessageForm>
-      <TextInput value={message} onChange={handleInput} />
-      <Button onClick={handleSubmit}>보내기</Button>
+      <TextInput placeholder="채팅을 입력하세요" value={message} onChange={handleInput} />
+      <FlatButton size="small" onClick={handleSubmit}>
+        전송
+      </FlatButton>
     </StMessageForm>
   );
 }
@@ -27,6 +29,11 @@ function MessageForm() {
 const StMessageForm = styled.form`
   display: flex;
   flex-direction: row;
+  margin-top: 10px;
+
+  input {
+    margin-right: 10px;
+  }
 `;
 
 export default MessageForm;

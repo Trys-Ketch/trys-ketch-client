@@ -9,8 +9,18 @@ const getRandomNickname = async () => {
   return response;
 };
 
+/**
+ * 랜덤 프로필 이미지 발급
+ * @returns {response} {statusCode:Number, message:Url}
+ */
+const getRandomImage = async () => {
+  const response = await instance.get(`/api/users/random-img`);
+  return response;
+};
+
 const userAPI = {
   getRandomNickname,
+  getRandomImage,
 };
 
 export default userAPI;

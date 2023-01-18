@@ -11,7 +11,6 @@ import Pagination from '../components/room/Pagination';
 import EmptyRoomList from '../components/room/EmptyRoomList';
 import SettingButton from '../components/button/SettingButton';
 import FloatBox from '../components/layout/FloatBox';
-import MikeButton from '../components/button/MikeButton';
 import useModal from '../hooks/useModal';
 
 const userInfo = {
@@ -22,25 +21,25 @@ function Lobby() {
   const navigate = useNavigate();
   const { openModal } = useModal();
   const [rooms, setRooms] = useState([]);
-  // lastPage는 1부터 page는 0부터
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
+  const [roomsByPage, setRoomsByPage] = useState([]);
   const [lastPage, setLastPage] = useState(1);
 
-  const getRooms = (currentPage) => {
-    roomAPI
-      .getRoomList(currentPage)
-      .then((res) => {
-        console.log(res.data);
-        setLastPage(res.data.LastPage);
-        setRooms(res.data.Rooms);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  const ROOM_PER_PAGE = 5;
 
-  const handleRefresh = () => {
-    getRooms(page);
+  const getRooms = () => {
+    const source = new EventSource(`${process.env.REACT_APP_API_URL}/api/sse/rooms`);
+    source.onerror = (error) => {
+      console.log(error);
+    };
+    source.addEventListener('connect', (event) => {
+      const data = JSON.parse(event.data);
+      setRooms(data);
+    });
+    source.addEventListener('changeRoom', (event) => {
+      const data = JSON.parse(event.data);
+      setRooms(data);
+    });
   };
 
   const handleOpenCreateRoom = () => {
@@ -56,15 +55,21 @@ function Lobby() {
   };
 
   useEffect(() => {
-    getRooms(page);
-  }, [page]);
+    getRooms();
+  }, []);
+
+  useEffect(() => {
+    setLastPage(Math.ceil(rooms.length / ROOM_PER_PAGE));
+  }, [rooms]);
+
+  useEffect(() => {
+    const _roomsByPage = rooms.slice((page - 1) * ROOM_PER_PAGE, page * ROOM_PER_PAGE);
+    setRoomsByPage(_roomsByPage);
+  }, [page, rooms]);
 
   return (
     <>
-      <FloatBox>
-        <SettingButton size="medium" />
-        <MikeButton size="medium" />
-      </FloatBox>
+      <FloatBox top={<SettingButton />} />
       <Container>
         <Side>
           <Profile>
@@ -74,7 +79,6 @@ function Lobby() {
           <FlatButton size="small" onClick={LinkToMyPage}>
             마이페이지
           </FlatButton>
-          <Button onClick={handleRefresh}>새로고침</Button>
         </Side>
         <Main>
           <TopBtns>
@@ -86,7 +90,7 @@ function Lobby() {
           <RoomContainer>
             {rooms.length !== 0 ? (
               <>
-                <RoomList rooms={rooms} />
+                <RoomList rooms={roomsByPage} />
                 <Pagination lastPage={lastPage} page={page} setPage={setPage} />
               </>
             ) : (
@@ -122,7 +126,10 @@ const Nickname = styled.h3`
 `;
 
 const Main = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 80%;
+  height: 100%;
 `;
 
 const TopBtns = styled.div`
@@ -137,9 +144,12 @@ const TopBtns = styled.div`
 `;
 
 const RoomContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   background: #f5ebda;
   padding: 20px;
   border-radius: 10px;
+  height: 100%;
 `;
 
 export default Lobby;

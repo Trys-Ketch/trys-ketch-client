@@ -13,6 +13,8 @@ module.exports = {
     'prettier',
   ],
   plugins: ['react', 'import', 'prettier'],
+  parser: '@babel/eslint-parser',
+  parserOptions: { sourceType: 'module' },
   rules: {
     'no-unused-vars': ['off'], // 사용하지 않는 변수가 있을때 빌드에러가 나던 규칙 해제
     'no-console': ['off'], // 콘솔을 쓰면 에러가 나던 규칙 해제
