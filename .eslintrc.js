@@ -31,5 +31,6 @@ module.exports = {
     'react/jsx-filename-extension': [2, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
     'no-shadow': 0, // 변수명의 쉐도잉을 제한하는 규칙 해제,
+    'react/no-array-index-key': 0, // array index를 key값으로 사용할 수 없는 규칙 해제
   },
 };
