@@ -10,73 +10,44 @@ function Switch() {
 }
 
 const Wrapper = styled.div`
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  z-index: 0;
+  width: 70px;
+  /* width: 80px; */
+  height: auto;
+  top: 50%;
+  left: 50%;
 `;
 
 const ToggleSwitch = styled.input`
-  z-index: 1;
-  width: 5rem;
-  height: 2rem;
-  background: ${(props) => props.leftBgColor ?? 'gray'};
-  border-radius: 2em;
-  transition: all 0.2s ease-in-out;
-
-  /* 선택X 텍스트 */
-  ::before {
-    position: absolute;
-    content: '${(props) => props.left ?? ''}';
-    padding-left: 1em;
-    width: 5rem;
-    height: 2rem;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    color: ${(props) => props.leftColor ?? '#fff'};
-    font-weight: 700;
-    font-size: 16px;
-  }
-
-  /* 선택X 원 */
-  ::after {
-    position: relative;
-    content: '';
-    display: block;
-    width: 1.6em;
-    height: 1.6em;
-    top: calc((2rem - 1.6em) / 2);
-    left: calc(5rem - 1.9em);
-    border-radius: 50%;
-    background: ${(props) => props.circleColor ?? '#fff'};
-    /* 원 이동 트랜지션 */
-  }
+  position: relative;
+  width: 100%;
+  background: gainsboro;
+  -webkit-appearance: none;
+  height: 40px;
+  outline: none;
+  border-radius: 30px;
+  box-shadow: inset 0px 0px 0px 3px rgb(255 255 255);
+  transition: 0.5s;
 
   &:checked {
-    background: ${(props) => props.rightBgColor ?? '#000'};
-    /* 선택 O 텍스트 */
-    ::before {
-      position: absolute;
-      padding-right: 1em;
-      content: '${(props) => props.right ?? ''}';
-      align-items: center;
-      justify-content: flex-end;
-      color: ${(props) => props.rightColor ?? '#fff'};
-    }
-    /* 선택 O 원 */
-    ::after {
-      content: '';
-      z-index: 2;
-      top: calc((2rem - 1.6em) / 2);
-      left: calc((2rem - 1.6em) / 2);
-      width: 1.6em;
-      height: 1.6em;
-      display: block;
-      border-radius: 50%;
-      background: ${(props) => props.circleColor ?? '#fff'};
-      position: relative;
-    }
+    background: #a2ee00;
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    left: 1px;
+    background: #746b5f;
+    box-shadow: 0px 1px 6px 1px gainsboro;
+    border-radius: 50%;
+    top: 0px;
+    transform: scale(0.9);
+    transition: 0.5s;
+  }
+
+  &:checked:before {
+    left: 29px;
   }
 `;
 
