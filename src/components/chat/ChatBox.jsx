@@ -5,11 +5,7 @@ import { useSelector } from 'react-redux';
 import TextInput from '../common/TextInput';
 import FlatButton from '../common/FlatButton';
 import MessageList from './MessageList';
-
-const CHAT_TYPE = {
-  notice: 'NOTICE',
-  chat: 'CHAT',
-};
+import types from '../../utils/types';
 
 function ChatBox() {
   const client = useSelector((state) => state.ingame.stomp);
@@ -44,24 +40,27 @@ function ChatBox() {
     });
   };
 
-  const chatServerConnect = () => {
-    client.onConnect = (frame) => {
+  const chatServerEvents = () => {
+    client.onConnect = () => {
       chatSubscribe();
-      chatPublish(CHAT_TYPE.notice, `${nickname}님이 입장하셨습니다.`);
+      chatPublish(types.chat.enter, `${nickname}님이 입장하셨습니다.`);
+    };
+    client.onDisconnect = (frame) => {
+      console.log(frame);
+      console.log('onDisconnect');
+      chatPublish(types.chat.leave, `${nickname}님이 퇴장하셨습니다.`);
     };
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    chatPublish(CHAT_TYPE.chat, input.trim());
+    chatPublish(types.chat.chat, input.trim());
     setInput('');
   };
 
   useEffect(() => {
-    chatServerConnect();
-  }, []);
-
-  console.log(messages);
+    chatServerEvents();
+  }, [client]);
 
   return (
     <StChatBox>

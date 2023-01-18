@@ -2,20 +2,29 @@ import React from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import Avatar from '../common/Avatar';
+import types from '../../utils/types';
 
 function Message({ message }) {
   const { userId } = useSelector((state) => state.user);
 
   switch (message.type) {
-    case 'NOTICE':
+    case types.chat.enter:
       return (
-        <Notice>
+        <Notice className="enter">
           <Body>
             <Content>{message.content}</Content>
           </Body>
         </Notice>
       );
-    case 'CHAT':
+    case types.chat.leave:
+      return (
+        <Notice className="leave">
+          <Body>
+            <Content>{message.content}</Content>
+          </Body>
+        </Notice>
+      );
+    case types.chat.chat:
       if (message.userId === userId) {
         return (
           <MyChat>
@@ -69,9 +78,14 @@ const Content = styled.span`
 const Notice = styled(StMessage)`
   justify-content: center;
 
-  ${Content} {
+  &.enter ${Content} {
     color: ${({ theme }) => theme.colors.WHITE};
     background-color: #48afe9;
+  }
+
+  &.leave ${Content} {
+    color: ${({ theme }) => theme.colors.WHITE};
+    background-color: #a5a5a5;
   }
 `;
 
