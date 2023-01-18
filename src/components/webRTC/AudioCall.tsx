@@ -137,6 +137,7 @@ function AudioCall() {
         .catch((error) => {
           console.log(`getUserMedia error: ${error}`);
         });
+      dispatch(setSocket(socketRef.current));
       // dispatch(setSocket(socketRef.current));
     };
 
@@ -256,7 +257,6 @@ function AudioCall() {
         default:
           break;
       }
-      dispatch(setSocket(socketRef.current));
     };
     socketRef.current.onerror = (event) => {
       console.log(`Error! : ${event}`);

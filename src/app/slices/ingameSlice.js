@@ -14,6 +14,10 @@ const ingameSlice = createSlice({
       ...state,
       stomp: action.payload,
     }),
+    closeStomp: (state) => ({
+      ...state,
+      stomp: null,
+    }),
     setID: (state, action) => ({
       ...state,
       id: action.payload,
@@ -31,5 +35,5 @@ const ingameSlice = createSlice({
   extraReducers: {},
 });
 
-export const { setStomp, setID, setSocket, closeSocket } = ingameSlice.actions;
+export const { setStomp, setID, setSocket, closeSocket, closeStomp } = ingameSlice.actions;
 export default ingameSlice.reducer;

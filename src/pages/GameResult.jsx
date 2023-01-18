@@ -1,48 +1,94 @@
-import React, { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import * as SockJS from 'sockjs-client';
 import * as Stomp from '@stomp/stompjs';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 import Button from '../components/common/Button';
+import { closeStomp } from '../app/slices/ingameSlice';
 
-const arr = ['test1', '/img/sanic.webp', 'test2', '/img/sanic.webp', 'test3', '/img/sanic.webp'];
+// const arr = ['test1', '/img/sanic.webp', 'test2', '/img/sanic.webp', 'test3', '/img/sanic.webp'];
+
+let token;
+const subArray = [];
+let resultArray;
 
 function GameResult() {
+  const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
   const ingameStompClient = useSelector((state) => state.ingame.stomp);
   const socketID = useSelector((state) => state.ingame.id);
-  // const client = useRef();
+  const { id } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isHost, setIsHost] = useState(false);
+  const [isGameEnd, setIsGameEnd] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  // function sendMsg() {
-  //   client.current.publish({ destination: '/app/game/result' });
-  // }
+  useEffect(() => {
+    if (cookies.access_token) token = cookies.access_token;
+    else if (cookies.guest) token = cookies.guest;
+    subArray.push(
+      ingameStompClient.subscribe(`/queue/game/result/${socketID}`, (message) => {
+        const data = JSON.parse(message.body);
+        resultArray = data.result;
+        setIsHost(data.isHost);
+        setIsLoading(false);
+      }),
+    );
+    subArray.push(
+      ingameStompClient.subscribe(`/topic/game/end/${id}`, (message) => {
+        const data = JSON.parse(message.body);
+        setIsGameEnd(data.end);
+      }),
+    );
 
-  // useEffect(() => {
-  //   client.current = new Stomp.Client({
-  //     // brokerURL: process.env.REACT_APP_STOMP_URL,
-  //     debug: (str) => {
-  //       console.log(str);
-  //     },
-  //     webSocketFactory: () => new SockJS(`${process.env.REACT_APP_API_URL}/ws`),
-  //     // webSocketFactory: () => new WebSocket(`${process.env.REACT_APP_STOMP_URL}`),
-  //   });
-  //   client.current.onConnect = (frame) => {
-  //     client.current.subscribe(`/topic/game/result`, (message) => {
-  //       const data = JSON.parse(message.body);
-  //       console.log(data);
-  //     });
-  //   };
-  //   client.current.activate();
-  // }, []);
+    ingameStompClient.publish({
+      destination: '/app/game/result',
+      body: JSON.stringify({ roomId: id, webSessionId: socketID, token }),
+    });
+
+    return () => {
+      if (ingameStompClient) {
+        console.log('client unsubscribes');
+        for (let i = 0; i < subArray.length; i += 1) subArray[i].unsubscribe();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isGameEnd) {
+      navigate(`/room/${id}`);
+      ingameStompClient.deactivate();
+      dispatch(closeStomp());
+    }
+  }, [isGameEnd]);
+
+  function endGame() {
+    ingameStompClient.publish({
+      destination: '/app/game/end',
+      body: JSON.stringify({ roomId: id, token }),
+    });
+  }
 
   return (
     <Wrapper>
-      {arr.map((v, i) => {
-        if (i % 2 === 0) return <Keyword>{v}</Keyword>;
+      {isLoading
+        ? null
+        : resultArray.map((v) => {
+            return v.map((innerV, innerI) => {
+              if (innerI % 2 === 0) return <Keyword>{`${innerV[0]}, ${innerV[1]}`}</Keyword>;
 
-        return <Image key={v} src={v} alt={`img_${i}`} />;
-      })}
-      {/* <Button onClick={() => sendMsg()}>test</Button> */}
+              return (
+                <>
+                  <span>{innerV[0]}</span>
+                  <Image key={innerV} src={innerV[1]} alt={`img_${innerI}`} />
+                </>
+              );
+            });
+          })}
+      {isHost ? <Button onClick={() => endGame()}>게임 종료</Button> : null}
     </Wrapper>
   );
 }
@@ -62,6 +108,7 @@ const Image = styled.img`
   margin-bottom: 15px;
   width: 300px;
   aspect-ratio: auto 1/1;
+  background-color: white;
 `;
 
 const Wrapper = styled.div`
