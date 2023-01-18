@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import roomAPI from '../api/room';
 import Container from '../components/layout/Container';
-import Avatar from '../components/common/Avatar';
 import Button from '../components/common/Button';
 import FlatButton from '../components/common/FlatButton';
 import RoomList from '../components/room/RoomList';
@@ -12,10 +10,7 @@ import EmptyRoomList from '../components/room/EmptyRoomList';
 import SettingButton from '../components/button/SettingButton';
 import FloatBox from '../components/layout/FloatBox';
 import useModal from '../hooks/useModal';
-
-const userInfo = {
-  nickname: '내이름은피카소',
-};
+import LobbyProfile from '../components/user/LobbyProfile';
 
 function Lobby() {
   const navigate = useNavigate();
@@ -29,9 +24,9 @@ function Lobby() {
 
   const getRooms = () => {
     const source = new EventSource(`${process.env.REACT_APP_API_URL}/api/sse/rooms`);
-    source.onerror = (error) => {
-      console.log(error);
-    };
+    // source.onerror = (error) => {
+    //   console.log(error);
+    // };
     source.addEventListener('connect', (event) => {
       const data = JSON.parse(event.data);
       setRooms(data);
@@ -72,10 +67,7 @@ function Lobby() {
       <FloatBox top={<SettingButton />} />
       <Container>
         <Side>
-          <Profile>
-            <Avatar width="80px" height="80px" />
-            <Nickname>{userInfo.nickname}</Nickname>
-          </Profile>
+          <LobbyProfile />
           <FlatButton size="small" onClick={LinkToMyPage}>
             마이페이지
           </FlatButton>
@@ -103,6 +95,13 @@ function Lobby() {
   );
 }
 
+const Main = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  height: 100%;
+`;
+
 const Side = styled.div`
   width: 20%;
   height: 100%;
@@ -111,25 +110,6 @@ const Side = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-`;
-
-const Profile = styled.div`
-  ${({ theme }) => theme.common.flexCenterColumn};
-`;
-
-const Nickname = styled.h3`
-  font-family: 'Pretendard';
-  font-size: ${({ theme }) => theme.fontSizes.xxl};
-  font-weight: ${({ theme }) => theme.fontWeight.bold};
-  color: ${({ theme }) => theme.colors.DARK_LAVA};
-  margin: 10px 0 20px 0;
-`;
-
-const Main = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 80%;
-  height: 100%;
 `;
 
 const TopBtns = styled.div`
