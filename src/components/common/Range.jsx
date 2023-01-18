@@ -1,12 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 
-function Range({ min, max, value, onChange }) {
-  return <InputRange type="range" min={min} max={max} value={value} onChange={onChange} />;
+function Range({ width, min, max, value, onChange }) {
+  return (
+    <InputRange type="range" width={width} min={min} max={max} value={value} onChange={onChange} />
+  );
 }
 
 const InputRange = styled.input`
-  width: 100%;
+  width: ${(props) => props.width || '100%'};
   border-radius: 8px;
   background: ${({ theme }) => theme.colors.DIM_GRAY};
   border-color: ${({ theme }) => theme.colors.DIM_GRAY};
