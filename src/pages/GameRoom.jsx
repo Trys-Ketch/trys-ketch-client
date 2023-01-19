@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCookies } from 'react-cookie';
 import SockJS from 'sockjs-client';
@@ -22,6 +22,7 @@ let token;
 const subArray = [];
 
 function GameRoom() {
+  const { state } = useLocation();
   const [isReady, setIsReady] = useState(false);
   const [isHost, setIsHost] = useState(false);
   const [hostID, setHostID] = useState('');
@@ -36,19 +37,27 @@ function GameRoom() {
   const socketID = useSelector((state) => state.ingame.id);
   const socket = useSelector((state) => state.ingame.socket);
 
-  function toggleReady() {
+  console.log(state);
+
+  const toggleReady = () => {
     console.log(socket);
     socket.send(JSON.stringify({ type: 'ingame/toggle_ready', room: id }));
-  }
+  };
 
-  function start() {
+  const start = () => {
     if (cookies.access_token) token = cookies.access_token;
     else if (cookies.guest) token = cookies.guest;
     ingameStompClient.publish({
       destination: '/app/game/start',
       body: JSON.stringify({ roomId: id * 1, token }),
     });
-  }
+  };
+
+  const handleCodeCopy = () => {
+    window.navigator.clipboard.writeText(state.randomCode).then(() => {
+      alert(`복사 완료!: ${state.randomCode}`);
+    });
+  };
 
   useEffect(() => {
     const gameRoomEventHandler = (event) => {
@@ -145,7 +154,7 @@ function GameRoom() {
       />
       <Container>
         <Main>
-          <RoomTitle>가나다라마바사아자차카타파하</RoomTitle>
+          <RoomTitle>{state.title}</RoomTitle>
           <AttendeeList userList={attendees} />
           <ChatBox />
         </Main>
@@ -155,17 +164,32 @@ function GameRoom() {
           </ExplainArea>
           <SetTime>
             <Subtitle>제한 시간</Subtitle>
+            <Time>1:00</Time>
           </SetTime>
-          <Button width="100%">
+          <Button onClick={handleCodeCopy} width="100%">
             초대코드 복사
             <img src={copy} alt="copy" />
           </Button>
           {isHost ? (
-            <Button width="100%" disabled={!allReady}>
+            <Button
+              color={({ theme }) => theme.colors.WHITE}
+              bgcolor={({ theme }) => theme.colors.YELLOW_GREEN}
+              shadow={({ theme }) => theme.colors.PAKISTAN_GREEN}
+              width="100%"
+              size="large"
+              disabled={!allReady}
+            >
               게임 시작
             </Button>
           ) : (
-            <Button width="100%" size="large" onClick={() => toggleReady()}>
+            <Button
+              color={({ theme }) => theme.colors.WHITE}
+              bgcolor={({ theme }) => theme.colors.DEEP_BLUE}
+              shadow={({ theme }) => theme.colors.SAPPHIRE}
+              width="100%"
+              size="large"
+              onClick={toggleReady}
+            >
               {isReady ? '취소' : '준비 완료'}
             </Button>
           )}
@@ -204,19 +228,35 @@ const Box = styled.div`
 `;
 
 const ExplainArea = styled(Box)`
-  height: 60%;
+  height: 45%;
 `;
 
 const SetTime = styled(Box)`
-  height: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 25%;
 `;
 
 const Subtitle = styled.h3`
   width: 100%;
   text-align: center;
+  margin-top: 10px;
   font-family: 'TTTogether';
   font-size: ${({ theme }) => theme.fontSizes.xl};
   color: ${({ theme }) => theme.colors.DARK_LAVA};
+`;
+
+const Time = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  color: ${({ theme }) => theme.colors.DIM_GRAY};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  font-size: 42px;
 `;
 
 export default GameRoom;
