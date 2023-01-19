@@ -154,7 +154,9 @@ function GameRoom() {
             <img src={copy} alt="copy" />
           </Button>
           {isHost ? (
-            <Button disabled={!allReady}>게임 시작</Button>
+            <Button onClick={() => start()} disabled={!allReady}>
+              게임 시작
+            </Button>
           ) : (
             <Button width="100%" size="large" onClick={() => toggleReady()}>
               {isReady ? '취소' : '준비 완료'}
