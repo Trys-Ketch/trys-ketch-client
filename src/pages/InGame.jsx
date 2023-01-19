@@ -156,8 +156,7 @@ function InGame() {
           ),
           drawing: (
             <div>
-              <h3 style={{ textAlign: 'center', fontSize: '42px' }}>{keyword}</h3>
-              <Drawing submitImg={(canvas) => submitImg(canvas)} />
+              <Drawing keyword={keyword} submitImg={(canvas) => submitImg(canvas)} />
             </div>
           ),
           guessing: (
