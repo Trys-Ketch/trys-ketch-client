@@ -7,6 +7,7 @@ import App from './App';
 import theme from './styles/theme';
 import Globalstyle from './styles/GlobalStyle';
 import { store, persistor } from './app/configStore';
+import './styles/font.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
