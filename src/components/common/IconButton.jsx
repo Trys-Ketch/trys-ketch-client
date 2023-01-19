@@ -57,6 +57,28 @@ const ButtonBlock = styled.button`
       }
     `}
 
+    ${(props) =>
+    props.size === 'xlarge' &&
+    css`
+      width: 4rem;
+      height: 4rem;
+      img {
+        width: 42px;
+        height: 42px;
+      }
+    `}
+
+    ${(props) =>
+    props.size === 'xxlarge' &&
+    css`
+      width: 4.5rem;
+      height: 4.5rem;
+      img {
+        width: 48px;
+        height: 48px;
+      }
+    `}
+
   &:active {
     background: ${({ theme }) => theme.colors.BONE2};
   }
@@ -93,6 +115,18 @@ const Typography = styled.span`
     props.size === 'large' &&
     css`
       font-size: ${({ theme }) => theme.fontSizes.lg};
+    `}
+
+    ${(props) =>
+    props.size === 'xlarge' &&
+    css`
+      font-size: ${({ theme }) => theme.fontSizes.xl};
+    `}
+
+    ${(props) =>
+    props.size === 'xxlarge' &&
+    css`
+      font-size: ${({ theme }) => theme.fontSizes.xxl};
     `}
 `;
 
