@@ -1,8 +1,8 @@
 ---
 name: issue template
-about: title에 올바른 항목을 적고(Feature or Fix), FE와 BE 중 해당하지 않는 라벨을 삭제합니다.
-title: "[Feature]"
-labels: ''
+about: title에 올바른 항목을 적고(Feature or Fix) 이에 해당하는 label을 선택합니다.
+title: "[Fix]"
+labels: 'fix'
 assignees: ''
 
 ---
