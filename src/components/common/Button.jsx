@@ -9,7 +9,7 @@ const ButtonBlock = styled.button`
   font-family: 'TTTogether';
   cursor: pointer;
   outline: none;
-  border-bottom: 5px solid #746b5f;
+  border-bottom: 5px solid ${(props) => props.shadow || props.theme.colors.DIM_GRAY};
   background: ${(props) => props.bgcolor || props.theme.colors.FLORAL_WHITE};
   color: ${(props) => props.color || props.theme.colors.DARK_LAVA};
   border-radius: 10px;
@@ -17,16 +17,12 @@ const ButtonBlock = styled.button`
   padding-bottom: 0;
   transition: 0.2s ease;
 
-  &:active {
+  &:not(:disabled):active {
     background: ${(props) => props.bgcolor || props.theme.colors.BONE2};
   }
 
-  &:hover {
+  &:not(:disabled):hover {
     scale: 1.03;
-  }
-
-  & > * {
-    margin-left: 5px;
   }
 
   ${(props) =>
@@ -66,6 +62,9 @@ const ButtonBlock = styled.button`
 
   &:disabled {
     cursor: not-allowed;
+    background: ${({ theme }) => theme.colors.SHAMROK};
+    border-bottom: 5px solid ${({ theme }) => theme.colors.RUSSIAN_GREEN};
+    color: #ffffff80;
   }
 `;
 
@@ -73,6 +72,7 @@ function Button({
   children,
   ref,
   bgcolor,
+  shadow,
   color,
   inline = false,
   size = 'medium',
@@ -83,6 +83,7 @@ function Button({
   return (
     <ButtonBlock
       bgcolor={bgcolor}
+      shadow={shadow}
       color={color}
       inline={inline}
       width={width}

@@ -23,7 +23,6 @@ function ChatBox() {
   const chatSubscribe = () => {
     client.subscribe(CHAT_SERVER_URL, (message) => {
       const data = JSON.parse(message.body);
-      console.log(data);
       setMessages((messages) => [...messages, data]);
     });
   };
@@ -49,12 +48,12 @@ function ChatBox() {
   };
 
   const handleSubmit = (e) => {
+    e.preventDefault();
     const message = input.trim();
     if (!message) {
       // 예외 처리 알림
       return;
     }
-    e.preventDefault();
     chatPublish(types.chat.chat, message);
     setInput('');
   };
