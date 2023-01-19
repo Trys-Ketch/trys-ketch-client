@@ -175,7 +175,7 @@ function GameRoom() {
               color={({ theme }) => theme.colors.WHITE}
               bgcolor={({ theme }) => theme.colors.YELLOW_GREEN}
               shadow={({ theme }) => theme.colors.PAKISTAN_GREEN}
-              onClick{() => start()}
+              onClick={() => start()}
               width="100%"
               size="large"
               disabled={!allReady}
