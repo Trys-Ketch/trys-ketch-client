@@ -49,7 +49,7 @@ function GameRoom() {
     else if (cookies.guest) token = cookies.guest;
     ingameStompClient.publish({
       destination: '/app/game/start',
-      body: JSON.stringify({ roomId: id * 1, token }),
+      body: JSON.stringify({ roomId: id, token }),
     });
   };
 
