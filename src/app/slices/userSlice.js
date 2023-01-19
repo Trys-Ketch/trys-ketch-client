@@ -1,7 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
+import DefaultImage from '../../assets/icons/user.png';
 
-// 게임에 따라서 유저정보 추가 관리 필요
 const initialState = {
+  profileImage: DefaultImage,
+  userId: '',
   nickname: '',
 };
 
@@ -9,13 +11,25 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
+    setProfileImage: (state, action) => ({
+      ...state,
+      profileImage: action.payload,
+    }),
+    setUserId: (state, action) => ({
+      ...state,
+      userId: action.payload,
+    }),
     setNickname: (state, action) => ({
       ...state,
       nickname: action.payload,
+    }),
+    setUserInfo: (state, action) => ({
+      ...state,
+      ...action.payload,
     }),
   },
   extraReducers: {},
 });
 
-export const { setNickname } = userSlice.actions;
+export const { setProfileImage, setUserId, setNickname, setUserInfo } = userSlice.actions;
 export default userSlice.reducer;

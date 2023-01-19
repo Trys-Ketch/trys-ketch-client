@@ -18,9 +18,19 @@ const getRandomImage = async () => {
   return response;
 };
 
+/**
+ * 유저 정보 발급
+ * @returns { id: String, nickname: String, imgUrl: Url}
+ */
+const getUserInfo = async () => {
+  const response = await instance.get(`/api/users/user-info`);
+  return response;
+};
+
 const userAPI = {
   getRandomNickname,
   getRandomImage,
+  getUserInfo,
 };
 
 export default userAPI;

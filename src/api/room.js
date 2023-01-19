@@ -11,7 +11,7 @@ const enterRoom = async (code) => {
 };
 
 const exitRoom = async (id) => {
-  const response = await instance.delete(`/api/room/${id}/exit`);
+  const response = await instance.delete(`/api/room/exit/${id}`);
   return response;
 };
 

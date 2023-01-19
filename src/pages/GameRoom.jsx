@@ -5,8 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useCookies } from 'react-cookie';
 import SockJS from 'sockjs-client';
 import * as Stomp from '@stomp/stompjs';
-import MessageList from '../components/chat/MessageList';
-import MessageInput from '../components/chat/MessageForm';
 import AttendeeList from '../components/room/AttendeeList';
 import Button from '../components/common/Button';
 import { setStomp } from '../app/slices/ingameSlice';
@@ -17,6 +15,7 @@ import MikeButton from '../components/button/MikeButton';
 import copy from '../assets/icons/copy-icon.svg';
 import QuitButton from '../components/button/QuitButton';
 import RoomTitle from '../components/room/RoomTitle';
+import ChatBox from '../components/chat/ChatBox';
 
 let token;
 const subArray = [];
@@ -35,10 +34,6 @@ function GameRoom() {
   const socketID = useSelector((state) => state.ingame.id);
   const socket = useSelector((state) => state.ingame.socket);
 
-  // const chatEndPoint = `${process.env.REACT_APP_API_URL}/ws`;
-  // const SockJs = new SockJS(chatEndPoint);
-  // const stomp = Stomp.over(SockJs);
-
   function toggleReady() {
     console.log(socket);
     socket.send(JSON.stringify({ type: 'ingame/toggle_ready', room: id }));
@@ -52,53 +47,6 @@ function GameRoom() {
       body: JSON.stringify({ roomId: id * 1, token }),
     });
   }
-
-  // const recvMessage = (recv) => {
-  //   console.log('메세지 수신');
-  //   messages.push({
-  //     type: recv.type,
-  //     sender: recv.type === 'ENTER' ? '' : recv.sender,
-  //     message: recv.type === 'ENTER' ? `[알림] ${recv.message}` : recv.message,
-  //   });
-  //   setViewMessages([...messages]);
-  // };
-
-  // function roomSubscribe() {
-  //   stomp.connect(
-  //     {},
-  //     (frame) => {
-  //       // roomId = 1
-  //       // stomp.subscribe(`/sub/chat/room/${id}`, (response) => {
-  //         const recv = JSON.parse(response.body);
-  //         // recvMessage(recv);
-  //         console.log(recv);
-  //       });
-  //       // stomp.send(
-  //       //   '/app/chat/message',
-  //       //   {},
-  //       //   JSON.stringify({
-  //       //     type: 'ENTER',
-  //       //     roomId: roomId,
-  //       //     sender: sender,
-  //       //   }),
-  //       // );
-  //     },
-  //     // function (error) {
-  //     //   if (reconnect++ <= 5) {
-  //     //     setTimeout(function () {
-  //     //       console.log('connection reconnect');
-  //     //       SockJs = new SockJS('http://localhost:8080/ws/chat');
-  //     //       ws = Stomp.over(SockJs);
-  //     //       roomSubscribe();
-  //     //     }, 10 * 1000);
-  //     //   }
-  //     // },
-  //   );
-  // }
-
-  // useEffect(() => {
-  //   roomSubscribe();
-  // }, []);
 
   useEffect(() => {
     const gameRoomEventHandler = (event) => {
@@ -147,13 +95,11 @@ function GameRoom() {
 
   useEffect(() => {
     const client = new Stomp.Client({
-      // brokerURL: process.env.REACT_APP_STOMP_URL,
       debug: (str) => {
         console.log(str);
       },
       splitLargeFrames: true,
       webSocketFactory: () => new SockJS(`${process.env.REACT_APP_API_URL}/ws`),
-      // webSocketFactory: () => new WebSocket(`${process.env.REACT_APP_STOMP_URL}`),
     });
     client.onConnect = (frame) => {
       subArray.push(
@@ -194,10 +140,7 @@ function GameRoom() {
         <Main>
           <RoomTitle>가나다라마바사아자차카타파하</RoomTitle>
           <AttendeeList />
-          <ChatBox>
-            <MessageList />
-            <MessageInput />
-          </ChatBox>
+          <ChatBox />
         </Main>
         <Side>
           <Explain>
@@ -242,16 +185,6 @@ const Side = styled.aside`
   & > *:not(:first-child) {
     margin-top: 10px;
   }
-`;
-
-const ChatBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 40%;
-  padding: 10px;
-  border-radius: 10px;
-  background-color: ${({ theme }) => theme.colors.ANTIQUE_WHITE};
 `;
 
 const Box = styled.div`
