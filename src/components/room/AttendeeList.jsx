@@ -3,14 +3,7 @@ import styled from 'styled-components';
 import Attendee from './Attendee';
 import EmptyAttendee from './EmptyAttendee';
 
-const userList = [
-  { userId: 'asdfasdfwe', nickname: '영리한 붉은 박쥐', isHost: true, isReady: true },
-  { userId: 'asdf23r454', nickname: '김화백', isHost: false, isReady: false },
-  { userId: 'cvsdfgwer4', nickname: '나는야피카소', isHost: false, isReady: true },
-  { userId: 'sdfwergnuf', nickname: '보살핌이 필요한 친구', isHost: false, isReady: true },
-];
-
-function AttendeeList() {
+function AttendeeList({ userList }) {
   return (
     <GridList>
       {userList.map((user) => (

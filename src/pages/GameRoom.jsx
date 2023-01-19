@@ -16,6 +16,7 @@ import copy from '../assets/icons/copy-icon.svg';
 import QuitButton from '../components/button/QuitButton';
 import RoomTitle from '../components/room/RoomTitle';
 import ChatBox from '../components/chat/ChatBox';
+import Explain from '../components/room/Explain';
 
 let token;
 const subArray = [];
@@ -26,6 +27,7 @@ function GameRoom() {
   const [hostID, setHostID] = useState('');
   const [allReady, setAllReady] = useState(false);
   const [isIngame, setIsIngame] = useState(false);
+  const [attendees, setAttendees] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
@@ -64,6 +66,11 @@ function GameRoom() {
         case 'ingame/is_host': {
           setIsHost(data.host);
           setHostID(data.hostId);
+          break;
+        }
+        case 'ingame/attendee': {
+          console.log(data);
+          setAttendees(data.attendee);
           break;
         }
         default: {
@@ -139,13 +146,13 @@ function GameRoom() {
       <Container>
         <Main>
           <RoomTitle>가나다라마바사아자차카타파하</RoomTitle>
-          <AttendeeList />
+          <AttendeeList userList={attendees} />
           <ChatBox />
         </Main>
         <Side>
-          <Explain>
-            <Subtitle>게임 방법</Subtitle>
-          </Explain>
+          <ExplainArea>
+            <Explain />
+          </ExplainArea>
           <SetTime>
             <Subtitle>제한 시간</Subtitle>
           </SetTime>
@@ -154,7 +161,9 @@ function GameRoom() {
             <img src={copy} alt="copy" />
           </Button>
           {isHost ? (
-            <Button disabled={!allReady}>게임 시작</Button>
+            <Button width="100%" disabled={!allReady}>
+              게임 시작
+            </Button>
           ) : (
             <Button width="100%" size="large" onClick={() => toggleReady()}>
               {isReady ? '취소' : '준비 완료'}
@@ -194,7 +203,7 @@ const Box = styled.div`
   padding: 10px;
 `;
 
-const Explain = styled(Box)`
+const ExplainArea = styled(Box)`
   height: 60%;
 `;
 

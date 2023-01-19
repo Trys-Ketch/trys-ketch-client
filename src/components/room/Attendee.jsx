@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
 import Avatar from '../common/Avatar';
 import crown from '../../assets/icons/crown.png';
 import mike from '../../assets/icons/mike-icon.svg';
@@ -9,15 +10,17 @@ import more from '../../assets/icons/more-icon.svg';
 import Range from '../common/Range';
 
 function Attendee({ user }) {
+  const { userId } = useSelector((state) => state.user);
+
   return (
     <StUserCard className={user.isHost && 'host'}>
       <UserInfo>
         {user.isHost && <img className="host" src={crown} width="18px" height="18px" alt="host" />}
-        <Avatar width="35px" height="35px" />
+        <Avatar src={user.imgUrl} width="35px" height="35px" />
         <Nickname>{user.nickname}</Nickname>
       </UserInfo>
       {/* 내가 아니면 마이크 조절 */}
-      {user.userId !== 'cvsdfgwer4' && (
+      {user.userId !== userId && (
         <HoverDisplay>
           <UserActive>
             <img src={mike} width="20px" height="20px" alt="mike" />
