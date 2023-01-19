@@ -64,7 +64,7 @@ function Lobby() {
 
   return (
     <>
-      <FloatBox top={<SettingButton />} />
+      <FloatBox top={<SettingButton size="xlarge" />} />
       <Container>
         <Side>
           <LobbyProfile />

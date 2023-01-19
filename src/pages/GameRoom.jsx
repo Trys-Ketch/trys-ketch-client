@@ -146,11 +146,11 @@ function GameRoom() {
       <FloatBox
         top={
           <>
-            <SettingButton />
-            <MikeButton />
+            <SettingButton size="xlarge" />
+            <MikeButton size="xlarge" />
           </>
         }
-        bottom={<QuitButton />}
+        bottom={<QuitButton size="xlarge" />}
       />
       <Container>
         <Main>
@@ -168,7 +168,7 @@ function GameRoom() {
           </SetTime>
           <Button onClick={handleCodeCopy} width="100%">
             초대코드 복사
-            <img src={copy} alt="copy" />
+            <img src={copy} width="18px" height="18px" alt="copy" style={{ marginLeft: '10px' }} />
           </Button>
           {isHost ? (
             <Button
@@ -179,6 +179,7 @@ function GameRoom() {
               width="100%"
               size="large"
               disabled={!allReady}
+              style={{ marginLeft: 0 }}
             >
               게임 시작
             </Button>
@@ -190,6 +191,7 @@ function GameRoom() {
               width="100%"
               size="large"
               onClick={toggleReady}
+              style={{ marginLeft: 0 }}
             >
               {isReady ? '취소' : '준비 완료'}
             </Button>
@@ -245,7 +247,7 @@ const Subtitle = styled.h3`
   text-align: center;
   margin-top: 10px;
   font-family: 'TTTogether';
-  font-size: ${({ theme }) => theme.fontSizes.xl};
+  font-size: ${({ theme }) => theme.fontSizes.xxl};
   color: ${({ theme }) => theme.colors.DARK_LAVA};
 `;
 

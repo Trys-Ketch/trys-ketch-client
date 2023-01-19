@@ -39,7 +39,7 @@ const ButtonBlock = styled.button`
       height: 3rem;
       padding-left: 2rem;
       padding-right: 2rem;
-      font-size: ${({ theme }) => theme.fontSizes.md};
+      font-size: ${({ theme }) => theme.fontSizes.lg};
     `}
 
   ${(props) =>
@@ -48,7 +48,7 @@ const ButtonBlock = styled.button`
       height: 4rem;
       padding-left: 1.5rem;
       padding-right: 1.5rem;
-      font-size: ${({ theme }) => theme.fontSizes.lg};
+      font-size: ${({ theme }) => theme.fontSizes.xl};
     `}
 
   ${(props) =>
@@ -57,7 +57,7 @@ const ButtonBlock = styled.button`
       height: 5rem;
       padding-left: 1.125rem;
       padding-right: 1.125rem;
-      font-size: ${({ theme }) => theme.fontSizes.xl};
+      font-size: ${({ theme }) => theme.fontSizes.xxl};
     `}
 
   &:disabled {
