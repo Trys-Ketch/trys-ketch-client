@@ -268,17 +268,18 @@ function AudioCall() {
 
     return () => {
       const localMediaTrack = localStream.getTracks();
-      console.log(!!localMediaTrack);
       // 컴포넌트가 unmount되면 socket연결을 종료합니다.
       if (socketRef.current) {
         socketRef.current.close();
       }
+      // 컴포넌트가 unmount되면 webRTC의 연결을 종료합니다.
       if (pcs) {
         console.log('webRTC connection close');
         for (let i = 0; i < pcs.length; i += 1) {
           pcs[i].close();
         }
       }
+      // 컴포넌트가 unmount되면 local media track을 사용중지합니다.
       if (localMediaTrack) {
         console.log('local media track is stopped');
         for (let i = 0; i < localMediaTrack.length; i += 1) localMediaTrack[i].stop();
