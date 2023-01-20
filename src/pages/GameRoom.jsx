@@ -128,9 +128,7 @@ function GameRoom() {
 
   useEffect(() => {
     const client = new Stomp.Client({
-      debug: (str) => {
-        console.log(str);
-      },
+      debug: (str) => {},
       splitLargeFrames: true,
       webSocketFactory: () => new SockJS(`${process.env.REACT_APP_API_URL}/ws`),
     });
@@ -147,12 +145,11 @@ function GameRoom() {
       console.error('Additional details: ', frame.body);
     };
     client.onDisconnect = (frame) => {
-      console.log('Stomp Disconnected');
+      // console.log('Stomp Disconnected');
     };
     dispatch(setStomp(client));
     return () => {
       if (client) {
-        console.log('client unsubscribes');
         for (let i = 0; i < subArray.length; i += 1) subArray[i].unsubscribe();
       }
     };

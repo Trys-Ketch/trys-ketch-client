@@ -89,7 +89,7 @@ function AudioCall() {
      * @param e track이 등록됨을 알려주는 이벤트 track이벤트 객체 입니다.
      */
     pc.ontrack = (e) => {
-      console.log('ontrack success');
+      // console.log('ontrack success');
       setUsers((oldUsers) => oldUsers.filter((user) => user.id !== socketID));
       setUsers((oldUsers) => [
         ...oldUsers,
@@ -102,7 +102,7 @@ function AudioCall() {
 
     // 로컬의 미디어 스트림이 존재하면 PeerConnection에 추가해줍니다.
     if (peerConnectionLocalStream) {
-      console.log('localstream add');
+      // console.log('localstream add');
       peerConnectionLocalStream.getTracks().forEach((track) => {
         pc.addTrack(track, peerConnectionLocalStream);
       });
@@ -114,6 +114,21 @@ function AudioCall() {
   };
 
   useEffect(() => {
+    navigator.mediaDevices
+      .getUserMedia({
+        video: false,
+        audio: true,
+      })
+      .then((stream) => {
+        if (audioRef.current) audioRef.current.srcObject = stream;
+        localStream = stream;
+      })
+      .catch((error) => {
+        console.log(`getUserMedia error: ${error}`);
+      });
+  }, []);
+
+  useEffect(() => {
     // 시그널링 서버와 소켓 연결
     socketRef.current = new SockJS(`${process.env.REACT_APP_API_URL}/signal`);
 
@@ -122,24 +137,11 @@ function AudioCall() {
 
     // 소켓이 연결되었을 때 실행
     socketRef.current.onopen = async () => {
-      navigator.mediaDevices
-        .getUserMedia({
-          video: false,
-          audio: true,
-        })
-        .then((stream) => {
-          if (audioRef.current) audioRef.current.srcObject = stream;
-
-          localStream = stream;
-          console.log('join_room');
-          socketRef.current?.send(JSON.stringify({ type: 'ingame/join_room', room: id, token }));
-        })
-        .catch((error) => {
-          console.log(`getUserMedia error: ${error}`);
-        });
-      dispatch(setSocket(socketRef.current));
-      // dispatch(setSocket(socketRef.current));
+      // console.log('join_room');
+      socketRef.current?.send(JSON.stringify({ type: 'ingame/join_room', room: id, token }));
     };
+
+    dispatch(setSocket(socketRef.current));
 
     // 서버로부터 메세지가 왔을 때 실행
     socketRef.current.onmessage = (event) => {
@@ -152,7 +154,7 @@ function AudioCall() {
           // 나를 제외했으므로 방에 나밖에 없으면 length는 0
           const len = allUsers.length;
           for (let i = 0; i < len; i += 1) {
-            console.log('all_users');
+            // console.log('all_users');
 
             // i번째 유저와 나의 peer connection 생성
             createPeerConnection(allUsers[i].id, socketRef.current, localStream);
@@ -165,7 +167,7 @@ function AudioCall() {
               allUsersPc
                 .createOffer({ offerToReceiveAudio: true, offerToReceiveVideo: false })
                 .then((sdp) => {
-                  console.log('create offer success');
+                  // console.log('create offer success');
                   // 상대방과의 peer connection에 내 sdp를 이용해 local description을 생성
                   allUsersPc.setLocalDescription(new RTCSessionDescription(sdp));
                   // signaling server에 i번째 유저에게 offer를 요청합니다.
@@ -186,7 +188,7 @@ function AudioCall() {
         }
         // 2. 상대방이 offer를 받으면
         case 'rtc/offer': {
-          console.log('get offer');
+          // console.log('get offer');
           // offer를 요청한 상대방과의 peer connection을 생성합니다.
           createPeerConnection(data.sender, socketRef.current, localStream);
           // offer에서 사용하는 peer connection, offer를 요청한 상대방과의 peer connection 입니다.
@@ -194,12 +196,12 @@ function AudioCall() {
           if (offerPc) {
             // offer를 보낸 상대방의 sdp를 이용해 상대방의 remote discription을 생성합니다.
             offerPc.setRemoteDescription(new RTCSessionDescription(data.sdp)).then(() => {
-              console.log('answer set remote description success');
+              // console.log('answer set remote description success');
               offerPc // answer를 생성하고
                 .createAnswer({ offerToReceiveVideo: false, offerToReceiveAudio: true })
                 .then((sdp) => {
                   // 나의 sdp를 이용해
-                  console.log('create answer success');
+                  // console.log('create answer success');
                   // 내 local description을 설정하고
                   offerPc.setLocalDescription(new RTCSessionDescription(sdp));
                   // offer를 보낸 상대방에게 answer를 보냅니다.
@@ -221,7 +223,7 @@ function AudioCall() {
           break;
         }
         case 'rtc/answer': {
-          console.log('get answer');
+          // console.log('get answer');
           // answer에서 사용하는 peer connection, answer를 보낸 상대방과의 peer connection 입니다.
           const answerPc: RTCPeerConnection = pcs[data.sender];
           // answerPc가 존재하면
@@ -232,14 +234,14 @@ function AudioCall() {
           break;
         }
         case 'rtc/candidate': {
-          console.log('get candidate');
+          // console.log('get candidate');
           // candidate에서 사용하는 peer connection, candidate 요청을 보낸 상대방과의 peer connection 입니다.
           const candidatePc: RTCPeerConnection = pcs[data.sender];
           // candidatePc가 존재하면
           if (candidatePc) {
             // cadidate 요청을 보낸 상대방의 candidate 정보로 candidate를 추가합니다.
             candidatePc.addIceCandidate(new RTCIceCandidate(data.candidate)).then(() => {
-              console.log('candidate add success');
+              // console.log('candidate add success');
             });
           }
           break;
@@ -263,26 +265,28 @@ function AudioCall() {
     };
     socketRef.current.onclose = () => {
       dispatch(closeSocket());
-      console.log('socket is closed');
+      // console.log('socket is closed');
     };
 
     return () => {
-      const localMediaTrack = localStream.getTracks();
+      if (localStream) {
+        const localMediaTrack = localStream.getTracks();
+        // 컴포넌트가 unmount되면 webRTC의 연결을 종료합니다.
+        if (pcs) {
+          // console.log('webRTC connection close');
+          for (let i = 0; i < pcs.length; i += 1) {
+            pcs[i].close();
+          }
+        }
+        // 컴포넌트가 unmount되면 local media track을 사용중지합니다.
+        if (localMediaTrack) {
+          // console.log('local media track is stopped');
+          for (let i = 0; i < localMediaTrack.length; i += 1) localMediaTrack[i].stop();
+        }
+      }
       // 컴포넌트가 unmount되면 socket연결을 종료합니다.
       if (socketRef.current) {
         socketRef.current.close();
-      }
-      // 컴포넌트가 unmount되면 webRTC의 연결을 종료합니다.
-      if (pcs) {
-        console.log('webRTC connection close');
-        for (let i = 0; i < pcs.length; i += 1) {
-          pcs[i].close();
-        }
-      }
-      // 컴포넌트가 unmount되면 local media track을 사용중지합니다.
-      if (localMediaTrack) {
-        console.log('local media track is stopped');
-        for (let i = 0; i < localMediaTrack.length; i += 1) localMediaTrack[i].stop();
       }
     };
   }, []);
