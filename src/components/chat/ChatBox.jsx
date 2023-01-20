@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import SockJs from 'sockjs-client';
+import * as StompJs from '@stomp/stompjs';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -8,7 +10,7 @@ import MessageList from './MessageList';
 import types from '../../utils/types';
 
 function ChatBox() {
-  const client = useSelector((state) => state.ingame.stomp);
+  const client = useRef(null);
   const { profileImage, userId, nickname } = useSelector((state) => state.user);
   const { id } = useParams();
   const [input, setInput] = useState('');
@@ -20,49 +22,68 @@ function ChatBox() {
     setInput(e.target.value);
   };
 
-  const chatSubscribe = () => {
-    client.subscribe(CHAT_SERVER_URL, (message) => {
-      const data = JSON.parse(message.body);
-      setMessages((messages) => [...messages, data]);
+  const subscribe = () => {
+    client.current.subscribe(CHAT_SERVER_URL, ({ body }) => {
+      setMessages((message) => [...message, JSON.parse(body)]);
     });
-  };
-
-  const chatPublish = (type, content) => {
-    client.publish({
-      destination: CHAT_SERVER_URL,
-      body: JSON.stringify({
-        type,
-        userId,
-        profileImage,
-        nickname,
-        content,
-      }),
-    });
-  };
-
-  const chatServerEvents = () => {
-    client.onConnect = () => {
-      chatSubscribe();
-      chatPublish(types.chat.enter, `${nickname}님이 입장하셨습니다.`);
-    };
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const message = input.trim();
-    if (!message) {
-      // 예외 처리 알림
+    if (!client.current.connected) {
       return;
     }
-    chatPublish(types.chat.chat, message);
+    if (message === '') {
+      alert('채팅 내용을 입력해주세요.');
+      return;
+    }
+    client.current.publish({
+      destination: CHAT_SERVER_URL,
+      body: JSON.stringify({
+        type: types.chat.chat,
+        userId,
+        profileImage,
+        nickname,
+        content: message,
+      }),
+    });
     setInput('');
   };
 
+  const connect = () => {
+    client.current = new StompJs.Client({
+      webSocketFactory: () => new SockJs(`${process.env.REACT_APP_API_URL}/ws`),
+      connectHeaders: {},
+      debug(str) {},
+      onConnect: () => {
+        subscribe();
+        if (nickname) {
+          client.current.publish({
+            destination: CHAT_SERVER_URL,
+            body: JSON.stringify({
+              type: types.chat.enter,
+              userId,
+              profileImage,
+              nickname,
+              content: `${nickname}님이 게임에 참가하셨습니다.`,
+            }),
+          });
+        }
+      },
+      onStompError: (frame) => {},
+    });
+    client.current.activate();
+  };
+
+  const disconnect = () => {
+    client.current.deactivate();
+  };
+
   useEffect(() => {
-    if (client) {
-      chatServerEvents();
-    }
-  }, [client]);
+    connect();
+    return () => disconnect();
+  }, []);
 
   return (
     <StChatBox>
