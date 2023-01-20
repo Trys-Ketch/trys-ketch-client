@@ -114,6 +114,21 @@ function AudioCall() {
   };
 
   useEffect(() => {
+    navigator.mediaDevices
+      .getUserMedia({
+        video: false,
+        audio: true,
+      })
+      .then((stream) => {
+        if (audioRef.current) audioRef.current.srcObject = stream;
+        localStream = stream;
+      })
+      .catch((error) => {
+        console.log(`getUserMedia error: ${error}`);
+      });
+  }, []);
+
+  useEffect(() => {
     // 시그널링 서버와 소켓 연결
     socketRef.current = new SockJS(`${process.env.REACT_APP_API_URL}/signal`);
 
@@ -122,24 +137,11 @@ function AudioCall() {
 
     // 소켓이 연결되었을 때 실행
     socketRef.current.onopen = async () => {
-      navigator.mediaDevices
-        .getUserMedia({
-          video: false,
-          audio: true,
-        })
-        .then((stream) => {
-          if (audioRef.current) audioRef.current.srcObject = stream;
-
-          localStream = stream;
-          console.log('join_room');
-          socketRef.current?.send(JSON.stringify({ type: 'ingame/join_room', room: id, token }));
-        })
-        .catch((error) => {
-          console.log(`getUserMedia error: ${error}`);
-        });
-      dispatch(setSocket(socketRef.current));
-      // dispatch(setSocket(socketRef.current));
+      console.log('join_room');
+      socketRef.current?.send(JSON.stringify({ type: 'ingame/join_room', room: id, token }));
     };
+
+    dispatch(setSocket(socketRef.current));
 
     // 서버로부터 메세지가 왔을 때 실행
     socketRef.current.onmessage = (event) => {
@@ -267,22 +269,24 @@ function AudioCall() {
     };
 
     return () => {
-      const localMediaTrack = localStream.getTracks();
+      if (localStream) {
+        const localMediaTrack = localStream.getTracks();
+        // 컴포넌트가 unmount되면 webRTC의 연결을 종료합니다.
+        if (pcs) {
+          console.log('webRTC connection close');
+          for (let i = 0; i < pcs.length; i += 1) {
+            pcs[i].close();
+          }
+        }
+        // 컴포넌트가 unmount되면 local media track을 사용중지합니다.
+        if (localMediaTrack) {
+          console.log('local media track is stopped');
+          for (let i = 0; i < localMediaTrack.length; i += 1) localMediaTrack[i].stop();
+        }
+      }
       // 컴포넌트가 unmount되면 socket연결을 종료합니다.
       if (socketRef.current) {
         socketRef.current.close();
-      }
-      // 컴포넌트가 unmount되면 webRTC의 연결을 종료합니다.
-      if (pcs) {
-        console.log('webRTC connection close');
-        for (let i = 0; i < pcs.length; i += 1) {
-          pcs[i].close();
-        }
-      }
-      // 컴포넌트가 unmount되면 local media track을 사용중지합니다.
-      if (localMediaTrack) {
-        console.log('local media track is stopped');
-        for (let i = 0; i < localMediaTrack.length; i += 1) localMediaTrack[i].stop();
       }
     };
   }, []);
