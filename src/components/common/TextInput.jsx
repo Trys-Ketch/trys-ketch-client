@@ -12,13 +12,12 @@ const InputBlock = styled.input`
 
   &:focus {
     outline: none;
-    /* border-color: blue; */
   }
 
   &::placeholder {
     color: ${({ theme }) => theme.colors.DIM_GRAY};
     opacity: 50%;
-    font-size: ${({ theme }) => theme.fontSizes.sm};
+    font-size: ${({ theme }) => theme.fontSizes.md};
   }
 `;
 

@@ -54,6 +54,7 @@ const Nickname = styled.span`
   margin-left: 10px;
   font-size: ${({ theme }) => theme.fontSizes.lg};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  line-height: 1.5rem;
 `;
 
 const UserActive = styled.div`

@@ -72,7 +72,6 @@ const Content = styled.span`
   border-radius: 10px;
   padding: 12px;
   color: ${({ theme }) => theme.colors.DARK_LAVA};
-  font-size: ${({ theme }) => theme.fontSizes.lg};
 `;
 
 const Notice = styled(StMessage)`
@@ -80,12 +79,14 @@ const Notice = styled(StMessage)`
 
   &.enter ${Content} {
     color: ${({ theme }) => theme.colors.WHITE};
-    background-color: #48afe9;
+    font-size: ${({ theme }) => theme.fontSizes.md};
+    background-color: #bab1a6;
   }
 
   &.leave ${Content} {
-    color: ${({ theme }) => theme.colors.WHITE};
-    background-color: #a5a5a5;
+    color: ${({ theme }) => theme.colors.DIM_GRAY};
+    font-size: ${({ theme }) => theme.fontSizes.md};
+    background-color: ${({ theme }) => theme.colors.BONE2};
   }
 `;
 
@@ -94,6 +95,7 @@ const MyChat = styled(StMessage)`
 
   ${Content} {
     background-color: ${({ theme }) => theme.colors.WHITE};
+    font-size: ${({ theme }) => theme.fontSizes.lg};
   }
 `;
 

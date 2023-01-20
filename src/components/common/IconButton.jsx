@@ -15,11 +15,10 @@ const ButtonBlock = styled.button`
   outline: none;
   color: ${({ theme }) => theme.colors.DARK_LAVA};
   background: ${({ theme }) => theme.colors.FLORAL_WHITE};
-  border: 2px solid ${({ theme }) => theme.colors.DIM_GRAY};
   border-bottom: 5px solid ${({ theme }) => theme.colors.DIM_GRAY};
   box-shadow: inset 0 0 0 3px ${({ theme }) => theme.colors.FLORAL_WHITE};
   border-radius: 10px;
-
+  margin-bottom: 5px;
   padding-top: 0;
   padding-bottom: 0;
   transition: 0.2s ease;
@@ -90,6 +89,7 @@ const ButtonBlock = styled.button`
   ${({ selected }) =>
     selected &&
     css`
+      border: 2px solid ${({ theme }) => theme.colors.DIM_GRAY};
       background: ${({ theme }) => theme.colors.BONE2};
     `}
 `;

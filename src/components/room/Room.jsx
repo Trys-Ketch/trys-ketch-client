@@ -71,6 +71,7 @@ const RightSide = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  font-size: ${({ theme }) => theme.fontSizes.md};
   img {
     width: 1rem;
     margin: 0 3px;

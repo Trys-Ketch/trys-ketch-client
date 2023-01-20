@@ -29,7 +29,7 @@ const Subtitle = styled.h3`
   margin-top: 10px;
   text-align: center;
   font-family: 'TTTogether';
-  font-size: ${({ theme }) => theme.fontSizes.xl};
+  font-size: ${({ theme }) => theme.fontSizes.xxl};
   color: ${({ theme }) => theme.colors.DARK_LAVA};
 `;
 
@@ -41,6 +41,7 @@ const List = styled.ol`
   list-style: none;
   display: grid;
   padding: 10px;
+  margin-top: 10px;
 
   & li {
     counter-increment: item;
@@ -51,6 +52,7 @@ const List = styled.ol`
     grid-gap: 2rem;
     color: ${({ theme }) => theme.colors.DIM_GRAY};
     font-weight: ${({ theme }) => theme.fontWeight.semibold};
+    font-size: ${({ theme }) => theme.fontSizes.sm};
     line-height: 1.5;
   }
 
