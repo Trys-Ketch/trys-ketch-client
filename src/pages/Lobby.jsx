@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Container from '../components/layout/Container';
@@ -13,6 +13,7 @@ import useModal from '../hooks/useModal';
 import LobbyProfile from '../components/user/LobbyProfile';
 
 function Lobby() {
+  const evtSource = new EventSource(`${process.env.REACT_APP_API_URL}/api/sse/rooms`);
   const navigate = useNavigate();
   const { openModal } = useModal();
   const [rooms, setRooms] = useState([]);
@@ -22,19 +23,21 @@ function Lobby() {
 
   const ROOM_PER_PAGE = 5;
 
-  const getRooms = () => {
-    const source = new EventSource(`${process.env.REACT_APP_API_URL}/api/sse/rooms`);
-    // source.onerror = (error) => {
-    //   console.log(error);
-    // };
-    source.addEventListener('connect', (event) => {
+  const openEvtSource = () => {
+    // 연결됐을때 방 정보 받아오기
+    evtSource.addEventListener('connect', (event) => {
       const data = JSON.parse(event.data);
       setRooms(data);
     });
-    source.addEventListener('changeRoom', (event) => {
+    // 방 정보가 변할 때 방 정보 받아오기
+    evtSource.addEventListener('changeRoom', (event) => {
       const data = JSON.parse(event.data);
       setRooms(data);
     });
+  };
+
+  const closeEvtSource = () => {
+    evtSource.close();
   };
 
   const handleOpenCreateRoom = () => {
@@ -50,7 +53,10 @@ function Lobby() {
   };
 
   useEffect(() => {
-    getRooms();
+    openEvtSource();
+    return () => {
+      closeEvtSource();
+    };
   }, []);
 
   useEffect(() => {
