@@ -194,6 +194,29 @@ function Paint({ keyword = '이거 발견하면 ㄹㅇ 천재 ㅇㅈ', submitImg
   }
 
   /**
+   * 그림을 지울 수 있게 하는 함수입니다.
+   * 단순히 color를 하얀색으로 만드는 것 과는 조금 다릅니다.
+   */
+  function setEraser() {
+    const context = canvasRef.current.getContext('2d');
+    context.globalCompositeOperation = 'destination-out';
+    context.strokeStyle = '#ffffff';
+    setEventState('drawing');
+    setCtx(context);
+  }
+
+  /**
+   * event state를 drawing으로 바꿔 그림을 그릴 수 있게 하는 함수입니다.
+   */
+  function setDrawing() {
+    const context = canvasRef.current.getContext('2d');
+    context.globalCompositeOperation = 'source-over';
+    context.strokeStyle = currentColor;
+    setEventState('drawing');
+    setCtx(context);
+  }
+
+  /**
    * 해당 영역을 주어진 색으로 가득 채우는 함수입니다.
    * @param {event} param0
    */
