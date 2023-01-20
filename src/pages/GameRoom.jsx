@@ -17,12 +17,12 @@ import QuitButton from '../components/button/QuitButton';
 import RoomTitle from '../components/room/RoomTitle';
 import ChatBox from '../components/chat/ChatBox';
 import Explain from '../components/room/Explain';
+import roomAPI from '../api/room';
 
 let token;
 const subArray = [];
 
 function GameRoom() {
-  const { state } = useLocation();
   const [isReady, setIsReady] = useState(false);
   const [isHost, setIsHost] = useState(false);
   const [hostID, setHostID] = useState('');
@@ -36,8 +36,6 @@ function GameRoom() {
   const ingameStompClient = useSelector((state) => state.ingame.stomp);
   const socketID = useSelector((state) => state.ingame.id);
   const socket = useSelector((state) => state.ingame.socket);
-
-  console.log(state);
 
   const toggleReady = () => {
     console.log(socket);
@@ -54,8 +52,8 @@ function GameRoom() {
   };
 
   const handleCodeCopy = () => {
-    window.navigator.clipboard.writeText(state.randomCode).then(() => {
-      alert(`복사 완료!: ${state.randomCode}`);
+    window.navigator.clipboard.writeText('초대코드복사').then(() => {
+      alert(`복사 완료!`);
     });
   };
 
@@ -154,7 +152,7 @@ function GameRoom() {
       />
       <Container>
         <Main>
-          <RoomTitle>{state.title}</RoomTitle>
+          <RoomTitle>타이틀을 입력해주세요</RoomTitle>
           <AttendeeList userList={attendees} />
           <ChatBox />
         </Main>
