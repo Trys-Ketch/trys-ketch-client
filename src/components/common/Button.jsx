@@ -11,7 +11,7 @@ const ButtonBlock = styled.button`
   outline: none;
   border-bottom: 5px solid ${(props) => props.shadow || props.theme.colors.DIM_GRAY};
   background: ${(props) => props.bgcolor || props.theme.colors.FLORAL_WHITE};
-  color: ${(props) => props.color || props.theme.colors.DARK_LAVA};
+  color: ${(props) => props.txtcolor || props.theme.colors.DARK_LAVA};
   border-radius: 10px;
   padding-top: 0;
   padding-bottom: 0;
@@ -71,9 +71,9 @@ const ButtonBlock = styled.button`
 function Button({
   children,
   ref,
+  txtcolor,
   bgcolor,
   shadow,
-  color,
   inline = false,
   size = 'medium',
   width = 'auto',
@@ -82,9 +82,9 @@ function Button({
   const htmlProps = rest;
   return (
     <ButtonBlock
+      txtcolor={txtcolor}
       bgcolor={bgcolor}
       shadow={shadow}
-      color={color}
       inline={inline}
       width={width}
       size={size}

@@ -9,9 +9,9 @@ function AttendeeList({ userList }) {
       {userList.map((user) => (
         <Attendee key={user.userId} user={user} />
       ))}
-      {[...Array(parseInt(8 - userList.length, 10))].map((n) => (
-        <EmptyAttendee key={n} />
-      ))}
+      {[...Array(parseInt(8 - userList.length, 10))].map((_, idx) => {
+        return <EmptyAttendee key={String(idx)} />;
+      })}
     </GridList>
   );
 }
