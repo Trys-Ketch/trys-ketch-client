@@ -143,8 +143,8 @@ function GameRoom() {
       );
     };
     client.onStompError = (frame) => {
-      console.err('Stomp Error!: ', frame.headers.message);
-      console.err('Additional details: ', frame.body);
+      console.error('Stomp Error!: ', frame.headers.message);
+      console.error('Additional details: ', frame.body);
     };
     client.onDisconnect = (frame) => {
       console.log('Stomp Disconnected');
@@ -173,7 +173,7 @@ function GameRoom() {
         <Main>
           <RoomTitle>{roomTitle}</RoomTitle>
           <AttendeeList userList={attendees} />
-          {/* <ChatBox /> */}
+          <ChatBox />
         </Main>
         <Side>
           <ExplainArea>
@@ -189,7 +189,7 @@ function GameRoom() {
           </Button>
           {isHost ? (
             <Button
-              color={({ theme }) => theme.colors.WHITE}
+              txtcolor={({ theme }) => theme.colors.WHITE}
               bgcolor={({ theme }) => theme.colors.YELLOW_GREEN}
               shadow={({ theme }) => theme.colors.PAKISTAN_GREEN}
               onClick={() => start()}
@@ -202,7 +202,7 @@ function GameRoom() {
             </Button>
           ) : (
             <Button
-              color={({ theme }) => theme.colors.WHITE}
+              txtcolor={({ theme }) => theme.colors.WHITE}
               bgcolor={({ theme }) => theme.colors.DEEP_BLUE}
               shadow={({ theme }) => theme.colors.SAPPHIRE}
               width="100%"
