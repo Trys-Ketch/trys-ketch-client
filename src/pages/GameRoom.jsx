@@ -23,6 +23,8 @@ let token;
 const subArray = [];
 
 function GameRoom() {
+  const [roomTitle, setRoomTitle] = useState('');
+  const [inviteCode, setInviteCode] = useState('');
   const [isReady, setIsReady] = useState(false);
   const [isHost, setIsHost] = useState(false);
   const [hostID, setHostID] = useState('');
@@ -36,6 +38,19 @@ function GameRoom() {
   const ingameStompClient = useSelector((state) => state.ingame.stomp);
   const socketID = useSelector((state) => state.ingame.id);
   const socket = useSelector((state) => state.ingame.socket);
+
+  const getRoomDetail = () => {
+    roomAPI
+      .getRoomDetail(id)
+      .then((res) => {
+        const { title, randomCode } = res.data.data;
+        setRoomTitle(title);
+        setInviteCode(randomCode);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const toggleReady = () => {
     console.log(socket);
@@ -52,10 +67,14 @@ function GameRoom() {
   };
 
   const handleCodeCopy = () => {
-    window.navigator.clipboard.writeText('초대코드복사').then(() => {
-      alert(`복사 완료!`);
+    window.navigator.clipboard.writeText(inviteCode).then(() => {
+      alert(`복사 완료! ${inviteCode}`);
     });
   };
+
+  useEffect(() => {
+    getRoomDetail();
+  }, []);
 
   useEffect(() => {
     const gameRoomEventHandler = (event) => {
@@ -152,9 +171,9 @@ function GameRoom() {
       />
       <Container>
         <Main>
-          <RoomTitle>타이틀을 입력해주세요</RoomTitle>
+          <RoomTitle>{roomTitle}</RoomTitle>
           <AttendeeList userList={attendees} />
-          <ChatBox />
+          {/* <ChatBox /> */}
         </Main>
         <Side>
           <ExplainArea>

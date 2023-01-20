@@ -10,15 +10,22 @@ const enterRoom = async (code) => {
   return response;
 };
 
-const exitRoom = async (id) => {
-  const response = await instance.delete(`/api/room/exit/${id}`);
+const getRoomDetail = async (roomId) => {
+  const response = await instance.get(`/api/room/${roomId}`);
   return response;
 };
+
+// 처리 방식 미정
+// const exitRoom = async (id) => {
+//   const response = await instance.delete(`/api/room/exit/${id}`);
+//   return response;
+// };
 
 const roomAPI = {
   createRoom,
   enterRoom,
-  exitRoom,
+  getRoomDetail,
+  // exitRoom,
 };
 
 export default roomAPI;
