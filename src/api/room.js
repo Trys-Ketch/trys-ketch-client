@@ -1,5 +1,10 @@
 import instance from './core/axios';
 
+const getRoomList = async (page) => {
+  const response = await instance.get(`/api/rooms?page=${page}`);
+  return response;
+};
+
 const createRoom = async (title) => {
   const response = await instance.post(`/api/room`, { title });
   return response;
@@ -22,6 +27,7 @@ const getRoomDetail = async (roomId) => {
 // };
 
 const roomAPI = {
+  getRoomList,
   createRoom,
   enterRoom,
   getRoomDetail,
