@@ -11,6 +11,7 @@ import IconButton from '../common/IconButton';
 
 let historyPointer = 0;
 let currentColor = 'black';
+let isMounted = false;
 
 function Paint({ keyword = '이거 발견하면 ㄹㅇ 천재 ㅇㅈ', submitImg, undoRef, redoRef }) {
   const thickness = [5, 7, 9, 11, 13];
@@ -239,6 +240,14 @@ function Paint({ keyword = '이거 발견하면 ㄹㅇ 천재 ㅇㅈ', submitImg
   }
 
   useEffect(() => {
+    if (ctx && !isMounted) {
+      undoRef.current = undo;
+      redoRef.current = redo;
+      isMounted = true;
+    }
+  }, [ctx]);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     canvas.style.width = '100%';
     canvas.style.height = '100%';
@@ -253,9 +262,6 @@ function Paint({ keyword = '이거 발견하면 ㄹㅇ 천재 ㅇㅈ', submitImg
     context.lineWidth = thickness[0] * 2;
 
     setCtx(() => context);
-
-    undoRef.current = undo;
-    redoRef.current = redo;
   }, []);
 
   return (

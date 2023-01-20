@@ -12,6 +12,7 @@ import MikeButton from '../button/MikeButton';
 function Drawing({ submitImg, keyword }) {
   const undoRef = useRef(null);
   const redoRef = useRef(null);
+
   return (
     <>
       <FloatBox
