@@ -17,12 +17,14 @@ import QuitButton from '../components/button/QuitButton';
 import RoomTitle from '../components/room/RoomTitle';
 import ChatBox from '../components/chat/ChatBox';
 import Explain from '../components/room/Explain';
+import roomAPI from '../api/room';
 
 let token;
 const subArray = [];
 
 function GameRoom() {
-  const { state } = useLocation();
+  const [roomTitle, setRoomTitle] = useState('');
+  const [inviteCode, setInviteCode] = useState('');
   const [isReady, setIsReady] = useState(false);
   const [isHost, setIsHost] = useState(false);
   const [hostID, setHostID] = useState('');
@@ -37,7 +39,18 @@ function GameRoom() {
   const socketID = useSelector((state) => state.ingame.id);
   const socket = useSelector((state) => state.ingame.socket);
 
-  console.log(state);
+  const getRoomDetail = () => {
+    roomAPI
+      .getRoomDetail(id)
+      .then((res) => {
+        const { title, randomCode } = res.data.data;
+        setRoomTitle(title);
+        setInviteCode(randomCode);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const toggleReady = () => {
     console.log(socket);
@@ -54,10 +67,14 @@ function GameRoom() {
   };
 
   const handleCodeCopy = () => {
-    window.navigator.clipboard.writeText(state.randomCode).then(() => {
-      alert(`복사 완료!: ${state.randomCode}`);
+    window.navigator.clipboard.writeText(inviteCode).then(() => {
+      alert(`복사 완료! ${inviteCode}`);
     });
   };
+
+  useEffect(() => {
+    getRoomDetail();
+  }, []);
 
   useEffect(() => {
     const gameRoomEventHandler = (event) => {
@@ -154,9 +171,9 @@ function GameRoom() {
       />
       <Container>
         <Main>
-          <RoomTitle>{state.title}</RoomTitle>
+          <RoomTitle>{roomTitle}</RoomTitle>
           <AttendeeList userList={attendees} />
-          <ChatBox />
+          {/* <ChatBox /> */}
         </Main>
         <Side>
           <ExplainArea>

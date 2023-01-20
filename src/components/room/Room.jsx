@@ -13,9 +13,7 @@ function Room({ randomCode, id, title, isPlaying, cur, max, host }) {
       .enterRoom(randomCode)
       .then((res) => {
         if (res.data.statusCode === 200) {
-          // 믿을 수 있는 서버의 최신 데이터로 수정 및 통일
-          const { title, randomCode } = res.data.data;
-          navigate(`/room/${id}`, { state: { title, randomCode } });
+          navigate(`/room/${id}`);
         }
       })
       .catch((err) => {

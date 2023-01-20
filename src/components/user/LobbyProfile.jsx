@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Avatar from '../common/Avatar';
 import userAPI from '../../api/user';
 import { setUserInfo } from '../../app/slices/userSlice';
+import { delCookie } from '../../utils/cookie';
 
 function LobbyProfile() {
   const { profileImage, userId, nickname } = useSelector((state) => state.user);
@@ -17,7 +18,6 @@ function LobbyProfile() {
       .then((res) => {
         if (res.data.statusCode === 200) {
           const { id, nickname, imgUrl } = res.data.data;
-          console.log(res.data);
           const payload = {
             profileImage: imgUrl,
             userId: id,
@@ -27,10 +27,11 @@ function LobbyProfile() {
         }
       })
       .catch((err) => {
-        // TODO - 비로그인 처리 필요
-        // if (err.status === 401) {
+        // 500, 401 처리
+        // if (err.response.status === 401) {
         navigate('/login');
         // }
+        // console.log(err);
       });
   };
 

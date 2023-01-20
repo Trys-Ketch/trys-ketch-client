@@ -23,10 +23,9 @@ function CreateRoomModal() {
     roomAPI
       .createRoom(trimedTitle)
       .then((res) => {
-        console.log(res.data);
         if (res.data.statusCode === 200) {
-          const { roomId, title, randomCode } = res.data.data;
-          navigate(`/room/${roomId}`, { state: { title, randomCode } });
+          const { roomId } = res.data.data;
+          navigate(`/room/${roomId}`);
           closeModal();
           alert('방 생성 완료!');
         }
