@@ -1,0 +1,18 @@
+@font-face {
+  font-family: 'Pretendard';
+  src: url('../assets/fonts/PretendardVariable.woff2');
+}
+
+@font-face {
+  font-family: 'TTTogether';
+  src: url('../assets/fonts/TTTogether.otf');
+}
+
+* {
+  font-family: 'Pretendard', sans-serif;
+}
+
+body {
+  font-family: 'Pretendard', sans-serif;
+}
+

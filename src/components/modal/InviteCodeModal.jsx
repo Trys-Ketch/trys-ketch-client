@@ -23,9 +23,9 @@ function InviteCodeModal() {
       .enterRoom(code)
       .then((res) => {
         if (res.data.statusCode === 200) {
-          const id = res.data.data.roomId;
+          const { roomId, title, randomCode } = res.data.data;
           closeModal();
-          navigate(`/room/${id}`);
+          navigate(`/room/${roomId}`, { state: { title, randomCode } });
         }
       })
       .catch((err) => {

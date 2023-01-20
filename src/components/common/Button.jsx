@@ -9,7 +9,7 @@ const ButtonBlock = styled.button`
   font-family: 'TTTogether';
   cursor: pointer;
   outline: none;
-  border-bottom: 5px solid #746b5f;
+  border-bottom: 5px solid ${(props) => props.shadow || props.theme.colors.DIM_GRAY};
   background: ${(props) => props.bgcolor || props.theme.colors.FLORAL_WHITE};
   color: ${(props) => props.color || props.theme.colors.DARK_LAVA};
   border-radius: 10px;
@@ -17,16 +17,12 @@ const ButtonBlock = styled.button`
   padding-bottom: 0;
   transition: 0.2s ease;
 
-  &:active {
+  &:not(:disabled):active {
     background: ${(props) => props.bgcolor || props.theme.colors.BONE2};
   }
 
-  &:hover {
+  &:not(:disabled):hover {
     scale: 1.03;
-  }
-
-  & > * {
-    margin-left: 5px;
   }
 
   ${(props) =>
@@ -43,7 +39,7 @@ const ButtonBlock = styled.button`
       height: 3rem;
       padding-left: 2rem;
       padding-right: 2rem;
-      font-size: ${({ theme }) => theme.fontSizes.md};
+      font-size: ${({ theme }) => theme.fontSizes.lg};
     `}
 
   ${(props) =>
@@ -52,7 +48,7 @@ const ButtonBlock = styled.button`
       height: 4rem;
       padding-left: 1.5rem;
       padding-right: 1.5rem;
-      font-size: ${({ theme }) => theme.fontSizes.lg};
+      font-size: ${({ theme }) => theme.fontSizes.xl};
     `}
 
   ${(props) =>
@@ -61,11 +57,14 @@ const ButtonBlock = styled.button`
       height: 5rem;
       padding-left: 1.125rem;
       padding-right: 1.125rem;
-      font-size: ${({ theme }) => theme.fontSizes.xl};
+      font-size: ${({ theme }) => theme.fontSizes.xxl};
     `}
 
   &:disabled {
     cursor: not-allowed;
+    background: ${({ theme }) => theme.colors.SHAMROK};
+    border-bottom: 5px solid ${({ theme }) => theme.colors.RUSSIAN_GREEN};
+    color: #ffffff80;
   }
 `;
 
@@ -73,6 +72,7 @@ function Button({
   children,
   ref,
   bgcolor,
+  shadow,
   color,
   inline = false,
   size = 'medium',
@@ -83,6 +83,7 @@ function Button({
   return (
     <ButtonBlock
       bgcolor={bgcolor}
+      shadow={shadow}
       color={color}
       inline={inline}
       width={width}

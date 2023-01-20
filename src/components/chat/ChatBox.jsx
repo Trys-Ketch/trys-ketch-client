@@ -23,7 +23,6 @@ function ChatBox() {
   const chatSubscribe = () => {
     client.subscribe(CHAT_SERVER_URL, (message) => {
       const data = JSON.parse(message.body);
-      console.log(data);
       setMessages((messages) => [...messages, data]);
     });
   };
@@ -49,12 +48,12 @@ function ChatBox() {
   };
 
   const handleSubmit = (e) => {
+    e.preventDefault();
     const message = input.trim();
     if (!message) {
       // 예외 처리 알림
       return;
     }
-    e.preventDefault();
     chatPublish(types.chat.chat, message);
     setInput('');
   };
@@ -70,7 +69,7 @@ function ChatBox() {
       <MessageList messages={messages} />
       <MessageForm>
         <TextInput placeholder="채팅을 입력하세요" value={input} onChange={handleInput} />
-        <FlatButton size="small" onClick={handleSubmit}>
+        <FlatButton size="small" onClick={handleSubmit} style={{ fontSize: '20px' }}>
           전송
         </FlatButton>
       </MessageForm>

@@ -10,18 +10,22 @@ function QuitRoomModal() {
   const { closeModal } = useModal();
 
   const handleQuit = () => {
-    roomAPI
-      .exitRoom(id)
-      .then((res) => {
-        if (res.data.statusCode === 200) {
-          alert(res.data.message);
-          closeModal();
-          navigate('/');
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // roomAPI
+    //   .exitRoom(id)
+    //   .then((res) => {
+    //     if (res.data.statusCode === 200) {
+    //       alert(res.data.message);
+    //       closeModal();
+    //       navigate('/');
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
+    // TODO - 소켓끊기 필요
+    // exitRoom api 호출 안하고 나가기 처리
+    closeModal();
+    navigate('/');
   };
 
   return (
