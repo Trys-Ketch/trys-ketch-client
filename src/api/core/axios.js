@@ -6,9 +6,6 @@ import { store } from '../../app/configStore';
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   withCredentials: true,
-  headers: {
-    'Access-Control-Allow-Origin': '*',
-  },
 });
 
 // 요청 타임아웃
