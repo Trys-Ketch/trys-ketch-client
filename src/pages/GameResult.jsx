@@ -45,7 +45,7 @@ function GameResult() {
   const ingameStompClient = useSelector((state) => state.ingame.stomp);
   const socketID = useSelector((state) => state.ingame.id);
   const { id } = useParams();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isHost, setIsHost] = useState(false);
   const [isGameEnd, setIsGameEnd] = useState(false);
   // const [isLast, setIsLast] = useState(false);
