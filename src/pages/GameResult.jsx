@@ -12,32 +12,33 @@ import Container from '../components/layout/Container';
 
 let token;
 const subArray = [];
-const resultArray = [
-  [
-    ['name1-1', 'test1-1'],
-    ['name1-2', '/img/sanic.webp'],
-    ['name1-3', 'test1-2'],
-    ['name1-4', '/img/sanic.webp'],
-    ['name1-5', 'test1-3'],
-    ['name1-6', '/img/sanic.webp'],
-  ],
-  [
-    ['name2-1', 'test2-1'],
-    ['name2-2', '/img/sanic.webp'],
-    ['name2-3', 'test2-2'],
-    ['name2-4', '/img/sanic.webp'],
-    ['name2-5', 'test2-3'],
-    ['name2-6', '/img/sanic.webp'],
-  ],
-  [
-    ['name3-1', 'test3-1'],
-    ['name3-2', '/img/sanic.webp'],
-    ['name3-3', 'test3-2'],
-    ['name3-4', '/img/sanic.webp'],
-    ['name3-5', 'test3-3'],
-    ['name3-6', '/img/sanic.webp'],
-  ],
-];
+let resultArray;
+// [
+//   [
+//     ['name1-1', 'test1-1'],
+//     ['name1-2', '/img/sanic.webp'],
+//     ['name1-3', 'test1-2'],
+//     ['name1-4', '/img/sanic.webp'],
+//     ['name1-5', 'test1-3'],
+//     ['name1-6', '/img/sanic.webp'],
+//   ],
+//   [
+//     ['name2-1', 'test2-1'],
+//     ['name2-2', '/img/sanic.webp'],
+//     ['name2-3', 'test2-2'],
+//     ['name2-4', '/img/sanic.webp'],
+//     ['name2-5', 'test2-3'],
+//     ['name2-6', '/img/sanic.webp'],
+//   ],
+//   [
+//     ['name3-1', 'test3-1'],
+//     ['name3-2', '/img/sanic.webp'],
+//     ['name3-3', 'test3-2'],
+//     ['name3-4', '/img/sanic.webp'],
+//     ['name3-5', 'test3-3'],
+//     ['name3-6', '/img/sanic.webp'],
+//   ],
+// ];
 
 function GameResult() {
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
@@ -49,47 +50,47 @@ function GameResult() {
   const [isGameEnd, setIsGameEnd] = useState(false);
   // const [isLast, setIsLast] = useState(false);
   // const [nowKeywordIndex, setNowKeywordIndex] = useState(0);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   if (cookies.access_token) token = cookies.access_token;
-  //   else if (cookies.guest) token = cookies.guest;
-  //   subArray.push(
-  //     ingameStompClient.subscribe(`/queue/game/result/${socketID}`, (message) => {
-  //       const data = JSON.parse(message.body);
-  //       resultArray = data.result;
-  //       setIsHost(data.isHost);
-  //       setIsLoading(false);
-  //     }),
-  //   );
-  //   subArray.push(
-  //     ingameStompClient.subscribe(`/topic/game/end/${id}`, (message) => {
-  //       const data = JSON.parse(message.body);
-  //       setIsGameEnd(data.end);
-  //     }),
-  //   );
+  useEffect(() => {
+    if (cookies.access_token) token = cookies.access_token;
+    else if (cookies.guest) token = cookies.guest;
+    subArray.push(
+      ingameStompClient.subscribe(`/queue/game/result/${socketID}`, (message) => {
+        const data = JSON.parse(message.body);
+        resultArray = data.result;
+        setIsHost(data.isHost);
+        setIsLoading(false);
+      }),
+    );
+    subArray.push(
+      ingameStompClient.subscribe(`/topic/game/end/${id}`, (message) => {
+        const data = JSON.parse(message.body);
+        setIsGameEnd(data.end);
+      }),
+    );
 
-  //   ingameStompClient.publish({
-  //     destination: '/app/game/result',
-  //     body: JSON.stringify({ roomId: id, webSessionId: socketID, token }),
-  //   });
+    ingameStompClient.publish({
+      destination: '/app/game/result',
+      body: JSON.stringify({ roomId: id, webSessionId: socketID, token }),
+    });
 
-  //   return () => {
-  //     if (ingameStompClient) {
-  //       console.log('client unsubscribes');
-  //       for (let i = 0; i < subArray.length; i += 1) subArray[i].unsubscribe();
-  //     }
-  //   };
-  // }, []);
+    return () => {
+      if (ingameStompClient) {
+        console.log('client unsubscribes');
+        for (let i = 0; i < subArray.length; i += 1) subArray[i].unsubscribe();
+      }
+    };
+  }, []);
 
-  // useEffect(() => {
-  //   if (isGameEnd) {
-  //     navigate(`/room/${id}`);
-  //     ingameStompClient.deactivate();
-  //     dispatch(closeStomp());
-  //   }
-  // }, [isGameEnd]);
+  useEffect(() => {
+    if (isGameEnd) {
+      navigate(`/room/${id}`);
+      ingameStompClient.deactivate();
+      dispatch(closeStomp());
+    }
+  }, [isGameEnd]);
 
   function endGame() {
     ingameStompClient.publish({
