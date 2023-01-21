@@ -144,7 +144,7 @@ function InGame() {
   }
 
   return (
-    <Wrapper>
+    <div>
       {
         {
           keyword: (
@@ -170,7 +170,7 @@ function InGame() {
           ),
         }[gameState]
       }
-    </Wrapper>
+    </div>
   );
 }
 
