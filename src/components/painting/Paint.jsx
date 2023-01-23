@@ -13,7 +13,14 @@ let historyPointer = 0;
 let currentColor = 'black';
 let isMounted = false;
 
-function Paint({ keyword = '이거 발견하면 ㄹㅇ 천재 ㅇㅈ', submitImg, undoRef, redoRef }) {
+function Paint({
+  toggleReady,
+  keyword = '이거 발견하면 ㄹㅇ 천재 ㅇㅈ',
+  isSubmitted,
+  submitImg,
+  undoRef,
+  redoRef,
+}) {
   const thickness = [5, 7, 9, 11, 13];
   const color = [
     '#8B4513',
@@ -382,11 +389,11 @@ function Paint({ keyword = '이거 발견하면 ㄹㅇ 천재 ㅇㅈ', submitImg
             height: '11%',
             width: '100%',
           }}
-          onClick={() => {
-            submitImg(canvasRef.current);
-          }}
+          onClick={toggleReady}
         >
-          <div style={{ fontSize: `${({ theme }) => theme.fontSizes.xl}` }}> 제출</div>
+          <div style={{ fontSize: `${({ theme }) => theme.fontSizes.xl}` }}>
+            {isSubmitted ? '취소' : '제출'}
+          </div>
         </Button>
       </RightDiv>
     </Wrapper>

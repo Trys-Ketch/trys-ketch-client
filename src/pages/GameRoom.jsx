@@ -53,7 +53,6 @@ function GameRoom() {
   };
 
   const toggleReady = () => {
-    console.log(socket);
     socket.send(JSON.stringify({ type: 'ingame/toggle_ready', room: id }));
   };
 

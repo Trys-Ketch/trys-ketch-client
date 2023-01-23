@@ -3,7 +3,14 @@ import styled from 'styled-components';
 import TextInput from '../common/TextInput';
 import Button from '../common/Button';
 
-function MakeSentence({ submitKeyword, keyword, setKeyword }) {
+function MakeSentence({
+  toggleReady,
+  isSubmitted,
+  setIsSubmitted,
+  submitKeyword,
+  keyword,
+  setKeyword,
+}) {
   function onKeywordChangeHandler(event) {
     setKeyword(event.target.value);
   }
@@ -52,8 +59,8 @@ function MakeSentence({ submitKeyword, keyword, setKeyword }) {
           type="text"
           width="80%"
         />
-        <Button onClick={submitKeyword} style={{ marginLeft: '15px' }}>
-          완료
+        <Button onClick={toggleReady} style={{ marginLeft: '15px' }}>
+          {isSubmitted ? '취소' : '제출'}
         </Button>
       </div>
     </div>
