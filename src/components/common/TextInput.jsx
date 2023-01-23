@@ -19,9 +19,15 @@ const InputBlock = styled.input`
     opacity: 50%;
     font-size: ${({ theme }) => theme.fontSizes.md};
   }
+
+  &:read-only {
+    color: ${({ theme }) => theme.colors.DIM_GRAY};
+    opacity: 80%;
+    font-size: ${({ theme }) => theme.fontSizes.md};
+  }
 `;
 
-function TextInput({ placeholder, onChange, value, width, maxlength, ...rest }) {
+function TextInput({ placeholder, onChange, value, width, maxlength, readOnly, ...rest }) {
   const htmlProps = rest;
   return (
     <InputBlock
@@ -31,6 +37,7 @@ function TextInput({ placeholder, onChange, value, width, maxlength, ...rest }) 
       value={value}
       width={width}
       maxlength={maxlength}
+      readOnly={readOnly}
       {...htmlProps}
     />
   );

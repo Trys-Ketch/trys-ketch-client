@@ -51,6 +51,12 @@ function InGame() {
       }),
     );
     subArray.push(
+      ingameStompClient.subscribe(`/topic/game/submit-image/${id}`, (message) => {
+        const data = JSON.parse(message.body);
+        setCompleteImageSubmit(data.completeSubmit);
+      }),
+    );
+    subArray.push(
       // game state가 drawing이 됐을 때 다른 플레이어가 작성한 키워드를 받아옵니다.
       ingameStompClient.subscribe(`/queue/game/before-word/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
@@ -109,7 +115,7 @@ function InGame() {
    * @param {HTMLCanvasElement} canvas 그림을 그린 canvas 문서객체입니다.
    */
   function submitImg(canvas) {
-    // console.log(token, round.current, id, keywordIndex.current, socketID);
+    console.log(round);
     ingameStompClient.publish({
       destination: '/app/game/submit-image',
       body: JSON.stringify({
@@ -127,6 +133,7 @@ function InGame() {
    * 서버에 키워드를 제출합니다.
    */
   function submitKeyword() {
+    console.log(round);
     ingameStompClient.publish({
       destination: '/app/game/submit-word',
       body: JSON.stringify({
@@ -150,22 +157,25 @@ function InGame() {
         webSessionId: socketID,
         isSubmitted,
         keywordIndex: keywordIndex.current,
+        keyword: null,
         image: canvas.toDataURL(),
       }),
     });
   }
   function toggleKeywordReady() {
+    const sendData = JSON.stringify({
+      round,
+      token,
+      roomId: id,
+      webSessionId: socketID,
+      isSubmitted,
+      keywordIndex: keywordIndex.current,
+      keyword,
+      image: null,
+    });
     ingameStompClient.publish({
       destination: '/app/game/toggle-ready',
-      body: JSON.stringify({
-        round,
-        token,
-        roomId: id,
-        webSessionId: socketID,
-        isSubmitted,
-        keywordIndex: keywordIndex.current,
-        keyword,
-      }),
+      body: sendData,
     });
   }
 

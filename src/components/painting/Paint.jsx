@@ -256,8 +256,10 @@ function Paint({
   }, [ctx]);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    submitImg(canvas);
+    if (completeImageSubmit) {
+      const canvas = canvasRef.current;
+      submitImg(canvas);
+    }
   }, [completeImageSubmit]);
 
   useEffect(() => {
@@ -275,6 +277,8 @@ function Paint({
     context.lineWidth = thickness[0] * 2;
 
     setCtx(() => context);
+
+    canvasRef.current.setAttribute('cursor', 'not-allowed');
   }, []);
 
   return (
@@ -395,7 +399,7 @@ function Paint({
             height: '11%',
             width: '100%',
           }}
-          onClick={toggleReady}
+          onClick={() => toggleReady(canvasRef.current)}
         >
           <div style={{ fontSize: `${({ theme }) => theme.fontSizes.xl}` }}>
             {isSubmitted ? '취소' : '제출'}
@@ -553,6 +557,9 @@ const SpringCircle = styled.div`
 const Canvas = styled.canvas`
   position: relative;
   background-color: white;
+  cursor: ${(props) => (props.isSubmitted ? 'not-allowed' : 'default')};
+  pointer-events: ${(props) => (props.isSubmitted ? 'none' : 'auto')};
+  opacity: ${(props) => (props.isSubmitted ? '80%' : '100%')};
 `;
 
 export default Paint;
