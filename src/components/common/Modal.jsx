@@ -76,6 +76,12 @@ function Modal({ children, title, btnText, onConfirm }) {
     closeModal();
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      onConfirm();
+    }
+  };
+
   return (
     <Overlay>
       <ModalWrap>
@@ -84,7 +90,7 @@ function Modal({ children, title, btnText, onConfirm }) {
         </CloseButton>
         <ContentsWrap>
           <Title>{title}</Title>
-          <Content>{children}</Content>
+          <Content onKeyPress={handleKeyPress}>{children}</Content>
           <BtnArea>
             <FlatButton onClick={onConfirm}>{btnText}</FlatButton>
           </BtnArea>

@@ -35,7 +35,12 @@ function InviteCodeModal() {
 
   return (
     <Modal title="초대 코드" btnText="완료" onConfirm={handleEnter}>
-      <TextInput placeholder="초대코드를 입력해주세요" value={code} onChange={handleChange} />
+      <TextInput
+        autoFocus
+        placeholder="초대코드를 입력해주세요"
+        value={code}
+        onChange={handleChange}
+      />
     </Modal>
   );
 }
