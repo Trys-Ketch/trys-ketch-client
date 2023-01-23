@@ -18,7 +18,7 @@ const fontWeight = {
   bold: 700,
 };
 
-// ${({ theme }) => theme.colors.ANTIQUE_WHITE};
+// ${({ theme }) => theme.colors.DARK_LAVA};
 
 const colors = {
   BONE: '#d6c6b2',
@@ -37,15 +37,6 @@ const colors = {
   PLATINUM: '#e9e9e9',
   WHITE: '#ffffff',
   BLACK: '#000000',
-  YELLOW_ORANGE: '#ffb743',
-  YELLOW_GREEN: '#0db11e',
-  BLUE: '#48aff9cc',
-  DEEP_BLUE: '#1290cb',
-  SAPPHIRE: '#0f668e',
-  PAKISTAN_GREEN: '#036c22',
-  RUSSIAN_GREEN: '#58946a',
-  SHAMROK: '#6cad80',
-  SILVER: '#a5a5a5',
   // RED: '#ef5e51',
 };
 
