@@ -13,16 +13,22 @@ const subArray = [];
 function InGame() {
   const ingameStompClient = useSelector((state) => state.ingame.stomp);
   const socketID = useSelector((state) => state.ingame.id);
+
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
+
   const { id } = useParams();
+
   const [keyword, setKeyword] = useState('');
   const [image, setImage] = useState('');
   const [gameState, setGameState] = useState('keyword');
   const [completeKeywordSubmit, setCompleteKeywordSubmit] = useState(false);
   const [completeImageSubmit, setCompleteImageSubmit] = useState(false);
   const [result, setResult] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
   const keywordIndex = useRef();
   const round = useRef(1);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -69,6 +75,14 @@ function InGame() {
       ingameStompClient.subscribe(`/topic/game/before-result/${id}`, (message) => {
         const data = JSON.parse(message.body);
         setResult(data.isResult);
+      }),
+    );
+    subArray.push(
+      // 게임이 끝났다는 정보를 서버로부터 받아옵니다.
+      ingameStompClient.subscribe(`/queue/game/is-submitted/${socketID}`, (message) => {
+        const data = JSON.parse(message.body);
+        console.log(data.isSubmitted);
+        setIsSubmitted(data.isSubmitted);
       }),
     );
 
@@ -143,25 +157,50 @@ function InGame() {
     });
   }
 
+  function toggleReady() {
+    ingameStompClient.publish({
+      destination: '/app/game/toggle-ready',
+      body: JSON.stringify({
+        round: round.current,
+        token,
+        roomId: id,
+        webSessionId: socketID,
+        isSubmitted,
+      }),
+    });
+  }
+
   return (
     <div>
       {
         {
           keyword: (
             <MakeSentence
+              isSubmitted={isSubmitted}
+              setIsSubmitted={() => setIsSubmitted()}
               submitKeyword={() => submitKeyword()}
+              toggleReady={() => toggleReady()}
               keyword={keyword}
               setKeyword={setKeyword}
             />
           ),
           drawing: (
             <div>
-              <Drawing keyword={keyword} submitImg={(canvas) => submitImg(canvas)} />
+              <Drawing
+                isSubmitted={isSubmitted}
+                setIsSubmitted={() => setIsSubmitted()}
+                toggleReady={() => toggleReady()}
+                keyword={keyword}
+                submitImg={(canvas) => submitImg(canvas)}
+              />
             </div>
           ),
           guessing: (
             <Guessing
+              isSubmitted={isSubmitted}
+              setIsSubmitted={() => setIsSubmitted()}
               submitKeyword={() => submitKeyword()}
+              toggleReady={() => toggleReady()}
               keyword={keyword}
               setKeyword={setKeyword}
               image={image}
@@ -173,14 +212,5 @@ function InGame() {
     </div>
   );
 }
-
-const Wrapper = styled.div`
-  ${({ theme }) => theme.common.absoluteCenter};
-  width: 65%;
-  height: 80%;
-  padding: 20px;
-  border: 2px solid black;
-  border-radius: 16px;
-`;
 
 export default InGame;
