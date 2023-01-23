@@ -20,6 +20,7 @@ function Paint({
   submitImg,
   undoRef,
   redoRef,
+  completeImageSubmit,
 }) {
   const thickness = [5, 7, 9, 11, 13];
   const color = [
@@ -253,6 +254,11 @@ function Paint({
       isMounted = true;
     }
   }, [ctx]);
+
+  // useEffect(() => {
+  //   const canvas = canvasRef.current;
+  //   submitImg(canvas);
+  // }, [completeImageSubmit]);
 
   useEffect(() => {
     const canvas = canvasRef.current;

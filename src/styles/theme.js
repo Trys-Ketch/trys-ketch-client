@@ -18,7 +18,7 @@ const fontWeight = {
   bold: 700,
 };
 
-// ${({ theme }) => theme.colors.ANTIQUE_WHITE};
+// ${({ theme }) => theme.colors.DARK_LAVA};
 
 const colors = {
   BONE: '#d6c6b2',

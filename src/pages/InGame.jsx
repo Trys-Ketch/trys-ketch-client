@@ -27,7 +27,7 @@ function InGame() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const keywordIndex = useRef();
-  const round = useRef(1);
+  const [round, setRound] = useState(1);
 
   const navigate = useNavigate();
 
@@ -56,7 +56,7 @@ function InGame() {
         const data = JSON.parse(message.body);
         setKeyword(data.keyword);
         keywordIndex.current = data.keywordIndex;
-        round.current += 1;
+        setRound((prev) => prev + 1);
       }),
     );
     subArray.push(
@@ -67,7 +67,7 @@ function InGame() {
         setKeyword('');
         setImage(data.image);
         keywordIndex.current = data.keywordIndex;
-        round.current += 1;
+        setRound((prev) => prev + 1);
       }),
     );
     subArray.push(
@@ -78,10 +78,8 @@ function InGame() {
       }),
     );
     subArray.push(
-      // 게임이 끝났다는 정보를 서버로부터 받아옵니다.
       ingameStompClient.subscribe(`/queue/game/is-submitted/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
-        console.log(data.isSubmitted);
         setIsSubmitted(data.isSubmitted);
       }),
     );
@@ -100,27 +98,6 @@ function InGame() {
     };
   }, []);
 
-  // 모든 사람들이 키워드를 제출했다면 gameState를 drawing으로 바꿉니다.
-  useEffect(() => {
-    if (completeKeywordSubmit) {
-      setGameState('drawing');
-      setCompleteKeywordSubmit(false);
-    }
-  }, [completeKeywordSubmit]);
-
-  // 모든 사람들이 그림을 제출했다면 gameState를 guessing으로 바꿉니다.
-  useEffect(() => {
-    if (completeImageSubmit) {
-      setGameState('guessing');
-      setCompleteImageSubmit(false);
-    }
-  }, [completeImageSubmit]);
-
-  // 게임이 끝났다면 결과 페이지로 이동합니다.
-  useEffect(() => {
-    if (result) navigate(`/result/${id}`);
-  }, [result]);
-
   /**
    * canvas 문서 객체를 받아와 서버에 그림을 제출합니다.
    * @param {HTMLCanvasElement} canvas 그림을 그린 canvas 문서객체입니다.
@@ -132,7 +109,7 @@ function InGame() {
       body: JSON.stringify({
         image: canvas.toDataURL(),
         token,
-        round: round.current,
+        round,
         roomId: id,
         keywordIndex: keywordIndex.current,
         webSessionId: socketID,
@@ -149,7 +126,7 @@ function InGame() {
       body: JSON.stringify({
         keyword,
         keywordIndex: keywordIndex.current,
-        round: round.current,
+        round,
         token,
         roomId: id,
         webSessionId: socketID,
@@ -157,18 +134,61 @@ function InGame() {
     });
   }
 
-  function toggleReady() {
+  function toggleDrawingReady(canvas) {
     ingameStompClient.publish({
       destination: '/app/game/toggle-ready',
       body: JSON.stringify({
-        round: round.current,
+        round,
         token,
         roomId: id,
         webSessionId: socketID,
         isSubmitted,
+        keywordIndex: keywordIndex.current,
+        image: canvas.toDataURL(),
       }),
     });
   }
+
+  function toggleKeywordReady() {
+    console.log('keyword');
+    console.log(subArray);
+    ingameStompClient.publish({
+      destination: '/app/game/toggle-ready',
+      body: JSON.stringify({
+        round,
+        token,
+        roomId: id,
+        webSessionId: socketID,
+        isSubmitted,
+        keywordIndex: keywordIndex.current,
+        keyword,
+      }),
+    });
+  }
+
+  // 모든 사람들이 키워드를 제출했다면 gameState를 drawing으로 바꿉니다.
+  useEffect(() => {
+    if (completeKeywordSubmit) {
+      setGameState('drawing');
+      submitKeyword();
+      setCompleteKeywordSubmit(false);
+      setIsSubmitted(false);
+    }
+  }, [completeKeywordSubmit]);
+
+  // 모든 사람들이 그림을 제출했다면 gameState를 guessing으로 바꿉니다.
+  useEffect(() => {
+    if (completeImageSubmit) {
+      setGameState('guessing');
+      setCompleteImageSubmit(false);
+      setIsSubmitted(false);
+    }
+  }, [completeImageSubmit]);
+
+  // 게임이 끝났다면 결과 페이지로 이동합니다.
+  useEffect(() => {
+    if (result) navigate(`/result/${id}`);
+  }, [result]);
 
   return (
     <div>
@@ -177,30 +197,26 @@ function InGame() {
           keyword: (
             <MakeSentence
               isSubmitted={isSubmitted}
-              setIsSubmitted={() => setIsSubmitted()}
-              submitKeyword={() => submitKeyword()}
-              toggleReady={() => toggleReady()}
+              toggleReady={() => toggleKeywordReady()}
               keyword={keyword}
               setKeyword={setKeyword}
             />
           ),
           drawing: (
-            <div>
-              <Drawing
-                isSubmitted={isSubmitted}
-                setIsSubmitted={() => setIsSubmitted()}
-                toggleReady={() => toggleReady()}
-                keyword={keyword}
-                submitImg={(canvas) => submitImg(canvas)}
-              />
-            </div>
+            <Drawing
+              round={round}
+              isSubmitted={isSubmitted}
+              toggleReady={(canvas) => toggleDrawingReady(canvas)}
+              keyword={keyword}
+              submitImg={(canvas) => submitImg(canvas)}
+              completeImageSubmit={completeImageSubmit}
+            />
           ),
           guessing: (
             <Guessing
               isSubmitted={isSubmitted}
-              setIsSubmitted={() => setIsSubmitted()}
               submitKeyword={() => submitKeyword()}
-              toggleReady={() => toggleReady()}
+              toggleReady={() => toggleKeywordReady()}
               keyword={keyword}
               setKeyword={setKeyword}
               image={image}

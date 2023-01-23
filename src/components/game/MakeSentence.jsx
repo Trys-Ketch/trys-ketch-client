@@ -3,17 +3,11 @@ import styled from 'styled-components';
 import TextInput from '../common/TextInput';
 import Button from '../common/Button';
 
-function MakeSentence({
-  toggleReady,
-  isSubmitted,
-  setIsSubmitted,
-  submitKeyword,
-  keyword,
-  setKeyword,
-}) {
+function MakeSentence({ toggleReady, isSubmitted, keyword, setKeyword }) {
   function onKeywordChangeHandler(event) {
     setKeyword(event.target.value);
   }
+
   return (
     <div>
       <p style={{ position: 'absolute', left: '5%', top: '5%', fontSize: '35px' }}>1/1</p>
