@@ -72,6 +72,8 @@ const Content = styled.span`
   border-radius: 10px;
   padding: 12px;
   color: ${({ theme }) => theme.colors.DARK_LAVA};
+  word-break: break-all;
+  line-height: 1.5rem;
 `;
 
 const Notice = styled(StMessage)`
