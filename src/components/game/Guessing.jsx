@@ -3,16 +3,7 @@ import styled from 'styled-components';
 import TextInput from '../common/TextInput';
 import Button from '../common/Button';
 
-function Guessing({
-  toggleReady,
-  isSubmitted,
-  setIsSubmitted,
-  image,
-  socketID,
-  keyword,
-  setKeyword,
-  submitKeyword,
-}) {
+function Guessing({ toggleReady, isSubmitted, image, socketID, keyword, setKeyword }) {
   function onKeywordChangeHandler(event) {
     setKeyword(event.target.value);
   }
