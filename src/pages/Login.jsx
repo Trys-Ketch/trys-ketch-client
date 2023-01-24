@@ -11,6 +11,7 @@ import NaverLoginBtn from '../components/login/NaverLoginBtn';
 import GoogleLoginBtn from '../components/login/GoogleLoginBtn';
 import Panel from '../components/layout/Panel';
 import logo from '../assets/images/ribbon-logo.svg';
+import FadeInOut from '../countdown/FadeInOut';
 
 function Login() {
   const navigate = useNavigate();

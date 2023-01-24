@@ -51,6 +51,12 @@ function InGame() {
       }),
     );
     subArray.push(
+      ingameStompClient.subscribe(`/topic/game/submit-image/${id}`, (message) => {
+        const data = JSON.parse(message.body);
+        setCompleteImageSubmit(data.completeSubmit);
+      }),
+    );
+    subArray.push(
       // game state가 drawing이 됐을 때 다른 플레이어가 작성한 키워드를 받아옵니다.
       ingameStompClient.subscribe(`/queue/game/before-word/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
@@ -109,7 +115,6 @@ function InGame() {
    * @param {HTMLCanvasElement} canvas 그림을 그린 canvas 문서객체입니다.
    */
   function submitImg(canvas) {
-    // console.log(token, round.current, id, keywordIndex.current, socketID);
     ingameStompClient.publish({
       destination: '/app/game/submit-image',
       body: JSON.stringify({
@@ -150,28 +155,33 @@ function InGame() {
         webSessionId: socketID,
         isSubmitted,
         keywordIndex: keywordIndex.current,
+        keyword: null,
         image: canvas.toDataURL(),
       }),
     });
   }
+
   function toggleKeywordReady() {
+    const sendData = JSON.stringify({
+      round,
+      token,
+      roomId: id,
+      webSessionId: socketID,
+      isSubmitted,
+      keywordIndex: keywordIndex.current,
+      keyword,
+      image: null,
+    });
     ingameStompClient.publish({
       destination: '/app/game/toggle-ready',
-      body: JSON.stringify({
-        round,
-        token,
-        roomId: id,
-        webSessionId: socketID,
-        isSubmitted,
-        keywordIndex: keywordIndex.current,
-        keyword,
-      }),
+      body: sendData,
     });
   }
 
   // 모든 사람들이 키워드를 제출했다면 gameState를 drawing으로 바꿉니다.
   useEffect(() => {
     if (completeKeywordSubmit) {
+      console.log('toDrawing');
       setGameState('drawing');
       submitKeyword();
       setCompleteKeywordSubmit(false);
@@ -182,6 +192,7 @@ function InGame() {
   // 모든 사람들이 그림을 제출했다면 gameState를 guessing으로 바꿉니다.
   useEffect(() => {
     if (completeImageSubmit) {
+      console.log('toGuessing');
       setGameState('guessing');
       setCompleteImageSubmit(false);
       setIsSubmitted(false);

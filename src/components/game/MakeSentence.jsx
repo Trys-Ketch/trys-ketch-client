@@ -50,6 +50,7 @@ function MakeSentence({ toggleReady, isSubmitted, keyword, setKeyword }) {
         <TextInput
           onChange={(event) => onKeywordChangeHandler(event)}
           value={keyword}
+          readOnly={isSubmitted}
           type="text"
           width="80%"
         />
