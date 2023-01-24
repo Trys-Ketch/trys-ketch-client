@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import getStoredState from 'redux-persist/es/getStoredState';
 import floodFill from '../../utils/floodFill';
 import Button from '../common/Button';
@@ -16,7 +16,7 @@ let isMounted = false;
 function Paint({
   toggleReady,
   keyword = '이거 발견하면 ㄹㅇ 천재 ㅇㅈ',
-  isSubmitted,
+  isSubmitted = true,
   submitImg,
   undoRef,
   redoRef,
@@ -44,11 +44,12 @@ function Paint({
 
   const canvasRef = useRef(null);
 
-  const [ctx, setCtx] = useState();
+  const [ctx, setCtx] = useState(null);
   const [isDrawing, setIsDrawing] = useState();
   const [eventState, setEventState] = useState('drawing');
   const [displayThicknessBtn, setDisplayThicknessBtn] = useState(false);
   const [nowThickness, setNowThickness] = useState(0);
+  const [isHover, setIsHover] = useState(false);
 
   const history = useRef([]).current;
 
@@ -248,7 +249,9 @@ function Paint({
   }
 
   useEffect(() => {
+    console.log(ctx);
     if (ctx && !isMounted) {
+      console.log('undo/redo');
       undoRef.current = undo;
       redoRef.current = redo;
       isMounted = true;
@@ -281,9 +284,11 @@ function Paint({
     context.lineWidth = thickness[0] * 2;
 
     setCtx(() => context);
-
-    canvasRef.current.setAttribute('cursor', 'not-allowed');
   }, []);
+
+  useEffect(() => {
+    console.log('isHover && isSubmitted:', isHover && isSubmitted);
+  }, [isHover, isSubmitted]);
 
   return (
     <Wrapper>
@@ -291,9 +296,15 @@ function Paint({
         <KeywordDiv>
           <Keyword>{keyword}</Keyword>
         </KeywordDiv>
-        <CanvasWrapper>
+        <CanvasWrapper isSubmitted={isSubmitted}>
           {drawSpring()}
           <Canvas
+            // style={{
+            //   pointerEvents: isSubmitted ? 'none' : 'auto',
+            //   opacity: isSubmitted ? '80%' : '100%',
+            //   cursor: isSubmitted ? 'not-allowed' : 'default',
+            // }}
+            isSubmitted={isSubmitted}
             ref={canvasRef}
             onClick={(event) => {
               if (eventState === 'drawing') drawCircle(event);
@@ -319,10 +330,12 @@ function Paint({
                 drawing(event);
               }
             }}
+            onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => {
               if (eventState === 'drawing') {
                 finishDrawing();
               }
+              setIsHover(false);
             }}
           />
         </CanvasWrapper>
@@ -501,6 +514,18 @@ const CanvasWrapper = styled.div`
   bottom: 0;
   height: 83%;
   width: 100%;
+  ${(props) =>
+    props.isSubmitted
+      ? css`
+          &:hover {
+            cursor: not-allowed;
+          }
+        `
+      : css`
+          &:hover {
+            cursor: default;
+          }
+        `}
 `;
 
 const CanvasArea = styled.div`
@@ -561,9 +586,16 @@ const SpringCircle = styled.div`
 const Canvas = styled.canvas`
   position: relative;
   background-color: white;
-  cursor: ${(props) => (props.isSubmitted ? 'not-allowed' : 'default')};
-  pointer-events: ${(props) => (props.isSubmitted ? 'none' : 'auto')};
-  opacity: ${(props) => (props.isSubmitted ? '80%' : '100%')};
+  ${(props) =>
+    props.isSubmitted
+      ? css`
+          pointer-events: none;
+          opacity: 80%;
+        `
+      : css`
+          pointer-events: auto;
+          opacity: 100%;
+        `}
 `;
 
 export default Paint;

@@ -6,6 +6,7 @@ import * as SockJS from 'sockjs-client';
 import * as Stomp from '@stomp/stompjs';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import roomAPI from '../api/room';
 import Button from '../components/common/Button';
 import { closeStomp } from '../app/slices/ingameSlice';
 import Container from '../components/layout/Container';
@@ -86,9 +87,9 @@ function GameResult() {
 
   useEffect(() => {
     if (isGameEnd) {
-      navigate(`/room/${id}`);
       ingameStompClient.deactivate();
       dispatch(closeStomp());
+      navigate(`/room/${id}`);
     }
   }, [isGameEnd]);
 

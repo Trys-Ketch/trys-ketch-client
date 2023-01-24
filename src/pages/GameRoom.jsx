@@ -90,6 +90,7 @@ function GameRoom() {
           break;
         }
         case 'ingame/is_host': {
+          console.log('ishost:', data.host);
           setIsHost(data.host);
           setHostID(data.hostId);
           break;
@@ -104,7 +105,6 @@ function GameRoom() {
         }
       }
     };
-    console.log(gameRoomEventHandler);
     if (socket) {
       console.log('event listener is added');
       socket.addEventListener('message', gameRoomEventHandler);
@@ -116,6 +116,14 @@ function GameRoom() {
       }
     };
   }, [socket, socketID]);
+
+  useEffect(() => {
+    console.log(socket);
+    if (socket && socket.readyState === 1) {
+      console.log(socket.readyState);
+      socket.send(JSON.stringify({ type: 'ingame/end_game', room: id }));
+    }
+  }, [socket]);
 
   useEffect(() => {
     console.log(ingameStompClient);
