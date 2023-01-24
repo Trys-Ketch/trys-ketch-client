@@ -11,46 +11,59 @@ import SettingButton from '../components/button/SettingButton';
 import FloatBox from '../components/layout/FloatBox';
 import useModal from '../hooks/useModal';
 import LobbyProfile from '../components/user/LobbyProfile';
+import roomAPI from '../api/room';
 
 function Lobby() {
-  const evtSource = useRef(null);
+  // const evtSource = new EventSource(`${process.env.REACT_APP_API_URL}/api/sse/rooms`);
   const navigate = useNavigate();
   const { openModal } = useModal();
   const [rooms, setRooms] = useState([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [roomsByPage, setRoomsByPage] = useState([]);
   const [lastPage, setLastPage] = useState(1);
 
   const ROOM_PER_PAGE = 5;
 
-  const closeEvtSource = () => {
-    evtSource.current.close();
-    console.log('evtSource closed!');
-    console.log(evtSource);
+  const getRooms = (currentPage) => {
+    roomAPI
+      .getRoomList(currentPage)
+      .then((res) => {
+        setLastPage(res.data.LastPage);
+        setRooms(res.data.Rooms);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
-  const openEvtSource = () => {
-    evtSource.current.onerror = async (err) => {
-      console.error('EventSource failed:', err);
-      closeEvtSource();
-      // 재연결 시도
-      setTimeout(openEvtSource(), 3000);
-    };
-    // 연결됐을때 방 정보 받아오기
-    evtSource.current.addEventListener('connect', async (event) => {
-      console.log('evtSource connected!');
-      console.log(evtSource);
-      const data = JSON.parse(event.data);
-      setRooms(data);
-    });
-    // 방 정보가 변할 때 방 정보 받아오기
-    evtSource.current.addEventListener('changeRoom', async (event) => {
-      console.log('evtSource changeRoom!');
-      console.log(evtSource);
-      const data = JSON.parse(event.data);
-      setRooms(data);
-    });
-  };
+  useEffect(() => {
+    getRooms(page);
+  }, [page]);
+
+  // TODO - SSE 임시 제거 API로 대체
+  // const openEvtSource = () => {
+  //   // 연결됐을때 방 정보 받아오기
+  //   evtSource.addEventListener('connect', (event) => {
+  //     const data = JSON.parse(event.data);
+  //     setRooms(data);
+  //   });
+  //   // 방 정보가 변할 때 방 정보 받아오기
+  //   evtSource.addEventListener('changeRoom', (event) => {
+  //     const data = JSON.parse(event.data);
+  //     setRooms(data);
+  //   });
+  // };
+
+  // const closeEvtSource = () => {
+  //   evtSource.close();
+  // };
+
+  // useEffect(() => {
+  //   openEvtSource();
+  //   return () => {
+  //     closeEvtSource();
+  //   };
+  // }, []);
 
   const handleOpenCreateRoom = () => {
     openModal('createRoom');
@@ -65,19 +78,11 @@ function Lobby() {
   };
 
   useEffect(() => {
-    evtSource.current = new EventSource(`${process.env.REACT_APP_API_URL}/api/sse/rooms`);
-    openEvtSource();
-    return () => {
-      closeEvtSource();
-    };
-  }, []);
-
-  useEffect(() => {
     setLastPage(Math.ceil(rooms.length / ROOM_PER_PAGE));
   }, [rooms]);
 
   useEffect(() => {
-    const _roomsByPage = rooms.slice((page - 1) * ROOM_PER_PAGE, page * ROOM_PER_PAGE);
+    const _roomsByPage = rooms.slice(page * ROOM_PER_PAGE, (page + 1) * ROOM_PER_PAGE);
     setRoomsByPage(_roomsByPage);
   }, [page, rooms]);
 
@@ -90,6 +95,9 @@ function Lobby() {
           <FlatButton size="small" onClick={LinkToMyPage}>
             마이페이지
           </FlatButton>
+          <Button size="small" onClick={() => getRooms(page)} style={{ marginTop: '10px' }}>
+            새로고침
+          </Button>
         </Side>
         <Main>
           <TopBtns>

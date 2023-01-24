@@ -17,6 +17,7 @@ function Router() {
         <Route element={<Layout />}>
           <Route path="/" element={<Lobby />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/login/:sns" element={<Login />} />
           <Route path="/guest" element={<Guest />} />
           <Route path="room" element={<Navigate to="/" replace />} />
           <Route path="/myPage" element={<MyPage />} />

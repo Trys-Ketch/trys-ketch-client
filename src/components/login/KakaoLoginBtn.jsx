@@ -1,42 +1,9 @@
-import React, { useCallback, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import kakao from '../../assets/icons/kakao-icon.svg';
-import authAPI from '../../api/auth';
-import { setCookie } from '../../utils/cookie';
-import { setLogin } from '../../app/slices/loginSlice';
 
 function KakaoLoginBtn() {
-  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_BASE_URL}/login&response_type=code`;
-
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const code = searchParams.get('code');
-
-  const kakaoLogin = useCallback(async () => {
-    await authAPI
-      .kakaoLogin(code)
-      .then((res) => {
-        if (res.data.statusCode === 200) {
-          dispatch(setLogin('kakao'));
-          setCookie(res.headers.authorization);
-          alert(res.data.message);
-          navigate('/');
-        } else {
-          alert(res.data.message);
-        }
-      })
-      .catch((error) => alert(error.message));
-  }, [code, dispatch, navigate]);
-
-  useEffect(() => {
-    if (code) {
-      kakaoLogin();
-    }
-  }, [kakaoLogin, code]);
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_BASE_URL}/login/kakao&response_type=code`;
 
   return (
     <IconBox>

@@ -3,9 +3,11 @@ import styled from 'styled-components';
 import naver from '../../assets/icons/naver-icon.svg';
 
 function NaverLoginBtn() {
+  const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${process.env.REACT_APP_NAVER_REST_API_KEY}&state=${process.env.REACT_APP_NAVER_STATE}&redirect_uri=${process.env.REACT_APP_BASE_URL}/login/naver`;
+
   return (
     <IconBox>
-      <a href="/login">
+      <a href={NAVER_AUTH_URL}>
         <img src={naver} alt="naver login" />
       </a>
     </IconBox>
