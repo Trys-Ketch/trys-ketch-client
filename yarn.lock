@@ -12715,15 +12715,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"styled-reset@npm:^4.4.4":
-  version: 4.4.5
-  resolution: "styled-reset@npm:4.4.5"
-  peerDependencies:
-    styled-components: ">=4.0.0 || >=5.0.0"
-  checksum: 3cd86e5d55edc26f254951dc0efe5ec2c8bed8f9056cda94e8808365a3809366890f31165bacc2663a67c3aee1cce35399c5c181142457035c91262341f943cf
-  languageName: node
-  linkType: hard
-
 "stylehacks@npm:^5.1.1":
   version: 5.1.1
   resolution: "stylehacks@npm:5.1.1"
@@ -13118,7 +13109,6 @@ __metadata:
     sockjs-client: ^1.6.1
     stompjs: ^2.3.3
     styled-components: ^5.3.6
-    styled-reset: ^4.4.4
     web-vitals: ^2.1.4
   languageName: unknown
   linkType: soft
