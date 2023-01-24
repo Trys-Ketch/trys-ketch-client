@@ -263,6 +263,10 @@ function Paint({
   }, [completeImageSubmit]);
 
   useEffect(() => {
+    console.log(isSubmitted);
+  }, [isSubmitted]);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     canvas.style.width = '100%';
     canvas.style.height = '100%';

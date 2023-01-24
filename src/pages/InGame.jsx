@@ -115,7 +115,6 @@ function InGame() {
    * @param {HTMLCanvasElement} canvas 그림을 그린 canvas 문서객체입니다.
    */
   function submitImg(canvas) {
-    console.log(round);
     ingameStompClient.publish({
       destination: '/app/game/submit-image',
       body: JSON.stringify({
@@ -133,7 +132,6 @@ function InGame() {
    * 서버에 키워드를 제출합니다.
    */
   function submitKeyword() {
-    console.log(round);
     ingameStompClient.publish({
       destination: '/app/game/submit-word',
       body: JSON.stringify({
