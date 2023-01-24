@@ -1,22 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 
-function FadeInOut({ startTime, duration, contents }) {
-  const [startFadeAnimation, setStartFadeAnimation] = useState(false);
-  function fadein() {
-    setTimeout(() => {
-      setStartFadeAnimation(true);
-    }, startTime);
-  }
+function FadeInOut({ duration = 1, keyword = '짱구' }) {
+  const [content, setContent] = useState(1);
+  // const contents = useRef([3, 2, 1, keyword]).current;
+
+  // function changeContent() {
+  //   let pointer = 0;
+  //   const intervalID = setInterval(() => {
+  //     const contents = [3, 2, 1, keyword];
+  //     console.log(contents[pointer]);
+  //     setContent(contents[pointer]);
+  //     pointer += 1;
+  //     console.log('content changed: ', content);
+  //     if (pointer === contents.length) clearInterval(intervalID);
+  //   }, duration * 1000);
+  // }
 
   useEffect(() => {
-    fadein();
+    // changeContent();
+    setContent(123);
+    setContent(456);
   }, []);
+
   return (
     <Background>
-      {startFadeAnimation && (
-        <Contents style={{ animationDuration: `${duration / 2}s` }}>{contents}</Contents>
-      )}
+      <Contents style={{ animationDuration: `${duration / 2}s` }}>{content}</Contents>
     </Background>
   );
 }
