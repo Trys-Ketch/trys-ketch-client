@@ -78,6 +78,7 @@ function InGame() {
       }),
     );
     subArray.push(
+      // 게임이 끝났다는 정보를 서버로부터 받아옵니다.
       ingameStompClient.subscribe(`/queue/game/is-submitted/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
         setIsSubmitted(data.isSubmitted);
@@ -97,6 +98,11 @@ function InGame() {
       }
     };
   }, []);
+
+  // 게임이 끝났다면 결과 페이지로 이동합니다.
+  useEffect(() => {
+    if (result) navigate(`/result/${id}`);
+  }, [result]);
 
   /**
    * canvas 문서 객체를 받아와 서버에 그림을 제출합니다.
@@ -148,10 +154,7 @@ function InGame() {
       }),
     });
   }
-
   function toggleKeywordReady() {
-    console.log('keyword');
-    console.log(subArray);
     ingameStompClient.publish({
       destination: '/app/game/toggle-ready',
       body: JSON.stringify({
@@ -203,19 +206,21 @@ function InGame() {
             />
           ),
           drawing: (
-            <Drawing
-              round={round}
-              isSubmitted={isSubmitted}
-              toggleReady={(canvas) => toggleDrawingReady(canvas)}
-              keyword={keyword}
-              submitImg={(canvas) => submitImg(canvas)}
-              completeImageSubmit={completeImageSubmit}
-            />
+            <div>
+              <Drawing
+                round={round}
+                isSubmitted={isSubmitted}
+                toggleReady={(canvas) => toggleDrawingReady(canvas)}
+                keyword={keyword}
+                submitImg={(canvas) => submitImg(canvas)}
+                completeImageSubmit={completeImageSubmit}
+              />
+            </div>
           ),
           guessing: (
             <Guessing
               isSubmitted={isSubmitted}
-              submitKeyword={() => submitKeyword()}
+              setIsSubmitted={() => setIsSubmitted()}
               toggleReady={() => toggleKeywordReady()}
               keyword={keyword}
               setKeyword={setKeyword}

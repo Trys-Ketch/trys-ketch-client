@@ -40,7 +40,7 @@ function Drawing({ round, toggleReady, isSubmitted, submitImg, keyword, complete
             circleRadius={CIRCLE_RADIUS}
             center={CENTER}
             pathRef={pathRef}
-            round
+            round={round}
           />
           <IconButtonContainer>
             <IconButton onClick={() => undoRef.current()} size="xlarge" icon={undo} />

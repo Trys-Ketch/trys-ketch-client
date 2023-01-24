@@ -255,10 +255,10 @@ function Paint({
     }
   }, [ctx]);
 
-  // useEffect(() => {
-  //   const canvas = canvasRef.current;
-  //   submitImg(canvas);
-  // }, [completeImageSubmit]);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    submitImg(canvas);
+  }, [completeImageSubmit]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
