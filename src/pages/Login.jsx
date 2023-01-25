@@ -11,7 +11,7 @@ import NaverLoginBtn from '../components/login/NaverLoginBtn';
 import GoogleLoginBtn from '../components/login/GoogleLoginBtn';
 import Panel from '../components/layout/Panel';
 import logo from '../assets/images/ribbon-logo.svg';
-import FadeInOut from '../countdown/FadeInOut';
+import { toast } from '../components/toast/ToastProvider';
 
 function Login() {
   const navigate = useNavigate();
@@ -105,9 +105,36 @@ function Login() {
       >
         게스트 로그인
       </Button>
+      <Test>
+        <Button
+          onClick={() => {
+            toast.success('토스트가 떴어요!!ㄴㅁㅇㄻㄴㅇㄹㄴㅁㅇㄹㄴㅁㅇㄻㄴㅇㄹ');
+          }}
+        >
+          성공토스트
+        </Button>
+        <Button
+          onClick={() => {
+            toast.info('토스트가 떴어요!!');
+          }}
+        >
+          인포토스트
+        </Button>
+        <Button
+          onClick={() => {
+            toast.error('토스트가 떴어요!!');
+          }}
+        >
+          에러토스트
+        </Button>
+      </Test>
     </Panel>
   );
 }
+
+const Test = styled.div`
+  display: flex;
+`;
 
 const Logo = styled.img`
   max-width: 600px;
