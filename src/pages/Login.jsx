@@ -11,7 +11,7 @@ import NaverLoginBtn from '../components/login/NaverLoginBtn';
 import GoogleLoginBtn from '../components/login/GoogleLoginBtn';
 import Panel from '../components/layout/Panel';
 import logo from '../assets/images/ribbon-logo.svg';
-import FadeInOut from '../countdown/FadeInOut';
+import { toast } from '../components/toast/ToastProvider';
 
 function Login() {
   const navigate = useNavigate();
@@ -22,53 +22,44 @@ function Login() {
   const code = searchParams.get('code');
   const state = searchParams.get('state');
 
-  const kakaoLogin = useCallback(async () => {
-    await authAPI
+  const handleLogin = useCallback(
+    (res) => {
+      if (res.data.statusCode === 200) {
+        dispatch(setLogin(sns));
+        setCookie(res.headers.authorization);
+        toast.success(res.data.message);
+        navigate('/');
+      }
+    },
+    [dispatch, navigate, sns],
+  );
+
+  const kakaoLogin = useCallback(() => {
+    authAPI
       .kakaoLogin(code)
-      .then((res) => {
-        if (res.data.statusCode === 200) {
-          dispatch(setLogin('kakao'));
-          setCookie(res.headers.authorization);
-          alert(res.data.message);
-          navigate('/');
-        } else {
-          alert(res.data.message);
-        }
-      })
-      .catch((error) => alert(error.message));
-  }, [code, dispatch, navigate]);
+      .then((res) => handleLogin(res))
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
+  }, [code, handleLogin]);
 
-  const googleLogin = useCallback(async () => {
-    await authAPI
+  const googleLogin = useCallback(() => {
+    authAPI
       .googleLogin(code)
-      .then((res) => {
-        if (res.data.statusCode === 200) {
-          dispatch(setLogin('google'));
-          setCookie(res.headers.authorization);
-          alert(res.data.message);
-          navigate('/');
-        } else {
-          alert(res.data.message);
-        }
-      })
-      .catch((error) => alert(error.message));
-  }, [code, dispatch, navigate]);
+      .then((res) => handleLogin(res))
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
+  }, [code, handleLogin]);
 
-  const naverLogin = useCallback(async () => {
-    await authAPI
+  const naverLogin = useCallback(() => {
+    authAPI
       .naverLogin(code, state)
-      .then((res) => {
-        if (res.data.statusCode === 200) {
-          dispatch(setLogin('naver'));
-          setCookie(res.headers.authorization);
-          alert(res.data.message);
-          navigate('/');
-        } else {
-          alert(res.data.message);
-        }
-      })
-      .catch((error) => alert(error.message));
-  }, [code, dispatch, navigate, state]);
+      .then((res) => handleLogin(res))
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
+  }, [code, handleLogin, state]);
 
   useEffect(() => {
     if (code) {

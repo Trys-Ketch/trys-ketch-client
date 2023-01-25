@@ -11,6 +11,7 @@ import Panel from '../components/layout/Panel';
 import { setLogin } from '../app/slices/loginSlice';
 import { setCookie } from '../utils/cookie';
 import refreshIcon from '../assets/icons/refresh-icon.svg';
+import { toast } from '../components/toast/ToastProvider';
 
 function Guest() {
   const [name, setName] = useState('');
@@ -24,18 +25,22 @@ function Guest() {
 
   const handleSubmit = async () => {
     if (name === '') {
-      alert('닉네임을 입력해주세요');
+      toast.error('닉네임을 입력해주세요');
+      return;
     }
 
     const trimedName = name.trim();
-    await authAPI.guestLogin(trimedName, image).then((res) => {
-      if (res.data.statusCode === 200) {
-        dispatch(setLogin('guest'));
-        setCookie(res.headers.guest, 'guest');
-        navigate('/');
-        alert('게스트로그인 성공');
-      }
-    });
+    await authAPI
+      .guestLogin(trimedName, image)
+      .then((res) => {
+        if (res.data.statusCode === 200) {
+          dispatch(setLogin('guest'));
+          setCookie(res.headers.guest, 'guest');
+          navigate('/');
+          toast.success('로그인되었습니다.');
+        }
+      })
+      .catch(() => toast.error('에러가 발생했습니다.'));
   };
 
   const getRandomNickname = () => {

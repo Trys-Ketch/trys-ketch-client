@@ -40,13 +40,14 @@ const colors = {
   YELLOW_ORANGE: '#ffb743',
   YELLOW_GREEN: '#0db11e',
   BLUE: '#48aff9cc',
+  BLUE2: '#1290cb',
   DEEP_BLUE: '#1290cb',
   SAPPHIRE: '#0f668e',
   PAKISTAN_GREEN: '#036c22',
   RUSSIAN_GREEN: '#58946a',
   SHAMROK: '#6cad80',
   SILVER: '#a5a5a5',
-  // RED: '#ef5e51',
+  RED: '#dc6868',
 };
 
 const common = {

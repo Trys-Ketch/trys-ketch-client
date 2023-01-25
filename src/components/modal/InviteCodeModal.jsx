@@ -4,6 +4,7 @@ import Modal from '../common/Modal';
 import TextInput from '../common/TextInput';
 import roomAPI from '../../api/room';
 import useModal from '../../hooks/useModal';
+import { toast } from '../toast/ToastProvider';
 
 function InviteCodeModal() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ function InviteCodeModal() {
 
   const handleEnter = () => {
     if (!code) {
-      alert('코드를 입력해주세요');
+      toast.error('코드를 입력해주세요');
       return;
     }
     roomAPI
@@ -29,7 +30,7 @@ function InviteCodeModal() {
         }
       })
       .catch((err) => {
-        console.log(err);
+        toast.error(err.response.data.message);
       });
   };
 

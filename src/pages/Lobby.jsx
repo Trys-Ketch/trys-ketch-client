@@ -12,6 +12,7 @@ import FloatBox from '../components/layout/FloatBox';
 import useModal from '../hooks/useModal';
 import LobbyProfile from '../components/user/LobbyProfile';
 import roomAPI from '../api/room';
+import { toast } from '../components/toast/ToastProvider';
 
 function Lobby() {
   // const evtSource = new EventSource(`${process.env.REACT_APP_API_URL}/api/sse/rooms`);
@@ -32,7 +33,7 @@ function Lobby() {
         setRooms(res.data.Rooms);
       })
       .catch((err) => {
-        console.log(err);
+        toast.error(err.response.data.message);
       });
   };
 

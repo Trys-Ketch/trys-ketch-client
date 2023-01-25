@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import roomAPI from '../../api/room';
 import crown from '../../assets/icons/crown.png';
 import person from '../../assets/icons/person-icon.svg';
+import { toast } from '../toast/ToastProvider';
 
 function Room({ randomCode, id, title, isPlaying, cur, max, host }) {
   const navigate = useNavigate();
@@ -14,10 +15,12 @@ function Room({ randomCode, id, title, isPlaying, cur, max, host }) {
       .then((res) => {
         if (res.data.statusCode === 200) {
           navigate(`/room/${id}`);
+        } else {
+          toast.error(res.data.message);
         }
       })
       .catch((err) => {
-        console.log(err);
+        toast.error(err.response.data.message);
       });
   };
 

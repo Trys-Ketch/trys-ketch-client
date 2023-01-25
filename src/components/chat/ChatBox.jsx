@@ -8,6 +8,7 @@ import TextInput from '../common/TextInput';
 import FlatButton from '../common/FlatButton';
 import MessageList from './MessageList';
 import types from '../../utils/types';
+import { toast } from '../toast/ToastProvider';
 
 function ChatBox() {
   const client = useRef(null);
@@ -35,7 +36,7 @@ function ChatBox() {
       return;
     }
     if (message === '') {
-      alert('채팅 내용을 입력해주세요.');
+      toast.error('채팅 내용을 입력해주세요.');
       return;
     }
     client.current.publish({

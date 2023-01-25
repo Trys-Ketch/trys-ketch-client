@@ -14,7 +14,7 @@ function Pagination({ lastPage, page, setPage }) {
           <Button
             key={String(i + 1)}
             onClick={() => setPage(i)}
-            aria-current={page - 1 === i ? 'page' : null}
+            aria-current={page === i ? 'page' : null}
           >
             {i + 1}
           </Button>
