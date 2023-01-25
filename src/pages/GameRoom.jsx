@@ -7,7 +7,7 @@ import SockJS from 'sockjs-client';
 import * as Stomp from '@stomp/stompjs';
 import AttendeeList from '../components/room/AttendeeList';
 import Button from '../components/common/Button';
-import { setStomp } from '../app/slices/ingameSlice';
+import { setStomp, setIngameHost } from '../app/slices/ingameSlice';
 import Container from '../components/layout/Container';
 import FloatBox from '../components/layout/FloatBox';
 import SettingButton from '../components/button/SettingButton';
@@ -81,7 +81,6 @@ function GameRoom() {
       const data = JSON.parse(event.data);
       switch (data.type) {
         case 'ingame/ready': {
-          console.log(data.status);
           if (socketID === data.sender) setIsReady(data.status);
           break;
         }
@@ -92,6 +91,7 @@ function GameRoom() {
         case 'ingame/is_host': {
           setIsHost(data.host);
           setHostID(data.hostId);
+          dispatch(setIngameHost(data.host));
           break;
         }
         case 'ingame/attendee': {
@@ -99,12 +99,16 @@ function GameRoom() {
           setAttendees(data.attendee);
           break;
         }
+        case 'ingame/be_kicked': {
+          navigate('/');
+          alert('강퇴됐어영 히잉 8ㅅ8');
+          break;
+        }
         default: {
           break;
         }
       }
     };
-    console.log(gameRoomEventHandler);
     if (socket) {
       console.log('event listener is added');
       socket.addEventListener('message', gameRoomEventHandler);
@@ -116,6 +120,14 @@ function GameRoom() {
       }
     };
   }, [socket, socketID]);
+
+  useEffect(() => {
+    console.log(socket);
+    if (socket && socket.readyState === 1) {
+      console.log(socket.readyState);
+      socket.send(JSON.stringify({ type: 'ingame/end_game', room: id }));
+    }
+  }, [socket]);
 
   useEffect(() => {
     console.log(ingameStompClient);

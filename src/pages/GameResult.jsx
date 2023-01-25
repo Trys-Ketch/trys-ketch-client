@@ -6,9 +6,11 @@ import * as SockJS from 'sockjs-client';
 import * as Stomp from '@stomp/stompjs';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import roomAPI from '../api/room';
 import Button from '../components/common/Button';
 import { closeStomp } from '../app/slices/ingameSlice';
 import Container from '../components/layout/Container';
+import ResultUser from '../components/game/ResultUser';
 
 let token;
 const subArray = [];
@@ -48,8 +50,8 @@ function GameResult() {
   const [isLoading, setIsLoading] = useState(true);
   const [isHost, setIsHost] = useState(false);
   const [isGameEnd, setIsGameEnd] = useState(false);
-  // const [isLast, setIsLast] = useState(false);
-  // const [nowKeywordIndex, setNowKeywordIndex] = useState(0);
+  const [isLast, setIsLast] = useState(false);
+  const [nowKeywordIndex, setNowKeywordIndex] = useState(0);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -70,6 +72,19 @@ function GameResult() {
         setIsGameEnd(data.end);
       }),
     );
+    subArray.push(
+      ingameStompClient.subscribe(`/topic/game/next-keyword-index/${id}`, (message) => {
+        const data = JSON.parse(message.body);
+        setNowKeywordIndex(data.keywordIndex);
+      }),
+    );
+    subArray.push(
+      ingameStompClient.subscribe(`/topic/game/prev-keyword-index/${id}`, (message) => {
+        const data = JSON.parse(message.body);
+        console.log(data);
+        setNowKeywordIndex(data.keywordIndex);
+      }),
+    );
 
     ingameStompClient.publish({
       destination: '/app/game/result',
@@ -84,14 +99,6 @@ function GameResult() {
     };
   }, []);
 
-  useEffect(() => {
-    if (isGameEnd) {
-      navigate(`/room/${id}`);
-      ingameStompClient.deactivate();
-      dispatch(closeStomp());
-    }
-  }, [isGameEnd]);
-
   function endGame() {
     ingameStompClient.publish({
       destination: '/app/game/end',
@@ -99,9 +106,34 @@ function GameResult() {
     });
   }
 
-  // function nextKeywordIndex() {
-  //   console.log(nowKeywordIndex);
-  // }
+  function nextKeywordIndex() {
+    ingameStompClient.publish({
+      destination: '/app/game/next-keyword-index',
+      body: JSON.stringify({ roomId: id, token }),
+    });
+  }
+
+  function prevKeywordIndex() {
+    ingameStompClient.publish({
+      destination: '/app/game/prev-keyword-index',
+      body: JSON.stringify({ roomId: id, token }),
+    });
+  }
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (nowKeywordIndex === resultArray.length - 1) setIsLast(true);
+      else setIsLast(false);
+    }
+  }, [nowKeywordIndex, isLoading]);
+
+  useEffect(() => {
+    if (isGameEnd) {
+      ingameStompClient.deactivate();
+      dispatch(closeStomp());
+      navigate(`/room/${id}`);
+    }
+  }, [isGameEnd]);
 
   return (
     <Container
@@ -109,63 +141,42 @@ function GameResult() {
     >
       <UserArea>
         {[0, 1, 2, 3, 4, 5, 6, 7].map((v) => {
-          return (
-            <ResultUser key={v}>
-              <ProfileImg />
-              <Nickname>{`닉네임 ${v}`}</Nickname>
-            </ResultUser>
-          );
+          return <ResultUser key={v} nickname={`닉네임 ${v}`} />;
         })}
       </UserArea>
       <ResultArea>
         {isLoading
           ? null
-          : resultArray.map((v) => {
-              return v.map((innerV, innerI) => {
-                if (innerI % 2 === 0)
-                  return (
-                    <KeywordWrapper key={`${innerV[0]}0`}>
-                      <ProfileImg key={`${innerV[0]}1`} />
-                      <Keyword key={`${innerV[0]}2`}>{`닉네임: ${innerV[0]}
-키워드: ${innerV[1]}`}</Keyword>
-                    </KeywordWrapper>
-                  );
+          : resultArray[nowKeywordIndex].map((v, i) => {
+              if (i % 2 === 0)
                 return (
-                  <ImageContainer key={`${innerV[0]}3`}>
-                    <ImageWrapper key={`${innerV[0]}4`}>
-                      <span key={`${innerV[0]}5`} style={{ margintLeft: 'auto' }}>
-                        {`닉네임: ${innerV[0]}`}
-                      </span>
-                      <Image key={`${innerV[0]}6`} src={innerV[1]} alt={`img_${innerI}`} />
-                    </ImageWrapper>
-                    <ProfileImg key={`${innerV[0]}7`} />
-                  </ImageContainer>
+                  <KeywordWrapper key={`${v[0]}0`}>
+                    <ProfileImg key={`${v[0]}1`} />
+                    <Keyword key={`${v[0]}2`}>{`닉네임: ${v[0]}
+키워드: ${v[1]}`}</Keyword>
+                  </KeywordWrapper>
                 );
-              });
+              return (
+                <ImageContainer key={`${v[0]}3`}>
+                  <ImageWrapper key={`${v[0]}4`}>
+                    <span key={`${v[0]}5`} style={{ margintLeft: 'auto' }}>
+                      {`닉네임: ${v[0]}`}
+                    </span>
+                    <Image key={`${v[0]}6`} src={v[1]} alt={`img_${i}`} />
+                  </ImageWrapper>
+                  <ProfileImg key={`${v[0]}7`} />
+                </ImageContainer>
+              );
             })}
-        {
-          isHost ? <Button onClick={() => endGame()}>게임 종료</Button> : null
-          // <Button onClick={() => nextKeywordIndex()}>다음 </Button>
-        }
+        {isHost && !(nowKeywordIndex === 0) && (
+          <Button onClick={() => prevKeywordIndex()}>이전</Button>
+        )}
+        {isHost && !isLast && <Button onClick={() => nextKeywordIndex()}>다음</Button>}
+        {isHost && isLast && <Button onClick={() => endGame()}>게임 종료</Button>}
       </ResultArea>
     </Container>
   );
 }
-
-const Nickname = styled.span`
-  margin-left: 10px;
-  font-family: 'TTTogether';
-  color: ${({ theme }) => theme.colors.DARK_LAVA};
-  font-size: ${({ theme }) => theme.fontSizes.lg};
-`;
-
-const ProfileImg = styled.div`
-  border-radius: 50%;
-  background-color: #1290cb;
-  padding: 25px;
-  width: max-content;
-  height: max-content;
-`;
 
 const KeywordWrapper = styled.div`
   align-items: center;
@@ -210,14 +221,12 @@ const Image = styled.img`
   background-color: white;
 `;
 
-const ResultUser = styled.div`
-  padding: 8px;
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  border-radius: 10px;
-  background-color: ${({ theme }) => theme.colors.FLORAL_WHITE};
+const ProfileImg = styled.div`
+  border-radius: 50%;
+  background-color: #1290cb;
+  padding: 25px;
+  width: max-content;
+  height: max-content;
 `;
 
 const UserArea = styled.div`

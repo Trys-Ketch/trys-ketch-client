@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
-import getStoredState from 'redux-persist/es/getStoredState';
+import styled, { css } from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
 import floodFill from '../../utils/floodFill';
 import Button from '../common/Button';
 import eraser from '../../assets/icons/eraser-icon.svg';
@@ -8,6 +8,7 @@ import pencil from '../../assets/icons/pencil-icon.svg';
 import paint from '../../assets/icons/paint-icon.svg';
 import pencilThickness from '../../assets/icons/thickness-icon.svg';
 import IconButton from '../common/IconButton';
+import { setForceSubmit } from '../../app/slices/ingameSlice';
 
 let historyPointer = 0;
 let currentColor = 'black';
@@ -44,12 +45,14 @@ function Paint({
 
   const canvasRef = useRef(null);
 
-  const [ctx, setCtx] = useState();
+  const [ctx, setCtx] = useState(null);
   const [isDrawing, setIsDrawing] = useState();
   const [eventState, setEventState] = useState('drawing');
   const [displayThicknessBtn, setDisplayThicknessBtn] = useState(false);
   const [nowThickness, setNowThickness] = useState(0);
 
+  const dispatch = useDispatch();
+  const forceSubmit = useSelector((state) => state.ingame.forceSubmit);
   const history = useRef([]).current;
 
   const startDrawing = () => {
@@ -195,8 +198,13 @@ function Paint({
     context.globalCompositeOperation = 'source-over';
     setCtx(context);
     const { offsetX, offsetY } = nativeEvent;
-    const rgb = hexToRgb(ctx.strokeStyle);
-    floodFill(ctx, offsetX, offsetY, [rgb[0], rgb[1], rgb[2], 255]);
+    // const rgb = hexToRgb(ctx.strokeStyle);
+    const hex = ctx.strokeStyle.substring(1);
+    const R = hex.substring(0, 2);
+    const G = hex.substring(2, 4);
+    const B = hex.substring(4, 6);
+    floodFill(ctx, offsetX, offsetY, `0xff${B}${G}${R}` * 1);
+    // floodFill(ctx, offsetX, offsetY, [rgb[0], rgb[1], rgb[2], 255]);
   }
 
   /**
@@ -248,6 +256,7 @@ function Paint({
   }
 
   useEffect(() => {
+    console.log(ctx);
     if (ctx && !isMounted) {
       undoRef.current = undo;
       redoRef.current = redo;
@@ -263,8 +272,12 @@ function Paint({
   }, [completeImageSubmit]);
 
   useEffect(() => {
-    console.log(isSubmitted);
-  }, [isSubmitted]);
+    if (forceSubmit) {
+      const canvas = canvasRef.current;
+      submitImg(canvas);
+      dispatch(setForceSubmit(false));
+    }
+  }, [forceSubmit]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -281,8 +294,6 @@ function Paint({
     context.lineWidth = thickness[0] * 2;
 
     setCtx(() => context);
-
-    canvasRef.current.setAttribute('cursor', 'not-allowed');
   }, []);
 
   return (
@@ -291,9 +302,15 @@ function Paint({
         <KeywordDiv>
           <Keyword>{keyword}</Keyword>
         </KeywordDiv>
-        <CanvasWrapper>
+        <CanvasWrapper isSubmitted={isSubmitted}>
           {drawSpring()}
           <Canvas
+            // style={{
+            //   pointerEvents: isSubmitted ? 'none' : 'auto',
+            //   opacity: isSubmitted ? '80%' : '100%',
+            //   cursor: isSubmitted ? 'not-allowed' : 'default',
+            // }}
+            isSubmitted={isSubmitted}
             ref={canvasRef}
             onClick={(event) => {
               if (eventState === 'drawing') drawCircle(event);
@@ -501,6 +518,19 @@ const CanvasWrapper = styled.div`
   bottom: 0;
   height: 83%;
   width: 100%;
+  background-color: white;
+  ${(props) =>
+    props.isSubmitted
+      ? css`
+          &:hover {
+            cursor: not-allowed;
+          }
+        `
+      : css`
+          &:hover {
+            cursor: default;
+          }
+        `}
 `;
 
 const CanvasArea = styled.div`
@@ -561,9 +591,15 @@ const SpringCircle = styled.div`
 const Canvas = styled.canvas`
   position: relative;
   background-color: white;
-  cursor: ${(props) => (props.isSubmitted ? 'not-allowed' : 'default')};
-  pointer-events: ${(props) => (props.isSubmitted ? 'none' : 'auto')};
-  opacity: ${(props) => (props.isSubmitted ? '80%' : '100%')};
+  ${(props) =>
+    props.isSubmitted
+      ? css`
+          background-color: rgba(0, 0, 0, 0.2);
+          pointer-events: none;
+        `
+      : css`
+          pointer-events: auto;
+        `}
 `;
 
 export default Paint;

@@ -4,6 +4,8 @@ const initialState = {
   stomp: null,
   id: '',
   socket: null,
+  isHost: false,
+  forceSubmit: false,
 };
 
 const ingameSlice = createSlice({
@@ -31,9 +33,25 @@ const ingameSlice = createSlice({
       socket: null,
       id: '',
     }),
+    setIngameHost: (state, action) => ({
+      ...state,
+      isHost: action.payload,
+    }),
+    setForceSubmit: (state, action) => ({
+      ...state,
+      forceSubmit: action.payload,
+    }),
   },
   extraReducers: {},
 });
 
-export const { setStomp, setID, setSocket, closeSocket, closeStomp } = ingameSlice.actions;
+export const {
+  setStomp,
+  setID,
+  setSocket,
+  closeSocket,
+  closeStomp,
+  setIngameHost,
+  setForceSubmit,
+} = ingameSlice.actions;
 export default ingameSlice.reducer;
