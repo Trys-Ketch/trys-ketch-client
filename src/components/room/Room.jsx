@@ -20,7 +20,7 @@ function Room({ randomCode, id, title, isPlaying, cur, max, host }) {
         }
       })
       .catch((err) => {
-        toast.error('방을 생성할 수 없습니다.');
+        toast.error(err.response.data.message);
       });
   };
 

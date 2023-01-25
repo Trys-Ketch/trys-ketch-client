@@ -27,12 +27,10 @@ function InviteCodeModal() {
           const { roomId } = res.data.data;
           closeModal();
           navigate(`/room/${roomId}`);
-        } else {
-          toast.error(res.data.message);
         }
       })
       .catch((err) => {
-        toast.error('에러가 발생했습니다.');
+        toast.error(err.response.data.message);
       });
   };
 

@@ -49,7 +49,7 @@ function GameRoom() {
         setInviteCode(randomCode);
       })
       .catch((err) => {
-        toast.error('방 정보를 가져올 수 없습니다.');
+        toast.error(err.response.data.message);
       });
   };
 

@@ -30,14 +30,7 @@ function LobbyProfile() {
         }
       })
       .catch((err) => {
-        // 500, 401 처리
-        if (err.response.status === 401) {
-          delCookie();
-          delCookie('guest');
-          toast.error('로그인 이후 이용해주세요');
-        } else {
-          toast.error('에러가 발생했습니다.');
-        }
+        toast.error(err.response.data.message);
         navigate('/login');
       });
   };

@@ -28,11 +28,10 @@ function CreateRoomModal() {
           const { roomId } = res.data.data;
           navigate(`/room/${roomId}`);
           closeModal();
-          toast.success('방 생성 완료!');
         }
       })
       .catch((err) => {
-        toast.error('에러가 발생했습니다.');
+        toast.error(err.response.data.message);
       });
   };
 

@@ -29,8 +29,6 @@ function Login() {
         setCookie(res.headers.authorization);
         toast.success(res.data.message);
         navigate('/');
-      } else {
-        toast.error(res.data.message);
       }
     },
     [dispatch, navigate, sns],
@@ -40,21 +38,27 @@ function Login() {
     authAPI
       .kakaoLogin(code)
       .then((res) => handleLogin(res))
-      .catch((error) => toast.error('에러가 발생했습니다.'));
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
   }, [code, handleLogin]);
 
   const googleLogin = useCallback(() => {
     authAPI
       .googleLogin(code)
       .then((res) => handleLogin(res))
-      .catch((error) => toast.error('에러가 발생했습니다.'));
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
   }, [code, handleLogin]);
 
   const naverLogin = useCallback(() => {
     authAPI
       .naverLogin(code, state)
       .then((res) => handleLogin(res))
-      .catch((error) => toast.error('에러가 발생했습니다.'));
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
   }, [code, handleLogin, state]);
 
   useEffect(() => {

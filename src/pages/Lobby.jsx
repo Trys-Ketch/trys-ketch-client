@@ -33,7 +33,7 @@ function Lobby() {
         setRooms(res.data.Rooms);
       })
       .catch((err) => {
-        toast.error('방 정보를 불러올 수 없습니다.');
+        toast.error(err.response.data.message);
       });
   };
 
