@@ -23,7 +23,6 @@ module.exports = {
     'react/jsx-props-no-spreading': [1, { custom: 'ignore' }], // props spreading을 허용하지 않는 규칙 해제
     'react/prop-types': 0, // prop-types를 선언해주어야하는 규칙 해제
     'no-param-reassign': 0, // 파라미터 변경을 허용하지 않는 규칙 해제
-    'no-alert': 0, // alert 제한 규칙 해제
     'consistent-return': 0, // 화살표 함수에서 return이 안되는 규칙 해제
     'no-underscore-dangle': 0, // 함수 이름을 시작할 때 언더바를 사용할 수 없는 규칙 해제
     'no-useless-escape': 0, // 정규식 사용시 문제가 되는 규칙 해제
