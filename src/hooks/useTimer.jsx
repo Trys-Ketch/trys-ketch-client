@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setForceSubmit } from '../app/slices/ingameSlice';
 
 let startTime;
 
 function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit) {
   const [degree, setDegree] = useState(1);
+  const dispatch = useDispatch();
 
   function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
     const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
@@ -50,6 +53,7 @@ function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit) {
       if (nowTime - startTime >= timeLimit) {
         setDegree(0);
         clearInterval(timerID);
+        dispatch(setForceSubmit(true));
       }
     }, 50);
   }

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
-import getStoredState from 'redux-persist/es/getStoredState';
+import { useDispatch, useSelector } from 'react-redux';
 import floodFill from '../../utils/floodFill';
 import Button from '../common/Button';
 import eraser from '../../assets/icons/eraser-icon.svg';
@@ -8,6 +8,7 @@ import pencil from '../../assets/icons/pencil-icon.svg';
 import paint from '../../assets/icons/paint-icon.svg';
 import pencilThickness from '../../assets/icons/thickness-icon.svg';
 import IconButton from '../common/IconButton';
+import { setForceSubmit } from '../../app/slices/ingameSlice';
 
 let historyPointer = 0;
 let currentColor = 'black';
@@ -16,7 +17,7 @@ let isMounted = false;
 function Paint({
   toggleReady,
   keyword = '이거 발견하면 ㄹㅇ 천재 ㅇㅈ',
-  isSubmitted = true,
+  isSubmitted,
   submitImg,
   undoRef,
   redoRef,
@@ -51,6 +52,8 @@ function Paint({
   const [nowThickness, setNowThickness] = useState(0);
   const [isHover, setIsHover] = useState(false);
 
+  const dispatch = useDispatch();
+  const forceSubmit = useSelector((state) => state.ingame.forceSubmit);
   const history = useRef([]).current;
 
   const startDrawing = () => {
@@ -268,6 +271,14 @@ function Paint({
   useEffect(() => {
     console.log(isSubmitted);
   }, [isSubmitted]);
+
+  useEffect(() => {
+    if (forceSubmit) {
+      const canvas = canvasRef.current;
+      submitImg(canvas);
+      dispatch(setForceSubmit(false));
+    }
+  }, [forceSubmit]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -514,6 +525,7 @@ const CanvasWrapper = styled.div`
   bottom: 0;
   height: 83%;
   width: 100%;
+  background-color: white;
   ${(props) =>
     props.isSubmitted
       ? css`
@@ -589,12 +601,11 @@ const Canvas = styled.canvas`
   ${(props) =>
     props.isSubmitted
       ? css`
+          background-color: rgba(0, 0, 0, 0.2);
           pointer-events: none;
-          opacity: 80%;
         `
       : css`
           pointer-events: auto;
-          opacity: 100%;
         `}
 `;
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import Avatar from '../common/Avatar';
 import crown from '../../assets/icons/crown.png';
 import mike from '../../assets/icons/mike-icon.svg';
@@ -11,6 +12,13 @@ import Range from '../common/Range';
 
 function Attendee({ user }) {
   const { userId } = useSelector((state) => state.user);
+  const { isHost } = useSelector((state) => state.ingame);
+  const { socket } = useSelector((state) => state.ingame);
+  const { id } = useParams();
+
+  function kick() {
+    socket.send(JSON.stringify({ type: 'ingame/kick', room: id, kickId: user.socketId }));
+  }
 
   return (
     <StUserCard className={user.isHost && 'host'}>
@@ -28,9 +36,16 @@ function Attendee({ user }) {
           </UserActive>
           {/* 내가 방장일때만 뜨게 */}
           {/* 추후 강퇴 기능 등 추가 시 주석 해제 */}
-          {/* <UserMore>
-          <img src={more} alt="more" />
-        </UserMore> */}
+          {isHost && (
+            <>
+              <UserMore>
+                <img src={more} alt="more" />
+              </UserMore>
+              <KickButton onClick={() => kick()} type="button">
+                강퇴
+              </KickButton>
+            </>
+          )}
         </HoverDisplay>
       )}
       {user.isReady && !user.isHost && (
@@ -42,6 +57,16 @@ function Attendee({ user }) {
     </StUserCard>
   );
 }
+
+const KickButton = styled.button`
+  position: absolute;
+  left: 15px;
+  top: 15px;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
 
 const UserInfo = styled.div`
   display: flex;
