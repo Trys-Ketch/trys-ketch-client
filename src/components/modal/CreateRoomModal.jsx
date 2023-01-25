@@ -4,6 +4,7 @@ import TextInput from '../common/TextInput';
 import roomAPI from '../../api/room';
 import Modal from '../common/Modal';
 import useModal from '../../hooks/useModal';
+import { toast } from '../toast/ToastProvider';
 
 function CreateRoomModal() {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ function CreateRoomModal() {
   const handleCreate = () => {
     const trimedTitle = title.trim();
     if (trimedTitle === '') {
-      alert('방 제목을 입력해주세요');
+      toast.error('방 제목을 입력해주세요');
       return;
     }
     roomAPI
@@ -27,11 +28,11 @@ function CreateRoomModal() {
           const { roomId } = res.data.data;
           navigate(`/room/${roomId}`);
           closeModal();
-          alert('방 생성 완료!');
+          toast.success('방 생성 완료!');
         }
       })
       .catch((err) => {
-        console.log(err);
+        toast.error('에러가 발생했습니다.');
       });
   };
 

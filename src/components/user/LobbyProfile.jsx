@@ -6,9 +6,10 @@ import Avatar from '../common/Avatar';
 import userAPI from '../../api/user';
 import { setUserInfo } from '../../app/slices/userSlice';
 import { delCookie } from '../../utils/cookie';
+import { toast } from '../toast/ToastProvider';
 
 function LobbyProfile() {
-  const { profileImage, userId, nickname } = useSelector((state) => state.user);
+  const { profileImage, nickname } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -24,14 +25,20 @@ function LobbyProfile() {
             nickname,
           };
           dispatch(setUserInfo(payload));
+        } else {
+          toast.error(res.data.message);
         }
       })
       .catch((err) => {
         // 500, 401 처리
-        // if (err.response.status === 401) {
+        if (err.response.status === 401) {
+          delCookie();
+          delCookie('guest');
+          toast.error('로그인 이후 이용해주세요');
+        } else {
+          toast.error('에러가 발생했습니다.');
+        }
         navigate('/login');
-        // }
-        // console.log(err);
       });
   };
 

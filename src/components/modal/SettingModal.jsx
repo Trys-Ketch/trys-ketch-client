@@ -15,7 +15,6 @@ function SettingModal() {
   // const { mikeVolume, setMikeVolume } = useState();
 
   const handleEnter = () => {
-    alert(`설정:`);
     closeModal();
   };
 

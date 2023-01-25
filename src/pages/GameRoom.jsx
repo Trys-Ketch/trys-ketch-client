@@ -18,6 +18,7 @@ import RoomTitle from '../components/room/RoomTitle';
 import ChatBox from '../components/chat/ChatBox';
 import Explain from '../components/room/Explain';
 import roomAPI from '../api/room';
+import { toast } from '../components/toast/ToastProvider';
 
 let token;
 const subArray = [];
@@ -34,7 +35,7 @@ function GameRoom() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
-  const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
+  const [cookies] = useCookies(['access_token', 'guest']);
   const ingameStompClient = useSelector((state) => state.ingame.stomp);
   const socketID = useSelector((state) => state.ingame.id);
   const socket = useSelector((state) => state.ingame.socket);
@@ -48,7 +49,7 @@ function GameRoom() {
         setInviteCode(randomCode);
       })
       .catch((err) => {
-        console.log(err);
+        toast.error('방 정보를 가져올 수 없습니다.');
       });
   };
 
@@ -67,7 +68,7 @@ function GameRoom() {
 
   const handleCodeCopy = () => {
     window.navigator.clipboard.writeText(inviteCode).then(() => {
-      alert(`복사 완료! ${inviteCode}`);
+      toast.success('복사되었습니다.');
     });
   };
 

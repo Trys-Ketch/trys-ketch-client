@@ -22,53 +22,40 @@ function Login() {
   const code = searchParams.get('code');
   const state = searchParams.get('state');
 
-  const kakaoLogin = useCallback(async () => {
-    await authAPI
+  const handleLogin = useCallback(
+    (res) => {
+      if (res.data.statusCode === 200) {
+        dispatch(setLogin(sns));
+        setCookie(res.headers.authorization);
+        toast.success(res.data.message);
+        navigate('/');
+      } else {
+        toast.error(res.data.message);
+      }
+    },
+    [dispatch, navigate, sns],
+  );
+
+  const kakaoLogin = useCallback(() => {
+    authAPI
       .kakaoLogin(code)
-      .then((res) => {
-        if (res.data.statusCode === 200) {
-          dispatch(setLogin('kakao'));
-          setCookie(res.headers.authorization);
-          alert(res.data.message);
-          navigate('/');
-        } else {
-          alert(res.data.message);
-        }
-      })
-      .catch((error) => alert(error.message));
-  }, [code, dispatch, navigate]);
+      .then((res) => handleLogin(res))
+      .catch((error) => toast.error('에러가 발생했습니다.'));
+  }, [code, handleLogin]);
 
-  const googleLogin = useCallback(async () => {
-    await authAPI
+  const googleLogin = useCallback(() => {
+    authAPI
       .googleLogin(code)
-      .then((res) => {
-        if (res.data.statusCode === 200) {
-          dispatch(setLogin('google'));
-          setCookie(res.headers.authorization);
-          alert(res.data.message);
-          navigate('/');
-        } else {
-          alert(res.data.message);
-        }
-      })
-      .catch((error) => alert(error.message));
-  }, [code, dispatch, navigate]);
+      .then((res) => handleLogin(res))
+      .catch((error) => toast.error('에러가 발생했습니다.'));
+  }, [code, handleLogin]);
 
-  const naverLogin = useCallback(async () => {
-    await authAPI
+  const naverLogin = useCallback(() => {
+    authAPI
       .naverLogin(code, state)
-      .then((res) => {
-        if (res.data.statusCode === 200) {
-          dispatch(setLogin('naver'));
-          setCookie(res.headers.authorization);
-          alert(res.data.message);
-          navigate('/');
-        } else {
-          alert(res.data.message);
-        }
-      })
-      .catch((error) => alert(error.message));
-  }, [code, dispatch, navigate, state]);
+      .then((res) => handleLogin(res))
+      .catch((error) => toast.error('에러가 발생했습니다.'));
+  }, [code, handleLogin, state]);
 
   useEffect(() => {
     if (code) {
@@ -105,36 +92,9 @@ function Login() {
       >
         게스트 로그인
       </Button>
-      <Test>
-        <Button
-          onClick={() => {
-            toast.success('토스트가 떴어요!!ㄴㅁㅇㄻㄴㅇㄹㄴㅁㅇㄹㄴㅁㅇㄻㄴㅇㄹ');
-          }}
-        >
-          성공토스트
-        </Button>
-        <Button
-          onClick={() => {
-            toast.info('토스트가 떴어요!!');
-          }}
-        >
-          인포토스트
-        </Button>
-        <Button
-          onClick={() => {
-            toast.error('토스트가 떴어요!!');
-          }}
-        >
-          에러토스트
-        </Button>
-      </Test>
     </Panel>
   );
 }
-
-const Test = styled.div`
-  display: flex;
-`;
 
 const Logo = styled.img`
   max-width: 600px;
