@@ -55,7 +55,7 @@ const ToastWrapper = styled.div`
   position: absolute;
   bottom: 3%;
   left: 50%;
-  z-index: 900;
+  z-index: 1100;
   transform: translate(-50%, 0);
 
   & > *:not(:last-child) {
