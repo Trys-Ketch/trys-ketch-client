@@ -72,6 +72,19 @@ function GameResult() {
         setIsGameEnd(data.end);
       }),
     );
+    subArray.push(
+      ingameStompClient.subscribe(`/topic/game/next-keyword-index/${id}`, (message) => {
+        const data = JSON.parse(message.body);
+        setNowKeywordIndex(data.keywordIndex);
+      }),
+    );
+    subArray.push(
+      ingameStompClient.subscribe(`/topic/game/prev-keyword-index/${id}`, (message) => {
+        const data = JSON.parse(message.body);
+        console.log(data);
+        setNowKeywordIndex(data.keywordIndex);
+      }),
+    );
 
     ingameStompClient.publish({
       destination: '/app/game/result',
@@ -95,16 +108,30 @@ function GameResult() {
 
   function nextKeywordIndex() {
     ingameStompClient.publish({
-      destination: '/app/game/next',
+      destination: '/app/game/next-keyword-index',
+      body: JSON.stringify({ roomId: id, token }),
+    });
+  }
+
+  function prevKeywordIndex() {
+    ingameStompClient.publish({
+      destination: '/app/game/prev-keyword-index',
       body: JSON.stringify({ roomId: id, token }),
     });
   }
 
   useEffect(() => {
+    if (!isLoading) {
+      if (nowKeywordIndex === resultArray.length - 1) setIsLast(true);
+      else setIsLast(false);
+    }
+  }, [nowKeywordIndex, isLoading]);
+
+  useEffect(() => {
     if (isGameEnd) {
       ingameStompClient.deactivate();
       dispatch(closeStomp());
-      // navigate(`/room/${id}`);
+      navigate(`/room/${id}`);
     }
   }, [isGameEnd]);
 
@@ -120,31 +147,32 @@ function GameResult() {
       <ResultArea>
         {isLoading
           ? null
-          : resultArray.map((v) => {
-              return v.map((innerV, innerI) => {
-                if (innerI % 2 === 0)
-                  return (
-                    <KeywordWrapper key={`${innerV[0]}0`}>
-                      <ProfileImg key={`${innerV[0]}1`} />
-                      <Keyword key={`${innerV[0]}2`}>{`닉네임: ${innerV[0]}
-키워드: ${innerV[1]}`}</Keyword>
-                    </KeywordWrapper>
-                  );
+          : resultArray[nowKeywordIndex].map((v, i) => {
+              if (i % 2 === 0)
                 return (
-                  <ImageContainer key={`${innerV[0]}3`}>
-                    <ImageWrapper key={`${innerV[0]}4`}>
-                      <span key={`${innerV[0]}5`} style={{ margintLeft: 'auto' }}>
-                        {`닉네임: ${innerV[0]}`}
-                      </span>
-                      <Image key={`${innerV[0]}6`} src={innerV[1]} alt={`img_${innerI}`} />
-                    </ImageWrapper>
-                    <ProfileImg key={`${innerV[0]}7`} />
-                  </ImageContainer>
+                  <KeywordWrapper key={`${v[0]}0`}>
+                    <ProfileImg key={`${v[0]}1`} />
+                    <Keyword key={`${v[0]}2`}>{`닉네임: ${v[0]}
+키워드: ${v[1]}`}</Keyword>
+                  </KeywordWrapper>
                 );
-              });
+              return (
+                <ImageContainer key={`${v[0]}3`}>
+                  <ImageWrapper key={`${v[0]}4`}>
+                    <span key={`${v[0]}5`} style={{ margintLeft: 'auto' }}>
+                      {`닉네임: ${v[0]}`}
+                    </span>
+                    <Image key={`${v[0]}6`} src={v[1]} alt={`img_${i}`} />
+                  </ImageWrapper>
+                  <ProfileImg key={`${v[0]}7`} />
+                </ImageContainer>
+              );
             })}
-        {isHost && isLast && <Button onClick={() => endGame()}>게임 종료</Button>}
+        {isHost && !(nowKeywordIndex === 0) && (
+          <Button onClick={() => prevKeywordIndex()}>이전</Button>
+        )}
         {isHost && !isLast && <Button onClick={() => nextKeywordIndex()}>다음</Button>}
+        {isHost && isLast && <Button onClick={() => endGame()}>게임 종료</Button>}
       </ResultArea>
     </Container>
   );

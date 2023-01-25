@@ -50,7 +50,6 @@ function Paint({
   const [eventState, setEventState] = useState('drawing');
   const [displayThicknessBtn, setDisplayThicknessBtn] = useState(false);
   const [nowThickness, setNowThickness] = useState(0);
-  const [isHover, setIsHover] = useState(false);
 
   const dispatch = useDispatch();
   const forceSubmit = useSelector((state) => state.ingame.forceSubmit);
@@ -199,8 +198,13 @@ function Paint({
     context.globalCompositeOperation = 'source-over';
     setCtx(context);
     const { offsetX, offsetY } = nativeEvent;
-    const rgb = hexToRgb(ctx.strokeStyle);
-    floodFill(ctx, offsetX, offsetY, [rgb[0], rgb[1], rgb[2], 255]);
+    // const rgb = hexToRgb(ctx.strokeStyle);
+    const hex = ctx.strokeStyle.substring(1);
+    const R = hex.substring(0, 2);
+    const G = hex.substring(2, 4);
+    const B = hex.substring(4, 6);
+    floodFill(ctx, offsetX, offsetY, `0xff${B}${G}${R}` * 1);
+    // floodFill(ctx, offsetX, offsetY, [rgb[0], rgb[1], rgb[2], 255]);
   }
 
   /**
@@ -254,7 +258,6 @@ function Paint({
   useEffect(() => {
     console.log(ctx);
     if (ctx && !isMounted) {
-      console.log('undo/redo');
       undoRef.current = undo;
       redoRef.current = redo;
       isMounted = true;
@@ -267,10 +270,6 @@ function Paint({
       submitImg(canvas);
     }
   }, [completeImageSubmit]);
-
-  useEffect(() => {
-    console.log(isSubmitted);
-  }, [isSubmitted]);
 
   useEffect(() => {
     if (forceSubmit) {
@@ -296,10 +295,6 @@ function Paint({
 
     setCtx(() => context);
   }, []);
-
-  useEffect(() => {
-    console.log('isHover && isSubmitted:', isHover && isSubmitted);
-  }, [isHover, isSubmitted]);
 
   return (
     <Wrapper>
@@ -341,12 +336,10 @@ function Paint({
                 drawing(event);
               }
             }}
-            onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => {
               if (eventState === 'drawing') {
                 finishDrawing();
               }
-              setIsHover(false);
             }}
           />
         </CanvasWrapper>

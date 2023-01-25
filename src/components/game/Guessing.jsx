@@ -22,6 +22,7 @@ function Guessing({ toggleReady, isSubmitted, image, socketID, keyword, setKeywo
         }}
       >
         <TextInput
+          readOnly={isSubmitted}
           type="text"
           width="80%"
           value={keyword}
