@@ -3,14 +3,16 @@ import styled from 'styled-components';
 import TextInput from '../common/TextInput';
 import Button from '../common/Button';
 
-function MakeSentence({ toggleReady, isSubmitted, keyword, setKeyword }) {
+function MakeSentence({ submitNum, maxSubmitNum, toggleReady, isSubmitted, keyword, setKeyword }) {
   function onKeywordChangeHandler(event) {
     setKeyword(event.target.value);
   }
 
   return (
     <div>
-      <p style={{ position: 'absolute', left: '5%', top: '5%', fontSize: '35px' }}>1/1</p>
+      <p
+        style={{ position: 'absolute', left: '5%', top: '5%', fontSize: '35px' }}
+      >{`${submitNum}/${maxSubmitNum}`}</p>
       <div
         style={{
           padding: '13px 0',
@@ -54,7 +56,7 @@ function MakeSentence({ toggleReady, isSubmitted, keyword, setKeyword }) {
           type="text"
           width="80%"
         />
-        <Button onClick={toggleReady} style={{ marginLeft: '15px' }}>
+        <Button onClick={() => toggleReady(isSubmitted)} style={{ marginLeft: '15px' }}>
           {isSubmitted ? '취소' : '제출'}
         </Button>
       </div>

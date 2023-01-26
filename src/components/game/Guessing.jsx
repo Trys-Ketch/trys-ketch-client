@@ -3,7 +3,16 @@ import styled from 'styled-components';
 import TextInput from '../common/TextInput';
 import Button from '../common/Button';
 
-function Guessing({ toggleReady, isSubmitted, image, socketID, keyword, setKeyword }) {
+function Guessing({
+  submitNum,
+  maxSubmitNum,
+  toggleReady,
+  isSubmitted,
+  image,
+  socketID,
+  keyword,
+  setKeyword,
+}) {
   function onKeywordChangeHandler(event) {
     setKeyword(event.target.value);
   }
@@ -37,7 +46,7 @@ function Guessing({ toggleReady, isSubmitted, image, socketID, keyword, setKeywo
             완료
           </Button>
         )} */}
-        <Button onClick={toggleReady} style={{ marginLeft: '15px' }}>
+        <Button onClick={() => toggleReady(isSubmitted)} style={{ marginLeft: '15px' }}>
           {isSubmitted ? '취소' : '제출'}
         </Button>
       </div>

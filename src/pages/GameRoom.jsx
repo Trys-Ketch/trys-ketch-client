@@ -65,6 +65,7 @@ function GameRoom() {
 
   const start = () => {
     token = getCookie(member === 'guest' ? 'guest' : 'access_token');
+
     ingameStompClient.publish({
       destination: '/app/game/start',
       body: JSON.stringify({ roomId: id, token }),

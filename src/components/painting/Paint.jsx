@@ -198,13 +198,12 @@ function Paint({
     context.globalCompositeOperation = 'source-over';
     setCtx(context);
     const { offsetX, offsetY } = nativeEvent;
-    // const rgb = hexToRgb(ctx.strokeStyle);
+
     const hex = ctx.strokeStyle.substring(1);
     const R = hex.substring(0, 2);
     const G = hex.substring(2, 4);
     const B = hex.substring(4, 6);
     floodFill(ctx, offsetX, offsetY, `0xff${B}${G}${R}` * 1);
-    // floodFill(ctx, offsetX, offsetY, [rgb[0], rgb[1], rgb[2], 255]);
   }
 
   /**
@@ -242,11 +241,9 @@ function Paint({
    */
   function drawSpring() {
     const result = [];
-    let key = 0;
     for (let i = 0; i < 14; i += 1) {
-      key = i;
       result.push(
-        <Spring key={key} style={{ top: `${i * 37.5}px` }}>
+        <Spring key={i} style={{ top: `${i * 37.5}px` }}>
           <SpringLine />
           <SpringCircle />
         </Spring>,
@@ -256,7 +253,6 @@ function Paint({
   }
 
   useEffect(() => {
-    console.log(ctx);
     if (ctx && !isMounted) {
       undoRef.current = undo;
       redoRef.current = redo;
@@ -273,8 +269,9 @@ function Paint({
 
   useEffect(() => {
     if (forceSubmit) {
+      console.log('force submit');
       const canvas = canvasRef.current;
-      submitImg(canvas);
+      toggleReady(canvas, false);
       dispatch(setForceSubmit(false));
     }
   }, [forceSubmit]);
@@ -305,11 +302,6 @@ function Paint({
         <CanvasWrapper isSubmitted={isSubmitted}>
           {drawSpring()}
           <Canvas
-            // style={{
-            //   pointerEvents: isSubmitted ? 'none' : 'auto',
-            //   opacity: isSubmitted ? '80%' : '100%',
-            //   cursor: isSubmitted ? 'not-allowed' : 'default',
-            // }}
             isSubmitted={isSubmitted}
             ref={canvasRef}
             onClick={(event) => {
@@ -420,7 +412,7 @@ function Paint({
             height: '11%',
             width: '100%',
           }}
-          onClick={() => toggleReady(canvasRef.current)}
+          onClick={() => toggleReady(canvasRef.current, isSubmitted)}
         >
           <div style={{ fontSize: `${({ theme }) => theme.fontSizes.xl}` }}>
             {isSubmitted ? '취소' : '제출'}
