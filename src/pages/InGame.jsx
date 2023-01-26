@@ -2,10 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import styled from 'styled-components';
+import { store } from '../app/configStore';
 import Drawing from '../components/game/Drawing';
 import Guessing from '../components/game/Guessing';
 import MakeSentence from '../components/game/MakeSentence';
+import { toast } from '../components/toast/ToastProvider';
 
 let token;
 const subArray = [];
@@ -32,8 +33,12 @@ function InGame() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (cookies.access_token) token = cookies.access_token;
-    else if (cookies.guest) token = cookies.guest;
+    const { member } = store.getState().login;
+    if (member === 'guest') {
+      token = cookies.guest;
+    } else {
+      token = cookies.access_token;
+    }
 
     subArray.push(
       // 서버에서 랜덤 키워드를 받아옵니다.
@@ -84,10 +89,21 @@ function InGame() {
       }),
     );
     subArray.push(
-      // 게임이 끝났다는 정보를 서버로부터 받아옵니다.
+      // submit이 되었는지를 서버로부터 받아옵니다.
       ingameStompClient.subscribe(`/queue/game/is-submitted/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
         setIsSubmitted(data.isSubmitted);
+      }),
+    );
+    subArray.push(
+      // 정해진 인원수보다 게임에 남은 인원이 적어지면 강제로 로비로 리다이렉트합니다.
+      ingameStompClient.subscribe(`topic/game/shutdown/${id}`, (message) => {
+        const data = JSON.parse(message.body);
+        console.log(data);
+        if (data.shutdown) {
+          navigate(`/room/${id}`);
+          toast.error('인원이 모자라 진행이 어렵습니다.');
+        }
       }),
     );
 

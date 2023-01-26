@@ -50,7 +50,6 @@ function Paint({
   const [eventState, setEventState] = useState('drawing');
   const [displayThicknessBtn, setDisplayThicknessBtn] = useState(false);
   const [nowThickness, setNowThickness] = useState(0);
-  const [isHover, setIsHover] = useState(false);
 
   const dispatch = useDispatch();
   const forceSubmit = useSelector((state) => state.ingame.forceSubmit);
@@ -199,8 +198,11 @@ function Paint({
     context.globalCompositeOperation = 'source-over';
     setCtx(context);
     const { offsetX, offsetY } = nativeEvent;
-    const rgb = hexToRgb(ctx.strokeStyle);
-    floodFill(ctx, offsetX, offsetY, [rgb[0], rgb[1], rgb[2], 255]);
+    const hex = ctx.strokeStyle.substring(1);
+    const R = hex.substring(0, 2);
+    const G = hex.substring(2, 4);
+    const B = hex.substring(4, 6);
+    floodFill(ctx, offsetX, offsetY, `0xff${B}${G}${R}` * 1);
   }
 
   /**
@@ -238,11 +240,9 @@ function Paint({
    */
   function drawSpring() {
     const result = [];
-    let key = 0;
     for (let i = 0; i < 14; i += 1) {
-      key = i;
       result.push(
-        <Spring key={key} style={{ top: `${i * 37.5}px` }}>
+        <Spring key={i} style={{ top: `${i * 37.5}px` }}>
           <SpringLine />
           <SpringCircle />
         </Spring>,
@@ -252,9 +252,7 @@ function Paint({
   }
 
   useEffect(() => {
-    console.log(ctx);
     if (ctx && !isMounted) {
-      console.log('undo/redo');
       undoRef.current = undo;
       redoRef.current = redo;
       isMounted = true;
@@ -267,10 +265,6 @@ function Paint({
       submitImg(canvas);
     }
   }, [completeImageSubmit]);
-
-  useEffect(() => {
-    console.log(isSubmitted);
-  }, [isSubmitted]);
 
   useEffect(() => {
     if (forceSubmit) {
@@ -297,10 +291,6 @@ function Paint({
     setCtx(() => context);
   }, []);
 
-  useEffect(() => {
-    console.log('isHover && isSubmitted:', isHover && isSubmitted);
-  }, [isHover, isSubmitted]);
-
   return (
     <Wrapper>
       <CanvasArea>
@@ -310,11 +300,6 @@ function Paint({
         <CanvasWrapper isSubmitted={isSubmitted}>
           {drawSpring()}
           <Canvas
-            // style={{
-            //   pointerEvents: isSubmitted ? 'none' : 'auto',
-            //   opacity: isSubmitted ? '80%' : '100%',
-            //   cursor: isSubmitted ? 'not-allowed' : 'default',
-            // }}
             isSubmitted={isSubmitted}
             ref={canvasRef}
             onClick={(event) => {
@@ -341,12 +326,10 @@ function Paint({
                 drawing(event);
               }
             }}
-            onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => {
               if (eventState === 'drawing') {
                 finishDrawing();
               }
-              setIsHover(false);
             }}
           />
         </CanvasWrapper>

@@ -7,10 +7,13 @@ import * as SockJS from 'sockjs-client';
 import Audio from './Audio';
 import { setID } from '../../app/slices/ingameSlice';
 import { closeSocket, setSocket } from '../../app/slices/ingameSlice';
+import { store } from '../../app/configStore';
 
 let pcs: any;
+let hasPcs: any;
 let localStream: MediaStream;
 let token: string;
+let getUserMediaState: string = 'pending';
 
 function AudioCall() {
   const dispatch = useDispatch();
@@ -23,7 +26,7 @@ function AudioCall() {
 
   /**
    * local의 audio에 접근하는 ref입니다.
-   * */
+   */
   const audioRef = useRef<HTMLAudioElement>(null);
 
   /**
@@ -40,7 +43,6 @@ function AudioCall() {
    * @param {MediaStream} peerConnectionLocalStream local MediaStream 객체입니다.
    * @returns {RTCPeerConnection} 생성된 RTCPeerConnection 객체입니다.
    */
-
   const createPeerConnection = (
     socketID: string,
     socket: any,
@@ -55,16 +57,13 @@ function AudioCall() {
       ],
     });
 
-    // add pc to peerConnections object
-    pcs = { ...pcs, [socketID]: pc };
-
     /**
      * icecandidate 이벤트가 발생했을 때의 이벤트 핸들러입니다.
      * @param {event} e icecandidate 이벤트가 발생했을 때의 이벤트 객체입니다.
      */
     pc.onicecandidate = (e) => {
       if (e.candidate) {
-        console.log('onicecandidate');
+        // console.log('onicecandidate');
         socket.send(
           JSON.stringify({
             token,
@@ -98,6 +97,7 @@ function AudioCall() {
           stream: e.streams[0],
         },
       ]);
+      // add pc to peerConnections object
     };
 
     // 로컬의 미디어 스트림이 존재하면 PeerConnection에 추가해줍니다.
@@ -107,11 +107,20 @@ function AudioCall() {
         pc.addTrack(track, peerConnectionLocalStream);
       });
     } else {
-      console.log('no local stream');
+      // console.log('no local stream');
     }
 
+    pcs = { ...pcs, [socketID]: pc };
+    hasPcs[socketID] = true;
     return pc;
   };
+
+  function sleep(ms) {
+    return new Promise((resolve) =>
+      // eslint-disable-next-line
+      setTimeout(resolve, ms),
+    );
+  }
 
   useEffect(() => {
     navigator.mediaDevices
@@ -122,9 +131,11 @@ function AudioCall() {
       .then((stream) => {
         if (audioRef.current) audioRef.current.srcObject = stream;
         localStream = stream;
+        getUserMediaState = 'fulfilled';
       })
       .catch((error) => {
         console.log(`getUserMedia error: ${error}`);
+        getUserMediaState = 'rejected';
       });
   }, []);
 
@@ -132,8 +143,15 @@ function AudioCall() {
     // 시그널링 서버와 소켓 연결
     socketRef.current = new SockJS(`${process.env.REACT_APP_API_URL}/signal`);
 
-    if (cookies.access_token) token = cookies.access_token;
-    else if (cookies.guest) token = cookies.guest;
+    const { member } = store.getState().login;
+    if (member === 'guest') {
+      token = cookies.guest;
+    } else {
+      token = cookies.access_token;
+    }
+
+    // if (cookies.access_token) token = cookies.access_token;
+    // else if (cookies.guest) token = cookies.guest;
 
     // 소켓이 연결되었을 때 실행
     socketRef.current.onopen = async () => {
@@ -144,7 +162,7 @@ function AudioCall() {
     dispatch(setSocket(socketRef.current));
 
     // 서버로부터 메세지가 왔을 때 실행
-    socketRef.current.onmessage = (event) => {
+    socketRef.current.onmessage = async (event) => {
       const data = JSON.parse(event.data);
       switch (data.type) {
         // 1. all_users로 서버에서 같은 방에 존재하는 나를 제외한 모든 user를 받아옵니다.
@@ -156,8 +174,20 @@ function AudioCall() {
           for (let i = 0; i < len; i += 1) {
             // console.log('all_users');
 
+            while (getUserMediaState === 'pending') {
+              // eslint-disable-next-line
+              await sleep(300);
+            }
+            if (getUserMediaState === 'rejected') return;
+
+            hasPcs = { ...hasPcs, [allUsers[i].id]: false };
             // i번째 유저와 나의 peer connection 생성
             createPeerConnection(allUsers[i].id, socketRef.current, localStream);
+
+            while (!hasPcs[allUsers[i].id]) {
+              // eslint-disable-next-line
+              await sleep(100);
+            }
             // allUsers에서 사용하는 peer connection, i번째 유저의 peer connection입니다.
             const allUsersPc: RTCPeerConnection = pcs[allUsers[i].id];
 
@@ -189,8 +219,22 @@ function AudioCall() {
         // 2. 상대방이 offer를 받으면
         case 'rtc/offer': {
           // console.log('get offer');
+
+          while (getUserMediaState === 'pending') {
+            // eslint-disable-next-line
+            await sleep(300);
+          }
+          if (getUserMediaState === 'rejected') return;
+
+          hasPcs = { ...hasPcs, [data.sender]: false };
           // offer를 요청한 상대방과의 peer connection을 생성합니다.
           createPeerConnection(data.sender, socketRef.current, localStream);
+
+          while (!hasPcs[data.sender]) {
+            // eslint-disable-next-line
+            await sleep(100);
+          }
+
           // offer에서 사용하는 peer connection, offer를 요청한 상대방과의 peer connection 입니다.
           const offerPc: RTCPeerConnection = pcs[data.sender];
           if (offerPc) {
@@ -235,13 +279,26 @@ function AudioCall() {
         }
         case 'rtc/candidate': {
           // console.log('get candidate');
+
+          while (getUserMediaState === 'pending') {
+            // eslint-disable-next-line
+            await sleep(300);
+          }
+          if (getUserMediaState === 'rejected') return;
+
+          while (!hasPcs[data.sender]) {
+            // eslint-disable-next-line
+            await sleep(100);
+          }
+
           // candidate에서 사용하는 peer connection, candidate 요청을 보낸 상대방과의 peer connection 입니다.
           const candidatePc: RTCPeerConnection = pcs[data.sender];
           // candidatePc가 존재하면
           if (candidatePc) {
             // cadidate 요청을 보낸 상대방의 candidate 정보로 candidate를 추가합니다.
             candidatePc.addIceCandidate(new RTCIceCandidate(data.candidate)).then(() => {
-              // console.log('candidate add success');
+              console.log('candidate add success');
+              console.log(pcs);
             });
           }
           break;
