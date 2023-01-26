@@ -1,13 +1,20 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setForceSubmit } from '../app/slices/ingameSlice';
+import alarm from '../assets/sound/alarm.wav';
+import turnOnSound from '../utils/turnOnSound';
 
 let startTime;
 let timerID;
 
+// 2초 간격으로 세번
+const ALARM_TIME = 6 * 1000;
+
 function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit) {
   const [degree, setDegree] = useState(1);
   const dispatch = useDispatch();
+
+  const sound = turnOnSound(alarm);
 
   function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
     const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
@@ -60,6 +67,18 @@ function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit) {
     }, 50);
   }
 
+  function alarmSoundOn() {
+    setTimeout(() => {
+      sound.play();
+    }, timeLimit - ALARM_TIME);
+  }
+
+  function alarmSoundOff() {
+    setTimeout(() => {
+      sound.stop();
+    }, timeLimit);
+  }
+
   useEffect(() => {
     pathRef.current.setAttribute(
       'd',
@@ -78,6 +97,15 @@ function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit) {
     getTimerRadius();
     return () => {
       clearInterval(timerID);
+    };
+  }, []);
+
+  useEffect(() => {
+    alarmSoundOn();
+    alarmSoundOff();
+    return () => {
+      clearTimeout(alarmSoundOn);
+      clearTimeout(alarmSoundOff);
     };
   }, []);
 }

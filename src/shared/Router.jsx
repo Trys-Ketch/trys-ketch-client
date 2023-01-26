@@ -9,18 +9,21 @@ import AudioCall from '../components/webRTC/AudioCall.tsx';
 import InGame from '../pages/InGame';
 import Layout from '../components/layout/Layout';
 import GameResult from '../pages/GameResult';
+import BGM from '../components/layout/BGM';
 
 function Router() {
   return (
     <BrowserRouter>
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/" element={<Lobby />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/login/:sns" element={<Login />} />
-          <Route path="/guest" element={<Guest />} />
+          <Route element={<BGM />}>
+            <Route path="/" element={<Lobby />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/login/:sns" element={<Login />} />
+            <Route path="/guest" element={<Guest />} />
+            <Route path="/myPage" element={<MyPage />} />
+          </Route>
           <Route path="room" element={<Navigate to="/" replace />} />
-          <Route path="/myPage" element={<MyPage />} />
           <Route path="/video/:id" element={<AudioCall />} />
           <Route element={<AudioCall />}>
             <Route path="/room/:id" element={<GameRoom />} />
