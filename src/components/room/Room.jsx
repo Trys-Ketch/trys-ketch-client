@@ -14,7 +14,7 @@ function Room({ randomCode, id, title, isPlaying, cur, max, host }) {
       .enterRoom(randomCode)
       .then((res) => {
         if (res.data.statusCode === 200) {
-          navigate(`/room/${id}`);
+          navigate(`/room/${res.data.roomId}`);
         } else {
           toast.error(res.data.message);
         }

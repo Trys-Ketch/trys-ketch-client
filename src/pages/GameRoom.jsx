@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useCookies } from 'react-cookie';
 import SockJS from 'sockjs-client';
 import * as Stomp from '@stomp/stompjs';
 import AttendeeList from '../components/room/AttendeeList';
@@ -19,24 +18,25 @@ import ChatBox from '../components/chat/ChatBox';
 import Explain from '../components/room/Explain';
 import roomAPI from '../api/room';
 import { toast } from '../components/toast/ToastProvider';
+import { getCookie } from '../utils/cookie';
 
 let token;
 const subArray = [];
 
 function GameRoom() {
-  const [roomTitle, setRoomTitle] = useState('');
-  const [inviteCode, setInviteCode] = useState('');
-  const [isReady, setIsReady] = useState(false);
-  const [isHost, setIsHost] = useState(false);
-  const [hostID, setHostID] = useState('');
-  const [allReady, setAllReady] = useState(false);
-  const [isIngame, setIsIngame] = useState(false);
-  const [attendees, setAttendees] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
-  const [cookies] = useCookies(['access_token', 'guest']);
+  const [roomTitle, setRoomTitle] = useState('');
+  const [inviteCode, setInviteCode] = useState('');
+  const [myState, setMyState] = useState({});
+  const [allReady, setAllReady] = useState(false);
+  const [isIngame, setIsIngame] = useState(false);
+  // [ { userId: 2, nickname: "닉네임", imgUrl: "avatar.png", isHost: true, isReady: true, socketId: "akef4dof"}, ... ]
+  const [attendees, setAttendees] = useState([]);
   const ingameStompClient = useSelector((state) => state.ingame.stomp);
+  const member = useSelector((state) => state.login.member);
+  const userId = useSelector((state) => state.user.userId);
   const socketID = useSelector((state) => state.ingame.id);
   const socket = useSelector((state) => state.ingame.socket);
 
@@ -49,7 +49,12 @@ function GameRoom() {
         setInviteCode(randomCode);
       })
       .catch((err) => {
-        toast.error(err.response.data.message);
+        if (err.response) {
+          toast.error(err.response.data.message);
+        } else {
+          toast.error('에러가 났습니다');
+        }
+        navigate('/');
       });
   };
 
@@ -58,8 +63,7 @@ function GameRoom() {
   };
 
   const start = () => {
-    if (cookies.access_token) token = cookies.access_token;
-    else if (cookies.guest) token = cookies.guest;
+    token = getCookie(member === 'guest' ? 'guest' : 'access_token');
     ingameStompClient.publish({
       destination: '/app/game/start',
       body: JSON.stringify({ roomId: id, token }),
@@ -72,6 +76,29 @@ function GameRoom() {
     });
   };
 
+  // const redirect = () => {
+  //   if (!myState.socketId) {
+  //     navigate('/');
+  //   }
+  // };
+
+  // attendees에서 내 상태
+  const getMyState = () => {
+    setMyState(attendees.find((attendee) => attendee.userId === userId));
+    dispatch(setIngameHost(myState?.isHost));
+  };
+
+  // attendees에서 다 준비완료인지
+  const getAllReady = () => {
+    setAllReady(() => {
+      // 최소 두명
+      if (attendees.length < 2) {
+        return false;
+      }
+      return attendees.every((attendee) => attendee.isReady);
+    });
+  };
+
   useEffect(() => {
     getRoomDetail();
   }, []);
@@ -80,28 +107,13 @@ function GameRoom() {
     const gameRoomEventHandler = (event) => {
       const data = JSON.parse(event.data);
       switch (data.type) {
-        case 'ingame/ready': {
-          if (socketID === data.sender) setIsReady(data.status);
-          break;
-        }
-        case 'ingame/all_ready': {
-          setAllReady(data.status);
-          break;
-        }
-        case 'ingame/is_host': {
-          setIsHost(data.host);
-          setHostID(data.hostId);
-          dispatch(setIngameHost(data.host));
-          break;
-        }
         case 'ingame/attendee': {
-          console.log(data);
           setAttendees(data.attendee);
           break;
         }
         case 'ingame/be_kicked': {
           navigate('/');
-          alert('강퇴됐어영 히잉 8ㅅ8');
+          toast.info('강퇴됐어영 히잉 8ㅅ8');
           break;
         }
         default: {
@@ -110,27 +122,22 @@ function GameRoom() {
       }
     };
     if (socket) {
-      console.log('event listener is added');
       socket.addEventListener('message', gameRoomEventHandler);
     }
     return () => {
       if (socket) {
-        console.log('event listener is removed');
         socket.removeEventListener('message', gameRoomEventHandler);
       }
     };
   }, [socket, socketID]);
 
   useEffect(() => {
-    console.log(socket);
     if (socket && socket.readyState === 1) {
-      console.log(socket.readyState);
       socket.send(JSON.stringify({ type: 'ingame/end_game', room: id }));
     }
   }, [socket]);
 
   useEffect(() => {
-    console.log(ingameStompClient);
     if (ingameStompClient) ingameStompClient.activate();
   }, [ingameStompClient]);
 
@@ -139,10 +146,15 @@ function GameRoom() {
   }, [isIngame]);
 
   useEffect(() => {
+    getMyState();
+    getAllReady();
+  }, [attendees]);
+
+  useEffect(() => {
     const client = new Stomp.Client({
-      debug: (str) => {
-        console.log(str);
-      },
+      // debug: (str) => {
+      //   console.log(str);
+      // },
       splitLargeFrames: true,
       webSocketFactory: () => new SockJS(`${process.env.REACT_APP_API_URL}/ws`),
     });
@@ -198,7 +210,7 @@ function GameRoom() {
             초대코드 복사
             <img src={copy} width="18px" height="18px" alt="copy" style={{ marginLeft: '10px' }} />
           </Button>
-          {isHost ? (
+          {myState?.isHost ? (
             <Button
               txtcolor={({ theme }) => theme.colors.WHITE}
               bgcolor={({ theme }) => theme.colors.YELLOW_GREEN}
@@ -221,7 +233,7 @@ function GameRoom() {
               onClick={toggleReady}
               style={{ marginLeft: 0 }}
             >
-              {isReady ? '취소' : '준비 완료'}
+              {myState?.isReady ? '취소' : '준비 완료'}
             </Button>
           )}
         </Side>
