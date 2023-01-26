@@ -16,7 +16,16 @@ const CENTER = 40;
 const TIME_LIMIT = 60 * 1000;
 const STROKE_WIDTH = 3;
 
-function Drawing({ round, toggleReady, isSubmitted, submitImg, keyword, completeImageSubmit }) {
+function Drawing({
+  submitNum,
+  maxSubmitNum,
+  round,
+  toggleReady,
+  isSubmitted,
+  submitImg,
+  keyword,
+  completeImageSubmit,
+}) {
   const undoRef = useRef(null);
   const redoRef = useRef(null);
   const pathRef = useRef(null);

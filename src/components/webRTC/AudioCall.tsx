@@ -14,6 +14,7 @@ let hasPcs: any;
 let localStream: MediaStream;
 let token: string;
 let getUserMediaState: string = 'pending';
+let stop: boolean = false;
 
 function AudioCall() {
   const dispatch = useDispatch();
@@ -175,6 +176,7 @@ function AudioCall() {
             // console.log('all_users');
 
             while (getUserMediaState === 'pending') {
+              if (stop) return;
               // eslint-disable-next-line
               await sleep(300);
             }
@@ -185,6 +187,7 @@ function AudioCall() {
             createPeerConnection(allUsers[i].id, socketRef.current, localStream);
 
             while (!hasPcs[allUsers[i].id]) {
+              if (stop) return;
               // eslint-disable-next-line
               await sleep(100);
             }
@@ -221,6 +224,7 @@ function AudioCall() {
           // console.log('get offer');
 
           while (getUserMediaState === 'pending') {
+            if (stop) return;
             // eslint-disable-next-line
             await sleep(300);
           }
@@ -231,6 +235,7 @@ function AudioCall() {
           createPeerConnection(data.sender, socketRef.current, localStream);
 
           while (!hasPcs[data.sender]) {
+            if (stop) return;
             // eslint-disable-next-line
             await sleep(100);
           }
@@ -281,12 +286,14 @@ function AudioCall() {
           // console.log('get candidate');
 
           while (getUserMediaState === 'pending') {
+            if (stop) return;
             // eslint-disable-next-line
             await sleep(300);
           }
           if (getUserMediaState === 'rejected') return;
 
           while (!hasPcs[data.sender]) {
+            if (stop) return;
             // eslint-disable-next-line
             await sleep(100);
           }
@@ -321,11 +328,13 @@ function AudioCall() {
       console.log(`Error! : ${event}`);
     };
     socketRef.current.onclose = () => {
+      if (!stop) stop = true;
       dispatch(closeSocket());
       // console.log('socket is closed');
     };
 
     return () => {
+      if (!stop) stop = true;
       if (localStream) {
         const localMediaTrack = localStream.getTracks();
         // 컴포넌트가 unmount되면 webRTC의 연결을 종료합니다.

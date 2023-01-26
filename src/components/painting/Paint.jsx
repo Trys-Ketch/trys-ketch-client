@@ -268,8 +268,9 @@ function Paint({
 
   useEffect(() => {
     if (forceSubmit) {
+      console.log('force submit');
       const canvas = canvasRef.current;
-      submitImg(canvas);
+      toggleReady(canvas, false);
       dispatch(setForceSubmit(false));
     }
   }, [forceSubmit]);
@@ -410,7 +411,7 @@ function Paint({
             height: '11%',
             width: '100%',
           }}
-          onClick={() => toggleReady(canvasRef.current)}
+          onClick={() => toggleReady(canvasRef.current, isSubmitted)}
         >
           <div style={{ fontSize: `${({ theme }) => theme.fontSizes.xl}` }}>
             {isSubmitted ? '취소' : '제출'}
