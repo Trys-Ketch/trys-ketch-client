@@ -19,7 +19,7 @@ function ToastBar({ id, type, icon, message, onRemove }) {
     <StToast
       className={type}
       onClick={() => onRemove(id)}
-      positionTransition
+      positiontransition="true"
       initial={{ opacity: 0, y: 30, scale: 0.3 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}

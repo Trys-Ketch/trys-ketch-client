@@ -6,7 +6,7 @@ import crown from '../../assets/icons/crown.png';
 import person from '../../assets/icons/person-icon.svg';
 import { toast } from '../toast/ToastProvider';
 
-function Room({ randomCode, id, title, isPlaying, cur, max, host }) {
+function Room({ randomCode, title, isPlaying, cur, max, host }) {
   const navigate = useNavigate();
 
   const handleEnter = () => {
@@ -14,7 +14,7 @@ function Room({ randomCode, id, title, isPlaying, cur, max, host }) {
       .enterRoom(randomCode)
       .then((res) => {
         if (res.data.statusCode === 200) {
-          navigate(`/room/${res.data.roomId}`);
+          navigate(`/room/${res.data.data.roomId}`);
         } else {
           toast.error(res.data.message);
         }
@@ -54,7 +54,8 @@ const StRoom = styled.button`
   transition: 0.3s ease;
 
   &:disabled {
-    opacity: 0.5;
+    /* opacity: 0.5; */
+    filter: brightness(80%);
   }
 
   &:hover:not([disabled]) {
@@ -98,13 +99,13 @@ const StatusBadge = styled.div`
   border-radius: 13px;
 
   &.game {
-    background-color: ${({ theme }) => theme.colors.SHEEN_GREEN};
+    background-color: ${({ theme }) => theme.colors.BLUE2};
     color: ${({ theme }) => theme.colors.WHITE};
   }
 
   &.wait {
-    background-color: ${({ theme }) => theme.colors.PLATINUM};
-    color: ${({ theme }) => theme.colors.DIM_GRAY2};
+    background-color: ${({ theme }) => theme.colors.YELLOW_GREEN};
+    color: ${({ theme }) => theme.colors.WHITE};
   }
 `;
 
