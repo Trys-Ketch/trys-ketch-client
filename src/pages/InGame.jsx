@@ -2,10 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import styled from 'styled-components';
+import { store } from '../app/configStore';
 import Drawing from '../components/game/Drawing';
 import Guessing from '../components/game/Guessing';
 import MakeSentence from '../components/game/MakeSentence';
+import { toast } from '../components/toast/ToastProvider';
 
 let token;
 const subArray = [];
@@ -25,6 +26,8 @@ function InGame() {
   const [completeImageSubmit, setCompleteImageSubmit] = useState(false);
   const [result, setResult] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitNum, setSubmitNum] = useState(0);
+  const [maxSubmitNum, setMaxSubmitNum] = useState(0);
 
   const keywordIndex = useRef();
   const [round, setRound] = useState(1);
@@ -32,8 +35,12 @@ function InGame() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (cookies.access_token) token = cookies.access_token;
-    else if (cookies.guest) token = cookies.guest;
+    const { member } = store.getState().login;
+    if (member === 'guest') {
+      token = cookies.guest;
+    } else {
+      token = cookies.access_token;
+    }
 
     subArray.push(
       // 서버에서 랜덤 키워드를 받아옵니다.
@@ -84,16 +91,34 @@ function InGame() {
       }),
     );
     subArray.push(
-      // 게임이 끝났다는 정보를 서버로부터 받아옵니다.
+      // submit이 되었는지를 서버로부터 받아옵니다.
       ingameStompClient.subscribe(`/queue/game/is-submitted/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
         setIsSubmitted(data.isSubmitted);
       }),
     );
+    subArray.push(
+      // 정해진 인원수보다 게임에 남은 인원이 적어지면 강제로 로비로 리다이렉트합니다.
+      ingameStompClient.subscribe(`/topic/game/shutdown/${id}`, (message) => {
+        const data = JSON.parse(message.body);
+        if (data.shutdown) {
+          navigate(`/room/${id}`);
+          toast.error('인원이 모자라 진행이 어렵습니다.');
+        }
+      }),
+    );
+    subArray.push(
+      // 몇 명이 제출했는지를 서버로부터 받아옵니다
+      ingameStompClient.subscribe(`/topic/game/true-count/${id}`, (message) => {
+        const data = JSON.parse(message.body);
+        setSubmitNum(data.trueCount);
+        setMaxSubmitNum(data.maxTrueCount);
+      }),
+    );
 
     // ingame페이지에 처음 들어왔을 때 서버에 랜덤 키워드를 요청합니다.
     ingameStompClient.publish({
-      destination: '/app/game/random-keyword',
+      destination: '/app/game/ingame-data',
       body: JSON.stringify({ roomId: id * 1, token }),
     });
 
@@ -145,7 +170,8 @@ function InGame() {
     });
   }
 
-  function toggleDrawingReady(canvas) {
+  function toggleDrawingReady(canvas, isSubmitted) {
+    console.log(isSubmitted);
     ingameStompClient.publish({
       destination: '/app/game/toggle-ready',
       body: JSON.stringify({
@@ -161,7 +187,7 @@ function InGame() {
     });
   }
 
-  function toggleKeywordReady() {
+  function toggleKeywordReady(isSubmitted) {
     const sendData = JSON.stringify({
       round,
       token,
@@ -186,6 +212,7 @@ function InGame() {
       submitKeyword();
       setCompleteKeywordSubmit(false);
       setIsSubmitted(false);
+      setSubmitNum(0);
     }
   }, [completeKeywordSubmit]);
 
@@ -196,13 +223,9 @@ function InGame() {
       setGameState('guessing');
       setCompleteImageSubmit(false);
       setIsSubmitted(false);
+      setSubmitNum(0);
     }
   }, [completeImageSubmit]);
-
-  // 게임이 끝났다면 결과 페이지로 이동합니다.
-  useEffect(() => {
-    if (result) navigate(`/result/${id}`);
-  }, [result]);
 
   return (
     <div>
@@ -210,8 +233,10 @@ function InGame() {
         {
           keyword: (
             <MakeSentence
+              submitNum={submitNum}
+              maxSubmitNum={maxSubmitNum}
               isSubmitted={isSubmitted}
-              toggleReady={() => toggleKeywordReady()}
+              toggleReady={(isSubmitted) => toggleKeywordReady(isSubmitted)}
               keyword={keyword}
               setKeyword={setKeyword}
             />
@@ -219,9 +244,11 @@ function InGame() {
           drawing: (
             <div>
               <Drawing
+                submitNum={submitNum}
+                maxSubmitNum={maxSubmitNum}
                 round={round}
                 isSubmitted={isSubmitted}
-                toggleReady={(canvas) => toggleDrawingReady(canvas)}
+                toggleReady={(canvas, isSubmitted) => toggleDrawingReady(canvas, isSubmitted)}
                 keyword={keyword}
                 submitImg={(canvas) => submitImg(canvas)}
                 completeImageSubmit={completeImageSubmit}
@@ -230,9 +257,11 @@ function InGame() {
           ),
           guessing: (
             <Guessing
+              submitNum={submitNum}
+              maxSubmitNum={maxSubmitNum}
               isSubmitted={isSubmitted}
               setIsSubmitted={() => setIsSubmitted()}
-              toggleReady={() => toggleKeywordReady()}
+              toggleReady={(isSubmitted) => toggleKeywordReady(isSubmitted)}
               keyword={keyword}
               setKeyword={setKeyword}
               image={image}

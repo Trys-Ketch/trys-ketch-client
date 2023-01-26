@@ -1,16 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import * as SockJS from 'sockjs-client';
-import * as Stomp from '@stomp/stompjs';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import roomAPI from '../api/room';
 import Button from '../components/common/Button';
 import { closeStomp } from '../app/slices/ingameSlice';
 import Container from '../components/layout/Container';
 import ResultUser from '../components/game/ResultUser';
+import { store } from '../app/configStore';
 
 let token;
 const subArray = [];
@@ -56,8 +54,13 @@ function GameResult() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (cookies.access_token) token = cookies.access_token;
-    else if (cookies.guest) token = cookies.guest;
+    const { member } = store.getState().login;
+    if (member === 'guest') {
+      token = cookies.guest;
+    } else {
+      token = cookies.access_token;
+    }
+
     subArray.push(
       ingameStompClient.subscribe(`/queue/game/result/${socketID}`, (message) => {
         const data = JSON.parse(message.body);

@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { setForceSubmit } from '../app/slices/ingameSlice';
 
 let startTime;
+let timerID;
 
 function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit) {
   const [degree, setDegree] = useState(1);
@@ -47,10 +48,11 @@ function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit) {
   }
 
   function getTimerRadius() {
-    const timerID = setInterval(() => {
+    timerID = setInterval(() => {
       const nowTime = new Date().getTime();
       setDegree(1 - (nowTime - startTime) / timeLimit);
       if (nowTime - startTime >= timeLimit) {
+        console.log('set force submit');
         setDegree(0);
         clearInterval(timerID);
         dispatch(setForceSubmit(true));
@@ -74,6 +76,9 @@ function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit) {
   useEffect(() => {
     startTime = new Date().getTime();
     getTimerRadius();
+    return () => {
+      clearInterval(timerID);
+    };
   }, []);
 }
 

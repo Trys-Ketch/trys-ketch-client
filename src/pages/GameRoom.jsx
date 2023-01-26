@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCookies } from 'react-cookie';
 import SockJS from 'sockjs-client';
@@ -19,6 +19,7 @@ import ChatBox from '../components/chat/ChatBox';
 import Explain from '../components/room/Explain';
 import roomAPI from '../api/room';
 import { toast } from '../components/toast/ToastProvider';
+import { store } from '../app/configStore';
 
 let token;
 const subArray = [];
@@ -58,8 +59,13 @@ function GameRoom() {
   };
 
   const start = () => {
-    if (cookies.access_token) token = cookies.access_token;
-    else if (cookies.guest) token = cookies.guest;
+    const { member } = store.getState().login;
+    if (member === 'guest') {
+      token = cookies.guest;
+    } else {
+      token = cookies.access_token;
+    }
+
     ingameStompClient.publish({
       destination: '/app/game/start',
       body: JSON.stringify({ roomId: id, token }),
@@ -101,7 +107,7 @@ function GameRoom() {
         }
         case 'ingame/be_kicked': {
           navigate('/');
-          alert('강퇴됐어영 히잉 8ㅅ8');
+          toast.error('강퇴됐어영 히잉 8ㅅ8');
           break;
         }
         default: {

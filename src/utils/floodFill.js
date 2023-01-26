@@ -1,36 +1,7 @@
-function getPixel(imageData, x, y) {
-  if (x < 0 || y < 0 || x >= imageData.width || y >= imageData.height) {
-    return [-1, -1, -1, -1]; // impossible color
-  }
-  const offset = (y * imageData.width + x) * 4;
-  return imageData.data.slice(offset, offset + 4);
-}
-
-function setPixel(imageData, x, y, color) {
-  const offset = (y * imageData.width + x) * 4;
-
-  imageData.data[offset + 0] = color[0];
-  imageData.data[offset + 1] = color[1];
-  imageData.data[offset + 2] = color[2];
-  imageData.data[offset + 3] = color[3];
-}
-
-function colorsMatch(a, b) {
-  return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3];
-}
-
-function fillPixel(imageData, x, y, targetColor, fillColor) {
-  const currentColor = getPixel(imageData, x, y);
-  if (colorsMatch(currentColor, targetColor)) {
-    setPixel(imageData, x, y, fillColor);
-    fillPixel(imageData, x + 1, y, targetColor, fillColor);
-    fillPixel(imageData, x - 1, y, targetColor, fillColor);
-    fillPixel(imageData, x, y + 1, targetColor, fillColor);
-    fillPixel(imageData, x, y - 1, targetColor, fillColor);
-  }
-}
-
 export default function floodFill(ctx, x, y, fillColor) {
+  /* eslint-disable */
+  // 비트연산자, continue, prefix와 같은 기능을 eslint가 못하게 막아버려서 해당 페이지에서는 해제했습니다.
+
   const TOLERANCE = 50;
 
   const w = ctx.canvas.width;
@@ -45,75 +16,54 @@ export default function floodFill(ctx, x, y, fillColor) {
   const dx = [0, -1, +1, 0];
   const dy = [-1, 0, 0, +1];
 
-  // read the pixels in the canvas
   const imageData = ctx.getImageData(0, 0, w, h);
   const imgData = new Uint32Array(imageData.data.buffer);
 
-  // get the color we're filling
+  // floodfill을 시작할 fixel의 color
   const hitColor = getPixelColor(imgData, x, y);
 
-  // const hitHex = hitColor.toString(16) === '0' ? 'ffffffff' : hitColor.toString(16);
-
+  // 해당 fixel이 이전에 색칠되지 않았으면 색상값은 white(0xffffffff)가 아니라 0입니다.
+  // 따라서 색상값이 0인 경우는 white로 취급하여 처리했습니다.
   const hitHex = hitColor === 0 ? 0xffffffff : hitColor;
 
-  // eslint-disable-next-line
+  // 최대 수백만 픽셀에 색상을 적용해야하기 때문에 퍼포먼스를 위해 비트 연산자를 사용했습니다.
+  // 비트 연산자만큼 빠른게 없더군요
   const hitA = hitHex & 0xff000000;
-  // eslint-disable-next-line
   const hitG = hitHex & 0x00ff0000;
-  // eslint-disable-next-line
   const hitB = hitHex & 0x0000ff00;
-  // eslint-disable-next-line
   const hitR = hitHex & 0x000000ff;
 
-  // const hitA = `0x${hitHex.substring(0, 2)}` * 1;
-  // const hitG = `0x${hitHex.substring(2, 4)}` * 1;
-  // const hitB = `0x${hitHex.substring(4, 6)}` * 1;
-  // const hitR = `0x${hitHex.substring(6, 8)}` * 1;
-
-  // const tolerance = (TOLERANCE * TOLERANCE * 4) ** 0.5;
-
-  // check we are actually filling a different color
   while (stPtr) {
-    stPtr -= 1;
-    const curPointY = stack[stPtr];
-    stPtr -= 1;
-    const curPointX = stack[stPtr];
+    const curPointY = stack[--stPtr];
+    const curPointX = stack[--stPtr];
 
     for (let i = 0; i < 4; i += 1) {
       const nextPointX = curPointX + dx[i];
       const nextPointY = curPointY + dy[i];
 
       if (nextPointX < 0 || nextPointY < 0 || nextPointX >= w || nextPointY >= h) {
-        // eslint-disable-next-line
         continue;
       }
 
       const nPO = nextPointY * w + nextPointX; // nextPointOffset
-      // const hex = imgData[nPO].toString(16) === '0' ? 'ffffffff' : imgData[nPO].toString(16);
-
+      
       const hex = imgData[nPO] === 0 ? 0xffffffff : imgData[nPO];
 
-      // eslint-disable-next-line
+      // imgData의 값은 0xffffffff와 같은 16진수입니다.
+      // 상위 비트부터 ABGR의 값을 나타냅니다.
+      // 즉, 0xff(A)ff(B)ff(G)ff(R)을 의미합니다.
+      // 따라서 RGBA값에 해당하는 비트를 and연산자로 마스킹해서 오른쪽으로 shift해 RGBA값을 사용했습니다.
       const A = (hitA - (hex & 0xff000000)) >> 24;
-      // eslint-disable-next-line
       const G = (hitG - (hex & 0x00ff0000)) >> 16;
-      // eslint-disable-next-line
       const B = (hitB - (hex & 0x0000ff00)) >> 8;
-      // eslint-disable-next-line
       const R = (hitR - (hex & 0x000000ff)) >> 0;
 
-      // if (!(R === 0) || !(G === 0) || !(B === 0) || !(A === 0)) console.log(R, G, B, A);
-
-      // console.log(hitHex, hex);
-      // console.log((R * R + G * G + B * B + A * A) ** 0.5, tolerance);
-
       if (imgData[nPO] === fillColor) {
-        // eslint-disable-next-line
         continue;
       }
-      // if (imgData[nPO] === hitColor)
-      // if (Math.abs(hitR - R) < 8 && Math.abs(hitG - G) < 8 && Math.abs(hitB - B) < 8)
 
+      // RGBA값의 표준편차를 구해 if문의 condition으로 사용 할 수도 있지만, 루트 연산이 성능상 좋지 않을 것 같습니다.
+      // 따라서 일일이 TOLERANCE값과 비교했습니다.
       if (
         R > -TOLERANCE &&
         R < TOLERANCE &&
@@ -126,33 +76,10 @@ export default function floodFill(ctx, x, y, fillColor) {
       ) {
         imgData[nPO] = fillColor;
 
-        stack[stPtr] = nextPointX;
-        stPtr += 1;
-        stack[stPtr] = nextPointY;
-        stPtr += 1;
+        stack[stPtr++] = nextPointX;
+        stack[stPtr++] = nextPointY;
       }
     }
-
-    // fillPixel(imageData, x, y, targetColor, fillColor);
-
-    // while (stack.length) {
-    //   const idx = stack.pop();
-    //   setPixel(imageData, idx.x, idx.y, fillColor);
-
-    //   if (colorsMatch(getPixel(imageData, idx.x + 1, idx.y), targetColor)) {
-    //     stack.push({ x: idx.x + 1, y: idx.y });
-    //   }
-    //   if (colorsMatch(getPixel(imageData, idx.x - 1, idx.y), targetColor)) {
-    //     stack.push({ x: idx.x - 1, y: idx.y });
-    //   }
-    //   if (colorsMatch(getPixel(imageData, idx.x, idx.y - 1), targetColor)) {
-    //     stack.push({ x: idx.x, y: idx.y - 1 });
-    //   }
-    //   if (colorsMatch(getPixel(imageData, idx.x, idx.y + 1), targetColor)) {
-    //     stack.push({ x: idx.x, y: idx.y + 1 });
-    //   }
-    // }
-    // put the data back
   }
   ctx.putImageData(imageData, 0, 0);
 }
