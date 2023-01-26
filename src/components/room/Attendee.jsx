@@ -7,12 +7,10 @@ import crown from '../../assets/icons/crown.png';
 import mike from '../../assets/icons/mike-icon.svg';
 import check from '../../assets/icons/check-icon.svg';
 import mikeMute from '../../assets/icons/mike-mute-icon.svg';
-import more from '../../assets/icons/more-icon.svg';
+import cancel from '../../assets/icons/cancel-icon.svg';
 import Range from '../common/Range';
 
 function Attendee({ user }) {
-  const [open, setOpen] = useState(false);
-  const [isHovering, setIsHovering] = useState(false);
   const { userId } = useSelector((state) => state.user);
   const { isHost } = useSelector((state) => state.ingame);
   const { socket } = useSelector((state) => state.ingame);
@@ -22,20 +20,8 @@ function Attendee({ user }) {
     socket.send(JSON.stringify({ type: 'ingame/kick', room: id, kickId: user.socketId }));
   };
 
-  const handleOpen = () => {
-    setOpen(!open);
-  };
-
-  const toggleHover = () => {
-    setIsHovering(!isHovering);
-  };
-
   return (
-    <StUserCard
-      onMouseOver={toggleHover}
-      onMouseOut={toggleHover}
-      className={user.userId === userId && 'mycard'}
-    >
+    <StUserCard className={user.userId === userId && 'mycard'}>
       <UserInfo>
         <Avatar src={user.imgUrl} width="35px" height="35px" />
         {user.isHost && <img className="host" src={crown} width="18px" height="18px" alt="host" />}
@@ -50,18 +36,9 @@ function Attendee({ user }) {
             <Range />
           </UserActive> */}
           {isHost && (
-            <>
-              <UserMore onClick={handleOpen}>
-                <img src={more} alt="more" />
-              </UserMore>
-              {open && (
-                <Popper>
-                  <KickButton onClick={() => kick()} type="button">
-                    강퇴
-                  </KickButton>
-                </Popper>
-              )}
-            </>
+            <UserMore onClick={() => kick()}>
+              <img src={cancel} alt="kick" width="14px" height="14px" />
+            </UserMore>
           )}
         </HoverDisplay>
       )}
@@ -74,12 +51,6 @@ function Attendee({ user }) {
     </StUserCard>
   );
 }
-
-const KickButton = styled.button`
-  &:hover {
-    cursor: pointer;
-  }
-`;
 
 const UserInfo = styled.div`
   display: flex;
@@ -95,22 +66,15 @@ const Nickname = styled.span`
   line-height: 1.5rem;
 `;
 
-const UserActive = styled.div`
-  display: flex;
-  width: 80%;
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translate(-50%, 0);
-  align-items: center;
-`;
-
-const Popper = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 900;
-`;
+// const UserActive = styled.div`
+//   display: flex;
+//   width: 80%;
+//   position: absolute;
+//   bottom: 10px;
+//   left: 50%;
+//   transform: translate(-50%, 0);
+//   align-items: center;
+// `;
 
 const UserMore = styled.button`
   position: absolute;
