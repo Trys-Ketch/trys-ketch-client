@@ -1,11 +1,12 @@
+import { nanoid } from 'nanoid';
 import React from 'react';
 import styled from 'styled-components';
 
 function ResultUser({ user }) {
   return (
     <User>
-      <ProfileImg />
-      <Nickname>temp닉네임</Nickname>
+      <ProfileImg src={user.imgUrl} alt={nanoid()} />
+      <Nickname>{user.nickname}</Nickname>
     </User>
   );
 }
@@ -27,12 +28,11 @@ const Nickname = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.lg};
 `;
 
-const ProfileImg = styled.div`
+const ProfileImg = styled.img`
   border-radius: 50%;
-  background-color: #1290cb;
-  padding: 25px;
-  width: max-content;
-  height: max-content;
+  /* background-color: #1290cb; */
+  width: 50px;
+  height: 50px;
 `;
 
 export default ResultUser;
