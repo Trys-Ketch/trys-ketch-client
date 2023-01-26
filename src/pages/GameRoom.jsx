@@ -19,6 +19,7 @@ import Explain from '../components/room/Explain';
 import roomAPI from '../api/room';
 import { toast } from '../components/toast/ToastProvider';
 import { getCookie } from '../utils/cookie';
+import useDidMountEffect from '../hooks/useDidMountEffect';
 
 let token;
 const subArray = [];
@@ -76,11 +77,11 @@ function GameRoom() {
     });
   };
 
-  // const redirect = () => {
-  //   if (!myState.socketId) {
-  //     navigate('/');
-  //   }
-  // };
+  const redirect = () => {
+    if (myState && !myState?.socketId) {
+      navigate('/');
+    }
+  };
 
   // attendees에서 내 상태
   const getMyState = () => {
@@ -113,7 +114,7 @@ function GameRoom() {
         }
         case 'ingame/be_kicked': {
           navigate('/');
-          toast.info('강퇴됐어영 히잉 8ㅅ8');
+          toast.info('강퇴되었습니다');
           break;
         }
         default: {
@@ -148,6 +149,10 @@ function GameRoom() {
   useEffect(() => {
     getMyState();
     getAllReady();
+  }, [attendees]);
+
+  useDidMountEffect(() => {
+    redirect();
   }, [attendees]);
 
   useEffect(() => {
