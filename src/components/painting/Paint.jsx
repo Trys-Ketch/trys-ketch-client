@@ -198,6 +198,7 @@ function Paint({
     context.globalCompositeOperation = 'source-over';
     setCtx(context);
     const { offsetX, offsetY } = nativeEvent;
+
     const hex = ctx.strokeStyle.substring(1);
     const R = hex.substring(0, 2);
     const G = hex.substring(2, 4);
