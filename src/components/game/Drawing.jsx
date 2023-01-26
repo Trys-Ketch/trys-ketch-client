@@ -10,6 +10,8 @@ import SettingButton from '../button/SettingButton';
 import MikeButton from '../button/MikeButton';
 import useTimer from '../../hooks/useTimer';
 import CircleTimer from './CircleTimer';
+import head from '../../assets/icons/user-head-icon.svg';
+import body from '../../assets/icons/user-body-icon.svg';
 
 const CIRCLE_RADIUS = 40;
 const CENTER = 40;
@@ -51,6 +53,7 @@ function Drawing({
             pathRef={pathRef}
             round={round}
           />
+          <SubmittedPlayer submitNum={submitNum} maxSubmitNum={maxSubmitNum} />
           <IconButtonContainer>
             <IconButton onClick={() => undoRef.current()} size="xlarge" icon={undo} />
             <IconButton
@@ -74,6 +77,30 @@ function Drawing({
     </>
   );
 }
+
+const UserIcon = styled.div`
+  width: max-content;
+  display: flex;
+  flex-direction: column;
+  margin-right: 5px;
+`;
+
+const SubmittedPlayerWrapper = styled.div`
+  display: flex;
+  margin: 0 auto;
+  margin-top: 3px;
+  height: max-content;
+  width: max-content;
+`;
+
+const SubmittedPlayer = styled.div`
+  font-family: 'TTTogether';
+  color: ${({ theme }) => theme.colors.DARK_LAVA};
+  font-size: 18px;
+  height: max-content;
+  width: max-content;
+  margin: auto 0;
+`;
 
 const IconButtonContainer = styled.div`
   position: absolute;
