@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { nanoid } from 'nanoid';
 import Attendee from './Attendee';
 import EmptyAttendee from './EmptyAttendee';
 
@@ -9,8 +10,8 @@ function AttendeeList({ userList }) {
       {userList.map((user) => (
         <Attendee key={user.userId} user={user} />
       ))}
-      {[...Array(parseInt(8 - userList.length, 10))].map((_, idx) => {
-        return <EmptyAttendee key={String(idx)} />;
+      {[...Array(parseInt(8 - userList.length, 10))].map((_) => {
+        return <EmptyAttendee key={nanoid()} />;
       })}
     </GridList>
   );
