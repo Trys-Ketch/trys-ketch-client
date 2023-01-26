@@ -42,7 +42,7 @@ function LobbyProfile() {
   return (
     <ProfileBox>
       <Avatar src={profileImage} width="80px" height="80px" />
-      <Nickname>{nickname}</Nickname>
+      <Nickname>{nickname ?? '로그인이 필요합니다'}</Nickname>
     </ProfileBox>
   );
 }

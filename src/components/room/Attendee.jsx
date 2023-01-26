@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Avatar from '../common/Avatar';
 import crown from '../../assets/icons/crown.png';
 import mike from '../../assets/icons/mike-icon.svg';
@@ -11,39 +11,56 @@ import more from '../../assets/icons/more-icon.svg';
 import Range from '../common/Range';
 
 function Attendee({ user }) {
+  const [open, setOpen] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
   const { userId } = useSelector((state) => state.user);
   const { isHost } = useSelector((state) => state.ingame);
   const { socket } = useSelector((state) => state.ingame);
   const { id } = useParams();
 
-  function kick() {
+  const kick = () => {
     socket.send(JSON.stringify({ type: 'ingame/kick', room: id, kickId: user.socketId }));
-  }
+  };
+
+  const handleOpen = () => {
+    setOpen(!open);
+  };
+
+  const toggleHover = () => {
+    setIsHovering(!isHovering);
+  };
 
   return (
-    <StUserCard className={user.isHost && 'host'}>
+    <StUserCard
+      onMouseOver={toggleHover}
+      onMouseOut={toggleHover}
+      className={user.userId === userId && 'mycard'}
+    >
       <UserInfo>
-        {user.isHost && <img className="host" src={crown} width="18px" height="18px" alt="host" />}
         <Avatar src={user.imgUrl} width="35px" height="35px" />
+        {user.isHost && <img className="host" src={crown} width="18px" height="18px" alt="host" />}
         <Nickname>{user.nickname}</Nickname>
       </UserInfo>
       {/* 내가 아니면 마이크 조절 */}
       {user.userId !== userId && (
         <HoverDisplay>
-          <UserActive>
+          {/* 마이크 음량 조절 기능 추가 시 주석 해제 */}
+          {/* <UserActive>
             <img src={mike} width="20px" height="20px" alt="mike" />
             <Range />
-          </UserActive>
-          {/* 내가 방장일때만 뜨게 */}
-          {/* 추후 강퇴 기능 등 추가 시 주석 해제 */}
+          </UserActive> */}
           {isHost && (
             <>
-              <UserMore>
+              <UserMore onClick={handleOpen}>
                 <img src={more} alt="more" />
               </UserMore>
-              <KickButton onClick={() => kick()} type="button">
-                강퇴
-              </KickButton>
+              {open && (
+                <Popper>
+                  <KickButton onClick={() => kick()} type="button">
+                    강퇴
+                  </KickButton>
+                </Popper>
+              )}
             </>
           )}
         </HoverDisplay>
@@ -59,10 +76,6 @@ function Attendee({ user }) {
 }
 
 const KickButton = styled.button`
-  position: absolute;
-  left: 15px;
-  top: 15px;
-
   &:hover {
     cursor: pointer;
   }
@@ -90,6 +103,13 @@ const UserActive = styled.div`
   left: 50%;
   transform: translate(-50%, 0);
   align-items: center;
+`;
+
+const Popper = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 900;
 `;
 
 const UserMore = styled.button`
@@ -136,14 +156,15 @@ const StUserCard = styled.div`
     display: block;
   }
 
-  &.host {
-    box-shadow: inset 0 0 0 4px ${({ theme }) => theme.colors.YELLOW_ORANGE};
-    & img.host {
-      position: absolute;
-      top: 11px;
-      left: 13px;
-      transform: rotate(320deg);
-    }
+  &.mycard {
+    box-shadow: inset 0 0 0 4px ${({ theme }) => theme.colors.BLUE2};
+  }
+
+  & img.host {
+    position: absolute;
+    top: 11px;
+    left: 13px;
+    transform: rotate(320deg);
   }
 `;
 

@@ -53,7 +53,7 @@ const List = styled.ol`
     color: ${({ theme }) => theme.colors.DIM_GRAY};
     font-weight: ${({ theme }) => theme.fontWeight.semibold};
     font-size: ${({ theme }) => theme.fontSizes.sm};
-    line-height: 1.5;
+    line-height: 1.7;
   }
 
   & li:before {
