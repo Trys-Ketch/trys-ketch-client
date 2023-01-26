@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import Avatar from '../common/Avatar';
 import crown from '../../assets/icons/crown.png';
-import mike from '../../assets/icons/mike-icon.svg';
+import mic from '../../assets/icons/mic-icon.svg';
 import check from '../../assets/icons/check-icon.svg';
-import mikeMute from '../../assets/icons/mike-mute-icon.svg';
+import micMute from '../../assets/icons/mic-mute-icon.svg';
 import cancel from '../../assets/icons/cancel-icon.svg';
 import Range from '../common/Range';
 
@@ -32,7 +32,7 @@ function Attendee({ user }) {
         <HoverDisplay>
           {/* 마이크 음량 조절 기능 추가 시 주석 해제 */}
           {/* <UserActive>
-            <img src={mike} width="20px" height="20px" alt="mike" />
+            <img src={mic} width="20px" height="20px" alt="mic" />
             <Range />
           </UserActive> */}
           {isHost && (
