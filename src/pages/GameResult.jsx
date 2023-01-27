@@ -140,7 +140,7 @@ function GameResult() {
     if (isGameEnd) {
       ingameStompClient.deactivate();
       dispatch(closeStomp());
-      navigate(`/room/${id}`);
+      navigate(`/room/${id}`, { replace: true });
     }
   }, [isGameEnd]);
 

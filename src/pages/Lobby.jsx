@@ -75,7 +75,8 @@ function Lobby() {
   };
 
   const LinkToMyPage = () => {
-    navigate('/myPage');
+    toast.info('준비 중이에요🔨');
+    // navigate('/myPage');
   };
 
   useEffect(() => {
