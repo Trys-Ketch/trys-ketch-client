@@ -37,15 +37,6 @@ function Guessing({
           value={keyword}
           onChange={(event) => onKeywordChangeHandler(event)}
         />
-        {/* {isSubmitted ? (
-          <Button disabled style={{ marginLeft: '15px' }}>
-            취소
-          </Button>
-        ) : (
-          <Button onClick={submitKeyword} style={{ marginLeft: '15px' }}>
-            완료
-          </Button>
-        )} */}
         <Button onClick={() => toggleReady(isSubmitted)} style={{ marginLeft: '15px' }}>
           {isSubmitted ? '취소' : '제출'}
         </Button>

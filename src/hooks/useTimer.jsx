@@ -5,7 +5,7 @@ import { setForceSubmit } from '../app/slices/ingameSlice';
 let startTime;
 let timerID;
 
-function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit) {
+function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit, gameState) {
   const [degree, setDegree] = useState(1);
   const dispatch = useDispatch();
 
@@ -79,7 +79,7 @@ function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit) {
     return () => {
       clearInterval(timerID);
     };
-  }, []);
+  }, [gameState]);
 }
 
 export default useTimer;

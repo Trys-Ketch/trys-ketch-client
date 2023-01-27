@@ -27,7 +27,7 @@ const UserIcon = styled.div`
 const SubmittedPlayerWrapper = styled.div`
   display: flex;
   margin: 0 auto;
-  margin-top: 3px;
+  margin-top: 15px;
   height: max-content;
   width: max-content;
 `;
