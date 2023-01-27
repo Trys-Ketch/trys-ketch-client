@@ -5,12 +5,62 @@
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
+    <meta name="description" content="음성 채팅으로 즐기는 드로잉 게임!👩‍🎨🕹" />
+    <!-- og tags -->
+    <meta property="og:url" content="%PUBLIC_URL%" />
+    <meta property="og:locale" content="ko_KR">
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="%PUBLIC_URL%/img/trysketch.svg" /> 
+    <meta property="og:title" content="눈치 코치 캐치" /> 
+    <meta property="og:site_name" content="눈치 코치 캐치">
+    <meta property="og:description" content="음성 채팅으로 즐기는 드로잉 게임!👩‍🎨🕹" />
+    <!-- twitter -->
+    <meta name="twitter:card" content="summary" /> 
+    <meta name="twitter:title" content="눈치 코치 캐치" /> 
+    <meta name="twitter:description" content="음성 채팅으로 즐기는 드로잉 게임!👩‍🎨🕹" /> 
+    <meta name="twitter:image" content="%PUBLIC_URL%/img/trysketch.svg" />
     <title>눈치 코치 캐치</title>
   </head>
+  <script>
+    (function () {
+      const w = window;
+      if (w.ChannelIO) {
+        return w.console.error('ChannelIO script included twice.');
+      }
+      const ch = function (...args) {
+        ch.c(args);
+      };
+      ch.q = [];
+      ch.c = function (args) {
+        ch.q.push(args);
+      };
+      w.ChannelIO = ch;
+      function l() {
+        if (w.ChannelIOInitialized) {
+          return;
+        }
+        w.ChannelIOInitialized = true;
+        const s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'https://cdn.channel.io/plugin/ch-plugin-web.js';
+        const x = document.getElementsByTagName('script')[0];
+        if (x.parentNode) {
+          x.parentNode.insertBefore(s, x);
+        }
+      }
+      if (document.readyState === 'complete') {
+        l();
+      } else {
+        w.addEventListener('DOMContentLoaded', l);
+        w.addEventListener('load', l);
+      }
+    })();
+    
+    ChannelIO('boot', {
+      pluginKey: '%REACT_APP_CHANNEL_TALK_PLUGIN_KEY%',
+    });
+  </script>
   <body>
     <div id="root"></div>
     <div id="toast"></div>
