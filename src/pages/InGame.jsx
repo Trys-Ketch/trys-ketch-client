@@ -102,7 +102,7 @@ function InGame() {
       ingameStompClient.subscribe(`/topic/game/shutdown/${id}`, (message) => {
         const data = JSON.parse(message.body);
         if (data.shutdown) {
-          navigate(`/room/${id}`);
+          navigate(`/room/${id}`, { replace: true });
           toast.error('인원이 모자라 진행이 어렵습니다.');
         }
       }),
@@ -132,7 +132,7 @@ function InGame() {
 
   // 게임이 끝났다면 결과 페이지로 이동합니다.
   useEffect(() => {
-    if (result) navigate(`/result/${id}`);
+    if (result) navigate(`/result/${id}`, { replace: true });
   }, [result]);
 
   /**
