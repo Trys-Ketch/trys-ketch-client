@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-
 import { useCookies } from 'react-cookie';
 import * as SockJS from 'sockjs-client';
 import Audio from './Audio';
 import { setID } from '../../app/slices/ingameSlice';
 import { closeSocket, setSocket } from '../../app/slices/ingameSlice';
 import { store } from '../../app/configStore';
+import usePreventRefresh from '../../hooks/usePreventRefresh';
 
 let pcs: any;
 let hasPcs: any;
@@ -18,6 +18,7 @@ let stop: boolean = false;
 
 function AudioCall() {
   const dispatch = useDispatch();
+  usePreventRefresh();
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
   // const dispatch = useDispatch();
   /**
