@@ -72,7 +72,6 @@ function GameResult() {
         const data = JSON.parse(message.body);
         resultArray = data.result;
         userList = data.gamerList;
-        console.log(userList);
         setIsHost(data.isHost);
         setIsLoading(false);
       }),
@@ -92,7 +91,6 @@ function GameResult() {
     subArray.push(
       ingameStompClient.subscribe(`/topic/game/prev-keyword-index/${id}`, (message) => {
         const data = JSON.parse(message.body);
-        console.log(data);
         setNowKeywordIndex(data.keywordIndex);
       }),
     );
@@ -104,7 +102,6 @@ function GameResult() {
 
     return () => {
       if (ingameStompClient) {
-        console.log('client unsubscribes');
         for (let i = 0; i < subArray.length; i += 1) subArray[i].unsubscribe();
       }
     };
@@ -133,7 +130,6 @@ function GameResult() {
 
   useEffect(() => {
     if (!isLoading) {
-      console.log(resultArray);
       if (nowKeywordIndex === resultArray.length - 1) setIsLast(true);
       else setIsLast(false);
     }

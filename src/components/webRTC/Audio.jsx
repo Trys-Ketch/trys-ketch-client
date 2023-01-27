@@ -3,9 +3,10 @@ import { useSelector } from 'react-redux';
 
 function Audio({ stream, socketID }) {
   const ref = useRef(null);
-  const { isMuted } = useSelector((state) => state.mute.users).filter(
+  const user = useSelector((state) => state.mute.users).filter(
     (v) => v.socketID === socketID && v,
   )[0];
+  const isMuted = user?.isMuted;
 
   useEffect(() => {
     if (ref.current) ref.current.srcObject = stream;

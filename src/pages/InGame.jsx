@@ -124,7 +124,6 @@ function InGame() {
 
     return () => {
       if (ingameStompClient) {
-        console.log('client unsubscribes');
         for (let i = 0; i < subArray.length; i += 1) subArray[i].unsubscribe();
       }
     };
@@ -171,7 +170,6 @@ function InGame() {
   }
 
   function toggleDrawingReady(canvas, isSubmitted) {
-    console.log(isSubmitted);
     ingameStompClient.publish({
       destination: '/app/game/toggle-ready',
       body: JSON.stringify({
@@ -207,7 +205,6 @@ function InGame() {
   // 모든 사람들이 키워드를 제출했다면 gameState를 drawing으로 바꿉니다.
   useEffect(() => {
     if (completeKeywordSubmit) {
-      console.log('toDrawing');
       setGameState('drawing');
       submitKeyword();
       setCompleteKeywordSubmit(false);
@@ -219,7 +216,6 @@ function InGame() {
   // 모든 사람들이 그림을 제출했다면 gameState를 guessing으로 바꿉니다.
   useEffect(() => {
     if (completeImageSubmit) {
-      console.log('toGuessing');
       setGameState('guessing');
       setCompleteImageSubmit(false);
       setIsSubmitted(false);

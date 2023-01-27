@@ -9,10 +9,8 @@ function FadeInOut({ duration = 1, keyword = '짱구' }) {
   //   let pointer = 0;
   //   const intervalID = setInterval(() => {
   //     const contents = [3, 2, 1, keyword];
-  //     console.log(contents[pointer]);
   //     setContent(contents[pointer]);
   //     pointer += 1;
-  //     console.log('content changed: ', content);
   //     if (pointer === contents.length) clearInterval(intervalID);
   //   }, duration * 1000);
   // }
