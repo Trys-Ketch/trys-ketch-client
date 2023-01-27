@@ -3,8 +3,11 @@ import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import background from '../../assets/images/background.svg';
 import ModalContainer from '../modal/ModalContainer';
+import RouteChangeTracker from '../../ga/RouteChangeTraker';
 
 function Layout() {
+  RouteChangeTracker();
+
   return (
     <StLayout>
       <ModalContainer />
