@@ -20,6 +20,8 @@ import roomAPI from '../api/room';
 import { toast } from '../components/toast/ToastProvider';
 import { getCookie } from '../utils/cookie';
 import useDidMountEffect from '../hooks/useDidMountEffect';
+import { setMuteUsers } from '../app/slices/muteSlice';
+import MuteUserList from '../components/mute/MuteUserList';
 
 let token;
 const subArray = [];
@@ -40,6 +42,7 @@ function GameRoom() {
   const userId = useSelector((state) => state.user.userId);
   const socketID = useSelector((state) => state.ingame.id);
   const socket = useSelector((state) => state.ingame.socket);
+  const muteUser = useSelector((state) => state.mute.users);
 
   const getRoomDetail = () => {
     roomAPI
@@ -158,9 +161,7 @@ function GameRoom() {
 
   useEffect(() => {
     const client = new Stomp.Client({
-      debug: (str) => {
-        console.log(str);
-      },
+      debug: (str) => {},
       splitLargeFrames: true,
       webSocketFactory: () => new SockJS(`${process.env.REACT_APP_API_URL}/ws`),
     });
@@ -176,9 +177,7 @@ function GameRoom() {
       console.error('Stomp Error!: ', frame.headers.message);
       console.error('Additional details: ', frame.body);
     };
-    client.onDisconnect = (frame) => {
-      // console.log('Stomp Disconnected');
-    };
+    client.onDisconnect = (frame) => {};
     dispatch(setStomp(client));
     return () => {
       if (client) {
@@ -187,6 +186,32 @@ function GameRoom() {
     };
   }, []);
 
+  useEffect(() => {
+    if (attendees.length > muteUser.length) {
+      const newMuteUser = [];
+      for (let i = muteUser.length; i < attendees.length; i += 1) {
+        newMuteUser.push({
+          nickname: attendees[i].nickname,
+          socketID: attendees[i].socketId,
+          isMuted: false,
+        });
+      }
+      dispatch(setMuteUsers([...muteUser, ...newMuteUser]));
+    } else {
+      const newMuteUsers = [];
+      for (let i = 0; i < attendees.length; i += 1) {
+        for (let j = 0; j < muteUser.length; j += 1) {
+          console.log(attendees[i].socketId, muteUser[j].socketID);
+          if (attendees[i].socketId === muteUser[j].socketID) {
+            newMuteUsers.push(muteUser[j]);
+            break;
+          }
+        }
+      }
+      dispatch(setMuteUsers([...newMuteUsers]));
+    }
+  }, [attendees]);
+
   return (
     <>
       <FloatBox
@@ -194,6 +219,7 @@ function GameRoom() {
           <>
             <SettingButton size="xlarge" />
             <MicButton size="xlarge" />
+            <MuteUserList socketID={socketID} />
           </>
         }
         bottom={<QuitButton size="xlarge" />}

@@ -11,6 +11,10 @@ import { store } from '../app/configStore';
 import ResultUserList from '../components/gameResult/ResultUserList';
 
 import arrow from '../assets/icons/right-arrow.svg';
+import FloatBox from '../components/layout/FloatBox';
+import SettingButton from '../components/button/SettingButton';
+import MicButton from '../components/button/MicButton';
+import MuteUserList from '../components/mute/MuteUserList';
 
 let token;
 const subArray = [];
@@ -69,7 +73,6 @@ function GameResult() {
         const data = JSON.parse(message.body);
         resultArray = data.result;
         userList = data.gamerList;
-        console.log(userList);
         setIsHost(data.isHost);
         setIsLoading(false);
       }),
@@ -89,7 +92,6 @@ function GameResult() {
     subArray.push(
       ingameStompClient.subscribe(`/topic/game/prev-keyword-index/${id}`, (message) => {
         const data = JSON.parse(message.body);
-        console.log(data);
         setNowKeywordIndex(data.keywordIndex);
       }),
     );
@@ -101,7 +103,6 @@ function GameResult() {
 
     return () => {
       if (ingameStompClient) {
-        console.log('client unsubscribes');
         for (let i = 0; i < subArray.length; i += 1) subArray[i].unsubscribe();
       }
     };
@@ -130,7 +131,6 @@ function GameResult() {
 
   useEffect(() => {
     if (!isLoading) {
-      console.log(resultArray);
       if (nowKeywordIndex === resultArray.length - 1) setIsLast(true);
       else setIsLast(false);
     }
@@ -145,85 +145,101 @@ function GameResult() {
   }, [isGameEnd]);
 
   return (
-    <Container
-      style={{ justifyContent: 'space-between', padding: '20px', height: '680px', width: '1200px' }}
-    >
-      {isLoading ? null : <ResultUserList userList={userList} />}
-      <ResultArea>
-        {isLoading ? null : <FirstKeyword>{resultArray[nowKeywordIndex][0][1]}</FirstKeyword>}
-        {isLoading
-          ? null
-          : resultArray[nowKeywordIndex].map((v, i) => {
-              if (i % 2 === 0)
+    <>
+      <FloatBox
+        top={
+          <>
+            <SettingButton size="xlarge" />
+            <MicButton size="xlarge" />
+            <MuteUserList socketID={socketID} />
+          </>
+        }
+      />
+      <Container
+        style={{
+          justifyContent: 'space-between',
+          padding: '20px',
+          height: '680px',
+          width: '1200px',
+        }}
+      >
+        {isLoading ? null : <ResultUserList userList={userList} />}
+        <ResultArea>
+          {isLoading ? null : <FirstKeyword>{resultArray[nowKeywordIndex][0][1]}</FirstKeyword>}
+          {isLoading
+            ? null
+            : resultArray[nowKeywordIndex].map((v, i) => {
+                if (i % 2 === 0)
+                  return (
+                    <div key={`${v[0]}-1`}>
+                      <KeywordNickname key={`${v[0]}0`}>{v[0]}</KeywordNickname>
+                      <KeywordWrapper key={`${v[0]}1`}>
+                        <ProfileImg src={v[2]} alt={`profile_${i}`} />
+                        <Keyword key={`${v[0]}2`}>{v[1]}</Keyword>
+                      </KeywordWrapper>
+                    </div>
+                  );
                 return (
-                  <div key={`${v[0]}-1`}>
-                    <KeywordNickname key={`${v[0]}0`}>{v[0]}</KeywordNickname>
-                    <KeywordWrapper key={`${v[0]}1`}>
-                      <ProfileImg src={v[2]} alt={`profile_${i}`} />
-                      <Keyword key={`${v[0]}2`}>{v[1]}</Keyword>
-                    </KeywordWrapper>
+                  <div key={`${v[0]}4`}>
+                    <ImageNickname key={`${v[0]}5`}>{v[0]}</ImageNickname>
+                    <ImageContainer key={`${v[0]}6`}>
+                      <ImageWrapper key={`${v[0]}7`}>
+                        <Image key={`${v[0]}8`} src={v[1]} alt={`img_${i}`} />
+                      </ImageWrapper>
+                      <ProfileImg src={v[2]} alt={`profile_${i}`} key={`${v[0]}8`} />
+                    </ImageContainer>
                   </div>
                 );
-              return (
-                <div key={`${v[0]}4`}>
-                  <ImageNickname key={`${v[0]}5`}>{v[0]}</ImageNickname>
-                  <ImageContainer key={`${v[0]}6`}>
-                    <ImageWrapper key={`${v[0]}7`}>
-                      <Image key={`${v[0]}8`} src={v[1]} alt={`img_${i}`} />
-                    </ImageWrapper>
-                    <ProfileImg src={v[2]} alt={`profile_${i}`} key={`${v[0]}8`} />
-                  </ImageContainer>
-                </div>
-              );
-            })}
-        {/* {isHost && !(nowKeywordIndex === 0) && (
+              })}
+          {/* {isHost && !(nowKeywordIndex === 0) && (
           <Button onClick={() => prevKeywordIndex()}>이전</Button>
         )}
         {isHost && !isLast && <Button onClick={() => nextKeywordIndex()}>다음</Button>}
         {isHost && isLast && <Button onClick={() => endGame()}>게임 종료</Button>} */}
-        {isHost && (
-          <PrevNextButtonWrapper>
-            {!(nowKeywordIndex === 0) && (
-              <PrevNextButton onClick={() => prevKeywordIndex()} style={{ marginRight: 'auto' }}>
-                <img
-                  style={{
-                    transform: 'scaleX(-1)',
-                    marginRight: '10px',
-                  }}
-                  src={arrow}
-                  alt="prev"
-                />
-                이전
-              </PrevNextButton>
-            )}
-            {!isLast && (
-              <PrevNextButton onClick={() => nextKeywordIndex()} style={{ marginLeft: 'auto' }}>
-                다음
-                <ArrowImg
-                  style={{
-                    marginLeft: '10px',
-                  }}
-                  src={arrow}
-                  alt="next"
-                />
-              </PrevNextButton>
-            )}
-            {isLast && (
-              <PrevNextButton onClick={() => endGame()} style={{ marginLeft: 'auto' }}>
-                게임 종료
-                <ArrowImg
-                  style={{
-                    marginLeft: '10px',
-                  }}
-                  src={arrow}
-                  alt="next"
-                />
-              </PrevNextButton>
-            )}
-          </PrevNextButtonWrapper>
-        )}
-      </ResultArea>
-    </Container>
+          {isHost && (
+            <PrevNextButtonWrapper>
+              {!(nowKeywordIndex === 0) && (
+                <PrevNextButton onClick={() => prevKeywordIndex()} style={{ marginRight: 'auto' }}>
+                  <img
+                    style={{
+                      transform: 'scaleX(-1)',
+                      marginRight: '10px',
+                    }}
+                    src={arrow}
+                    alt="prev"
+                  />
+                  이전
+                </PrevNextButton>
+              )}
+              {!isLast && (
+                <PrevNextButton onClick={() => nextKeywordIndex()} style={{ marginLeft: 'auto' }}>
+                  다음
+                  <ArrowImg
+                    style={{
+                      marginLeft: '10px',
+                    }}
+                    src={arrow}
+                    alt="next"
+                  />
+                </PrevNextButton>
+              )}
+              {isLast && (
+                <PrevNextButton onClick={() => endGame()} style={{ marginLeft: 'auto' }}>
+                  게임 종료
+                  <ArrowImg
+                    style={{
+                      marginLeft: '10px',
+                    }}
+                    src={arrow}
+                    alt="next"
+                  />
+                </PrevNextButton>
+              )}
+            </PrevNextButtonWrapper>
+          )}
+        </ResultArea>
+      </Container>
+    </>
   );
 }
 
