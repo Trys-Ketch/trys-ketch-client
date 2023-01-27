@@ -58,7 +58,7 @@ function GameRoom() {
         } else {
           toast.error('에러가 났습니다');
         }
-        navigate('/');
+        navigate('/', { replace: true });
       });
   };
 
@@ -83,7 +83,7 @@ function GameRoom() {
 
   const redirect = () => {
     if (myState && !myState?.socketId) {
-      navigate('/');
+      navigate('/', { replace: true });
     }
   };
 
@@ -117,7 +117,7 @@ function GameRoom() {
           break;
         }
         case 'ingame/be_kicked': {
-          navigate('/');
+          navigate('/', { replace: true });
           toast.info('강퇴되었습니다');
           break;
         }
@@ -147,7 +147,7 @@ function GameRoom() {
   }, [ingameStompClient]);
 
   useEffect(() => {
-    if (isIngame) navigate(`/ingame/${id}`);
+    if (isIngame) navigate(`/ingame/${id}`, { replace: true });
   }, [isIngame]);
 
   useEffect(() => {

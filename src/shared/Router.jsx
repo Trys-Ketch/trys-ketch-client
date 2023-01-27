@@ -24,7 +24,6 @@ function Router() {
             <Route path="/myPage" element={<MyPage />} />
           </Route>
           <Route path="room" element={<Navigate to="/" replace />} />
-          <Route path="/video/:id" element={<AudioCall />} />
           <Route element={<AudioCall />}>
             <Route path="/room/:id" element={<GameRoom />} />
             <Route path="/ingame/:id" element={<InGame />} />
