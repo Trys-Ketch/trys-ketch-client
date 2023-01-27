@@ -11,6 +11,7 @@ import pencilThickness from '../../assets/icons/thickness-icon.svg';
 import IconButton from '../common/IconButton';
 import { setForceSubmit } from '../../app/slices/ingameSlice';
 import TextInput from '../common/TextInput';
+import { toast } from '../toast/ToastProvider';
 
 let historyPointer = 0;
 let currentColor = 'black';
@@ -362,7 +363,7 @@ function Paint({
                   <TextInput
                     value={keyword}
                     onChange={(event) => onKeywordChangeHandler(event)}
-                    width="300px"
+                    width="400px"
                     readOnly={isSubmitted}
                   />
                 </InputWrapper>
@@ -376,7 +377,7 @@ function Paint({
                 <TextInput
                   value={keyword}
                   onChange={(event) => onKeywordChangeHandler(event)}
-                  width="300px"
+                  width="400px"
                   readOnly={isSubmitted}
                 />
               </InputWrapper>
@@ -465,7 +466,11 @@ function Paint({
               height: '11%',
               width: '100%',
             }}
-            onClick={() => toggleReady(canvasRef.current, isSubmitted)}
+            onClick={() => {
+              toggleReady(canvasRef.current, isSubmitted);
+              if (isSubmitted) toast.success('취소되었습니다.');
+              else toast.success('제출되었습니다.');
+            }}
           >
             <div
               style={{ fontFamily: 'TTTogether', fontSize: `${({ theme }) => theme.fontSizes.xl}` }}
@@ -482,7 +487,11 @@ function Paint({
               height: '11%',
               width: '100%',
             }}
-            onClick={() => toggleReady(isSubmitted)}
+            onClick={() => {
+              toggleReady(isSubmitted);
+              if (isSubmitted) toast.success('취소되었습니다.');
+              else toast.success('제출되었습니다.');
+            }}
           >
             <div
               style={{ fontFamily: 'TTTogether', fontSize: `${({ theme }) => theme.fontSizes.xl}` }}
