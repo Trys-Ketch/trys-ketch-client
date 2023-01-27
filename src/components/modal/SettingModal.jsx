@@ -6,13 +6,13 @@ import Range from '../common/Range';
 import useModal from '../../hooks/useModal';
 import speaker from '../../assets/icons/speaker-icon.svg';
 // import speakerMute from '../../assets/icons/speaker-mute-icon.svg';
-import mike from '../../assets/icons/mike-icon.svg';
-// import mikeMute from '../../assets/icons/mike-mute-icon.svg';
+import mic from '../../assets/icons/mic-icon.svg';
+// import micMute from '../../assets/icons/mic-mute-icon.svg';
 
 function SettingModal() {
   const { closeModal } = useModal();
   // const { musicVolume, setMusicVolume } = useState();
-  // const { mikeVolume, setMikeVolume } = useState();
+  // const { micVolume, setMicVolume } = useState();
 
   const handleEnter = () => {
     closeModal();
@@ -29,7 +29,7 @@ function SettingModal() {
         <Range width="85%" />
       </Row>
       <Row>
-        <img src={mike} alt="mike" />
+        <img src={mic} alt="mic" />
         <Range width="85%" />
       </Row>
     </Modal>

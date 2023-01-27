@@ -7,7 +7,7 @@ import undo from '../../assets/icons/undo-icon.svg';
 import redo from '../../assets/icons/redo-icon.svg';
 import FloatBox from '../layout/FloatBox';
 import SettingButton from '../button/SettingButton';
-import MikeButton from '../button/MikeButton';
+import MicButton from '../button/MicButton';
 import useTimer from '../../hooks/useTimer';
 import CircleTimer from './CircleTimer';
 import SubmittedPlayer from './SubmittedPlayer';
@@ -45,7 +45,7 @@ function Drawing({
         top={
           <>
             <SettingButton />
-            <MikeButton />
+            <MicButton />
           </>
         }
       />

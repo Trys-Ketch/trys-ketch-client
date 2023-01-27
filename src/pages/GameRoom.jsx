@@ -10,7 +10,7 @@ import { setStomp, setIngameHost } from '../app/slices/ingameSlice';
 import Container from '../components/layout/Container';
 import FloatBox from '../components/layout/FloatBox';
 import SettingButton from '../components/button/SettingButton';
-import MikeButton from '../components/button/MikeButton';
+import MicButton from '../components/button/MicButton';
 import copy from '../assets/icons/copy-icon.svg';
 import QuitButton from '../components/button/QuitButton';
 import RoomTitle from '../components/room/RoomTitle';
@@ -193,7 +193,7 @@ function GameRoom() {
         top={
           <>
             <SettingButton size="xlarge" />
-            <MikeButton size="xlarge" />
+            <MicButton size="xlarge" />
           </>
         }
         bottom={<QuitButton size="xlarge" />}

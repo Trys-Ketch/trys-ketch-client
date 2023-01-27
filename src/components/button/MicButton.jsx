@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import mike from '../../assets/icons/mike-icon.svg';
-import mikeMute from '../../assets/icons/mike-mute-icon.svg';
+import mic from '../../assets/icons/mic-icon.svg';
+import micMute from '../../assets/icons/mic-mute-icon.svg';
 import IconButton from '../common/IconButton';
 
-function MikeButton({ size }) {
+function MicButton({ size }) {
   const [mute, setMute] = useState(false);
 
   const handleMute = () => {
@@ -14,11 +14,11 @@ function MikeButton({ size }) {
     <IconButton
       onClick={handleMute}
       size={size}
-      icon={mute ? mikeMute : mike}
+      icon={mute ? micMute : mic}
       selected={mute}
       text="마이크"
     />
   );
 }
 
-export default MikeButton;
+export default MicButton;
