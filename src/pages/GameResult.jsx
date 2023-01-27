@@ -10,6 +10,8 @@ import Container from '../components/layout/Container';
 import { store } from '../app/configStore';
 import ResultUserList from '../components/gameResult/ResultUserList';
 
+import arrow from '../assets/icons/right-arrow.svg';
+
 let token;
 const subArray = [];
 let resultArray;
@@ -148,50 +150,140 @@ function GameResult() {
     >
       {isLoading ? null : <ResultUserList userList={userList} />}
       <ResultArea>
+        {isLoading ? null : <FirstKeyword>{resultArray[nowKeywordIndex][0][1]}</FirstKeyword>}
         {isLoading
           ? null
           : resultArray[nowKeywordIndex].map((v, i) => {
               if (i % 2 === 0)
                 return (
-                  <KeywordWrapper key={`${v[0]}0`}>
-                    <ProfileImg src={v[2]} alt={`profile_${i}`} />
-                    <Keyword key={`${v[0]}2`}>{`닉네임: ${v[0]}
-키워드: ${v[1]}`}</Keyword>
-                  </KeywordWrapper>
+                  <div key={`${v[0]}-1`}>
+                    <KeywordNickname key={`${v[0]}0`}>{v[0]}</KeywordNickname>
+                    <KeywordWrapper key={`${v[0]}1`}>
+                      <ProfileImg src={v[2]} alt={`profile_${i}`} />
+                      <Keyword key={`${v[0]}2`}>{v[1]}</Keyword>
+                    </KeywordWrapper>
+                  </div>
                 );
               return (
-                <ImageContainer key={`${v[0]}3`}>
-                  <ImageWrapper key={`${v[0]}4`}>
-                    <span key={`${v[0]}5`} style={{ margintLeft: 'auto' }}>
-                      {`닉네임: ${v[0]}`}
-                    </span>
-                    <Image key={`${v[0]}6`} src={v[1]} alt={`img_${i}`} />
-                  </ImageWrapper>
-                  <ProfileImg src={v[2]} alt={`profile_${i}`} key={`${v[0]}7`} />
-                </ImageContainer>
+                <div key={`${v[0]}4`}>
+                  <ImageNickname key={`${v[0]}5`}>{v[0]}</ImageNickname>
+                  <ImageContainer key={`${v[0]}6`}>
+                    <ImageWrapper key={`${v[0]}7`}>
+                      <Image key={`${v[0]}8`} src={v[1]} alt={`img_${i}`} />
+                    </ImageWrapper>
+                    <ProfileImg src={v[2]} alt={`profile_${i}`} key={`${v[0]}8`} />
+                  </ImageContainer>
+                </div>
               );
             })}
-        {isHost && !(nowKeywordIndex === 0) && (
+        {/* {isHost && !(nowKeywordIndex === 0) && (
           <Button onClick={() => prevKeywordIndex()}>이전</Button>
         )}
         {isHost && !isLast && <Button onClick={() => nextKeywordIndex()}>다음</Button>}
-        {isHost && isLast && <Button onClick={() => endGame()}>게임 종료</Button>}
+        {isHost && isLast && <Button onClick={() => endGame()}>게임 종료</Button>} */}
+        {isHost && (
+          <PrevNextButtonWrapper>
+            {!(nowKeywordIndex === 0) && (
+              <PrevNextButton onClick={() => prevKeywordIndex()} style={{ marginRight: 'auto' }}>
+                <img
+                  style={{
+                    transform: 'scaleX(-1)',
+                    marginRight: '10px',
+                  }}
+                  src={arrow}
+                  alt="prev"
+                />
+                이전
+              </PrevNextButton>
+            )}
+            {!isLast && (
+              <PrevNextButton onClick={() => nextKeywordIndex()} style={{ marginLeft: 'auto' }}>
+                다음
+                <ArrowImg
+                  style={{
+                    marginLeft: '10px',
+                  }}
+                  src={arrow}
+                  alt="next"
+                />
+              </PrevNextButton>
+            )}
+            {isLast && (
+              <PrevNextButton onClick={() => endGame()} style={{ marginLeft: 'auto' }}>
+                게임 종료
+                <ArrowImg
+                  style={{
+                    marginLeft: '10px',
+                  }}
+                  src={arrow}
+                  alt="next"
+                />
+              </PrevNextButton>
+            )}
+          </PrevNextButtonWrapper>
+        )}
       </ResultArea>
     </Container>
   );
 }
 
+const ArrowImg = styled.img`
+  height: '80%';
+  aspect-ratio: 'auto 1/1';
+  vertical-align: 'middle';
+  margin: 'auto 0';
+  margin-left: '10px';
+`;
+
+const PrevNextButton = styled.button`
+  height: 50px;
+  line-height: 50px;
+  width: max-content;
+  font-size: 24px;
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  color: #746b5f;
+  cursor: pointer;
+`;
+
+const PrevNextButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+  width: 100%;
+  background-color: ${({ theme }) => theme.colors.FLORAL_WHITE};
+`;
+
+const FirstKeyword = styled.div`
+  font-family: 'TTTogether';
+  font-size: ${({ theme }) => theme.fontSizes.xxl};
+  background-color: ${({ theme }) => theme.colors.DARK_LAVA};
+  color: white;
+  width: 100%;
+  height: 80px;
+  line-height: 80px;
+  border-radius: 15px;
+  text-align: center;
+`;
+
 const KeywordWrapper = styled.div`
+  margin-top: 10px;
   align-items: center;
   display: flex;
 `;
 
+const KeywordNickname = styled.div`
+  width: max-content;
+  margin-left: 65px;
+  margin-top: 18px;
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  color: ${({ theme }) => theme.colors.DARK_LAVA};
+`;
+
 const Keyword = styled.pre`
-  font-family: 'TTTogether';
   color: ${({ theme }) => theme.colors.DARK_LAVA};
   display: block;
   width: max-content;
-  padding: 10px;
+  padding: 15px;
   margin-left: 15px;
   border-radius: 10px;
   background-color: ${({ theme }) => theme.colors.ANTIQUE_WHITE};
@@ -202,14 +294,23 @@ const ImageContainer = styled.div`
   display: flex;
 `;
 
+const ImageNickname = styled.div`
+  margin-right: 65px;
+  margin-left: auto;
+  width: max-content;
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  color: ${({ theme }) => theme.colors.DARK_LAVA};
+`;
+
 const ImageWrapper = styled.div`
   font-family: 'TTTogether';
   color: ${({ theme }) => theme.colors.DARK_LAVA};
-  padding: 20px;
+  padding: 15px;
   width: max-content;
   display: flex;
   flex-direction: column;
   margin-bottom: 15px;
+  margin-top: 10px;
   margin-left: auto;
   margin-right: 15px;
   border-radius: 10px;
@@ -218,7 +319,6 @@ const ImageWrapper = styled.div`
 
 const Image = styled.img`
   margin-left: auto;
-  margin-top: 10px;
   width: 300px;
   aspect-ratio: auto 1/1;
   background-color: white;

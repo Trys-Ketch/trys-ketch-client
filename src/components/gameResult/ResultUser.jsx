@@ -1,11 +1,19 @@
 import { nanoid } from 'nanoid';
 import React from 'react';
 import styled from 'styled-components';
+import crown from '../../assets/icons/crown.png';
 
 function ResultUser({ user }) {
   return (
     <User>
       <ProfileImg src={user.imgUrl} alt={nanoid()} />
+      {user.isHost && (
+        <img
+          style={{ marginLeft: '10px', width: '20px', height: '20px' }}
+          src={crown}
+          alt="crown"
+        />
+      )}
       <Nickname>{user.nickname}</Nickname>
     </User>
   );
