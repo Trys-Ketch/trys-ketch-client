@@ -21,6 +21,46 @@
     <meta name="twitter:image" content="%PUBLIC_URL%/img/trysketch.svg" />
     <title>눈치 코치 캐치</title>
   </head>
+  <script>
+    (function () {
+      const w = window;
+      if (w.ChannelIO) {
+        return w.console.error('ChannelIO script included twice.');
+      }
+      const ch = function (...args) {
+        ch.c(args);
+      };
+      ch.q = [];
+      ch.c = function (args) {
+        ch.q.push(args);
+      };
+      w.ChannelIO = ch;
+      function l() {
+        if (w.ChannelIOInitialized) {
+          return;
+        }
+        w.ChannelIOInitialized = true;
+        const s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'https://cdn.channel.io/plugin/ch-plugin-web.js';
+        const x = document.getElementsByTagName('script')[0];
+        if (x.parentNode) {
+          x.parentNode.insertBefore(s, x);
+        }
+      }
+      if (document.readyState === 'complete') {
+        l();
+      } else {
+        w.addEventListener('DOMContentLoaded', l);
+        w.addEventListener('load', l);
+      }
+    })();
+    
+    ChannelIO('boot', {
+      pluginKey: '%REACT_APP_CHANNEL_TALK_PLUGIN_KEY%',
+    });
+  </script>
   <body>
     <div id="root"></div>
     <div id="toast"></div>
