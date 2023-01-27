@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useCookies } from 'react-cookie';
 import * as SockJS from 'sockjs-client';
@@ -8,6 +8,7 @@ import Audio from './Audio';
 import { setID } from '../../app/slices/ingameSlice';
 import { closeSocket, setSocket } from '../../app/slices/ingameSlice';
 import { store } from '../../app/configStore';
+import { setMuteUsers } from '../../app/slices/muteSlice';
 
 let pcs: any;
 let hasPcs: any;
@@ -18,6 +19,7 @@ let stop: boolean = false;
 
 function AudioCall() {
   const dispatch = useDispatch();
+  const muteUsers = useSelector((state: any) => state.mute.users);
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
   // const dispatch = useDispatch();
   /**
@@ -91,6 +93,7 @@ function AudioCall() {
     pc.ontrack = (e) => {
       // console.log('ontrack success');
       setUsers((oldUsers) => oldUsers.filter((user) => user.id !== socketID));
+      // dispatch(setMuteUsers(muteUsers.filter((user) => user.id !== socketID)));
       setUsers((oldUsers) => [
         ...oldUsers,
         {
@@ -98,6 +101,7 @@ function AudioCall() {
           stream: e.streams[0],
         },
       ]);
+      // dispatch(setMuteUsers([...muteUsers, { id: socketID, isMuted: false }]));
       // add pc to peerConnections object
     };
 
@@ -318,6 +322,7 @@ function AudioCall() {
           delete pcs[data.sender];
           // user state를 업데이트하고 리렌더링시킵니다.
           setUsers((oldUsers) => oldUsers.filter((user) => user.id !== data.sender));
+          // dispatch(setMuteUsers(muteUsers.filter((user) => user.id !== data.sender)));
           break;
         }
         default:
@@ -364,7 +369,7 @@ function AudioCall() {
         <track kind="captions" />
       </audio>
       {users.map((user) => {
-        return <Audio key={user.id} stream={user.stream} />;
+        return <Audio key={user.id} stream={user.stream} socketID={user.id} />;
       })}
     </div>
   );

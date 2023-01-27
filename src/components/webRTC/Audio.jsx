@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 
-function Audio({ stream }) {
+function Audio({ stream, socketID }) {
   const ref = useRef(null);
-  const [isMuted, setIsMuted] = useState(false);
+  const { isMuted } = useSelector((state) => state.mute.users).filter(
+    (v) => v.socketID === socketID && v,
+  )[0];
 
   useEffect(() => {
     if (ref.current) ref.current.srcObject = stream;
-    // if (muted) setIsMuted(muted);
   }, [stream]);
 
   return (

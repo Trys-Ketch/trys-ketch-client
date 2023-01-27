@@ -20,6 +20,8 @@ import roomAPI from '../api/room';
 import { toast } from '../components/toast/ToastProvider';
 import { getCookie } from '../utils/cookie';
 import useDidMountEffect from '../hooks/useDidMountEffect';
+import { setMuteUsers } from '../app/slices/muteSlice';
+import MuteUserList from '../components/mute/MuteUserList';
 
 let token;
 const subArray = [];
@@ -111,6 +113,16 @@ function GameRoom() {
       switch (data.type) {
         case 'ingame/attendee': {
           setAttendees(data.attendee);
+          dispatch(
+            setMuteUsers(
+              data.attendee.map((v) => ({
+                nickname: v.nickname,
+                socketID: v.socketId,
+                isMuted: false,
+              })),
+            ),
+          );
+          console.log(data.attendee);
           break;
         }
         case 'ingame/be_kicked': {
@@ -194,6 +206,7 @@ function GameRoom() {
           <>
             <SettingButton size="xlarge" />
             <MicButton size="xlarge" />
+            <MuteUserList socketID={socketID} />
           </>
         }
         bottom={<QuitButton size="xlarge" />}
