@@ -14,6 +14,7 @@ import arrow from '../assets/icons/right-arrow.svg';
 import FloatBox from '../components/layout/FloatBox';
 import SettingButton from '../components/button/SettingButton';
 import MicButton from '../components/button/MicButton';
+import MuteUserList from '../components/mute/MuteUserList';
 
 let token;
 const subArray = [];
@@ -150,6 +151,7 @@ function GameResult() {
           <>
             <SettingButton size="xlarge" />
             <MicButton size="xlarge" />
+            <MuteUserList socketID={socketID} />
           </>
         }
       />

@@ -3,9 +3,11 @@ import { useCookies } from 'react-cookie';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { store } from '../app/configStore';
+import MicButton from '../components/button/MicButton';
+import SettingButton from '../components/button/SettingButton';
 import Drawing from '../components/game/Drawing';
-import Guessing from '../components/game/Guessing';
-import MakeSentence from '../components/game/MakeSentence';
+import FloatBox from '../components/layout/FloatBox';
+import MuteUserList from '../components/mute/MuteUserList';
 import { toast } from '../components/toast/ToastProvider';
 
 let token;
@@ -225,17 +227,18 @@ function InGame() {
 
   return (
     <div>
+      <FloatBox
+        top={
+          <>
+            <SettingButton size="xlarge" />
+            <MicButton size="xlarge" />
+            <MuteUserList socketID={socketID} />
+          </>
+        }
+      />
       {
         {
           keyword: (
-            // <MakeSentence
-            //   submitNum={submitNum}
-            //   maxSubmitNum={maxSubmitNum}
-            //   isSubmitted={isSubmitted}
-            //   toggleReady={(isSubmitted) => toggleKeywordReady(isSubmitted)}
-            //   keyword={keyword}
-            //   setKeyword={setKeyword}
-            // />
             <Drawing
               isKeywordState
               isGuessingState={false}
@@ -267,17 +270,6 @@ function InGame() {
             />
           ),
           guessing: (
-            // <Guessing
-            //   submitNum={submitNum}
-            //   maxSubmitNum={maxSubmitNum}
-            //   isSubmitted={isSubmitted}
-            //   setIsSubmitted={() => setIsSubmitted()}
-            //   toggleReady={(isSubmitted) => toggleKeywordReady(isSubmitted)}
-            //   keyword={keyword}
-            //   setKeyword={setKeyword}
-            //   image={image}
-            //   socketID={socketID}
-            // />
             <Drawing
               isKeywordState={false}
               isGuessingState
