@@ -7,8 +7,8 @@ import { useCookies } from 'react-cookie';
 import Button from '../components/common/Button';
 import { closeStomp } from '../app/slices/ingameSlice';
 import Container from '../components/layout/Container';
-import ResultUser from '../components/game/ResultUser';
 import { store } from '../app/configStore';
+import ResultUserList from '../components/gameResult/ResultUserList';
 
 let token;
 const subArray = [];
@@ -39,6 +39,7 @@ let resultArray;
 //     ['name3-6', '/img/sanic.webp'],
 //   ],
 // ];
+let userList;
 
 function GameResult() {
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
@@ -65,6 +66,8 @@ function GameResult() {
       ingameStompClient.subscribe(`/queue/game/result/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
         resultArray = data.result;
+        userList = data.gamerList;
+        console.log(userList);
         setIsHost(data.isHost);
         setIsLoading(false);
       }),
@@ -125,6 +128,7 @@ function GameResult() {
 
   useEffect(() => {
     if (!isLoading) {
+      console.log(resultArray);
       if (nowKeywordIndex === resultArray.length - 1) setIsLast(true);
       else setIsLast(false);
     }
@@ -142,11 +146,7 @@ function GameResult() {
     <Container
       style={{ justifyContent: 'space-between', padding: '20px', height: '680px', width: '1200px' }}
     >
-      <UserArea>
-        {[0, 1, 2, 3, 4, 5, 6, 7].map((v) => {
-          return <ResultUser key={v} nickname={`닉네임 ${v}`} />;
-        })}
-      </UserArea>
+      {isLoading ? null : <ResultUserList userList={userList} />}
       <ResultArea>
         {isLoading
           ? null
@@ -154,7 +154,7 @@ function GameResult() {
               if (i % 2 === 0)
                 return (
                   <KeywordWrapper key={`${v[0]}0`}>
-                    <ProfileImg key={`${v[0]}1`} />
+                    <ProfileImg src={v[2]} alt={`profile_${i}`} />
                     <Keyword key={`${v[0]}2`}>{`닉네임: ${v[0]}
 키워드: ${v[1]}`}</Keyword>
                   </KeywordWrapper>
@@ -167,7 +167,7 @@ function GameResult() {
                     </span>
                     <Image key={`${v[0]}6`} src={v[1]} alt={`img_${i}`} />
                   </ImageWrapper>
-                  <ProfileImg key={`${v[0]}7`} />
+                  <ProfileImg src={v[2]} alt={`profile_${i}`} key={`${v[0]}7`} />
                 </ImageContainer>
               );
             })}
@@ -224,25 +224,16 @@ const Image = styled.img`
   background-color: white;
 `;
 
-const ProfileImg = styled.div`
+const ProfileImg = styled.img`
   border-radius: 50%;
-  background-color: #1290cb;
-  padding: 25px;
-  width: max-content;
-  height: max-content;
-`;
-
-const UserArea = styled.div`
-  width: 39.2%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  /* background-color: #1290cb; */
+  width: 50px;
+  height: 50px;
 `;
 
 const ResultArea = styled.div`
   padding: 15px;
-  width: 59.2%;
+  width: 62.2%;
   height: 100%;
   display: block;
   overflow: scroll;

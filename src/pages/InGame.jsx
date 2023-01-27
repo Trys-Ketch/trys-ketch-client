@@ -232,40 +232,69 @@ function InGame() {
       {
         {
           keyword: (
-            <MakeSentence
+            // <MakeSentence
+            //   submitNum={submitNum}
+            //   maxSubmitNum={maxSubmitNum}
+            //   isSubmitted={isSubmitted}
+            //   toggleReady={(isSubmitted) => toggleKeywordReady(isSubmitted)}
+            //   keyword={keyword}
+            //   setKeyword={setKeyword}
+            // />
+            <Drawing
+              isKeywordState
+              isGuessingState={false}
+              isDrawingState={false}
               submitNum={submitNum}
               maxSubmitNum={maxSubmitNum}
+              round={round}
               isSubmitted={isSubmitted}
               toggleReady={(isSubmitted) => toggleKeywordReady(isSubmitted)}
               keyword={keyword}
               setKeyword={setKeyword}
+              gameState={gameState}
             />
           ),
           drawing: (
-            <div>
-              <Drawing
-                submitNum={submitNum}
-                maxSubmitNum={maxSubmitNum}
-                round={round}
-                isSubmitted={isSubmitted}
-                toggleReady={(canvas, isSubmitted) => toggleDrawingReady(canvas, isSubmitted)}
-                keyword={keyword}
-                submitImg={(canvas) => submitImg(canvas)}
-                completeImageSubmit={completeImageSubmit}
-              />
-            </div>
-          ),
-          guessing: (
-            <Guessing
+            <Drawing
+              isKeywordState={false}
+              isGuessingState={false}
+              isDrawingState
               submitNum={submitNum}
               maxSubmitNum={maxSubmitNum}
+              round={round}
               isSubmitted={isSubmitted}
-              setIsSubmitted={() => setIsSubmitted()}
+              toggleReady={(canvas, isSubmitted) => toggleDrawingReady(canvas, isSubmitted)}
+              keyword={keyword}
+              submitImg={(canvas) => submitImg(canvas)}
+              completeImageSubmit={completeImageSubmit}
+              gameState={gameState}
+            />
+          ),
+          guessing: (
+            // <Guessing
+            //   submitNum={submitNum}
+            //   maxSubmitNum={maxSubmitNum}
+            //   isSubmitted={isSubmitted}
+            //   setIsSubmitted={() => setIsSubmitted()}
+            //   toggleReady={(isSubmitted) => toggleKeywordReady(isSubmitted)}
+            //   keyword={keyword}
+            //   setKeyword={setKeyword}
+            //   image={image}
+            //   socketID={socketID}
+            // />
+            <Drawing
+              isKeywordState={false}
+              isGuessingState
+              isDrawingState={false}
+              submitNum={submitNum}
+              maxSubmitNum={maxSubmitNum}
+              round={round}
+              isSubmitted={isSubmitted}
               toggleReady={(isSubmitted) => toggleKeywordReady(isSubmitted)}
               keyword={keyword}
               setKeyword={setKeyword}
               image={image}
-              socketID={socketID}
+              gameState={gameState}
             />
           ),
         }[gameState]

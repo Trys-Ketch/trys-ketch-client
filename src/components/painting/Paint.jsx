@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
+import { nanoid } from 'nanoid';
 import floodFill from '../../utils/floodFill';
 import Button from '../common/Button';
 import eraser from '../../assets/icons/eraser-icon.svg';
@@ -9,19 +10,25 @@ import paint from '../../assets/icons/paint-icon.svg';
 import pencilThickness from '../../assets/icons/thickness-icon.svg';
 import IconButton from '../common/IconButton';
 import { setForceSubmit } from '../../app/slices/ingameSlice';
+import TextInput from '../common/TextInput';
 
 let historyPointer = 0;
 let currentColor = 'black';
 let isMounted = false;
 
 function Paint({
+  isKeywordState,
+  isGuessingState,
+  isDrawingState,
   toggleReady,
   keyword = '이거 발견하면 ㄹㅇ 천재 ㅇㅈ',
+  setKeyword,
   isSubmitted,
   submitImg,
   undoRef,
   redoRef,
   completeImageSubmit,
+  image,
 }) {
   const thickness = [5, 7, 9, 11, 13];
   const color = [
@@ -252,6 +259,10 @@ function Paint({
     return result;
   }
 
+  function onKeywordChangeHandler(event) {
+    setKeyword(event.target.value);
+  }
+
   useEffect(() => {
     if (ctx && !isMounted) {
       undoRef.current = undo;
@@ -268,77 +279,114 @@ function Paint({
   }, [completeImageSubmit]);
 
   useEffect(() => {
-    if (forceSubmit) {
-      console.log('force submit');
+    if (forceSubmit && isDrawingState) {
       const canvas = canvasRef.current;
       toggleReady(canvas, false);
+      dispatch(setForceSubmit(false));
+    } else if (forceSubmit && (isKeywordState || isGuessingState)) {
+      toggleReady(false);
       dispatch(setForceSubmit(false));
     }
   }, [forceSubmit]);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
+    if (isDrawingState) {
+      const canvas = canvasRef.current;
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
 
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
 
-    const context = canvas.getContext('2d');
-    context.strokeStyle = 'black';
-    context.lineCap = 'round';
-    context.lineJoin = 'round';
-    context.lineWidth = thickness[0] * 2;
+      const context = canvas.getContext('2d');
+      context.strokeStyle = 'black';
+      context.lineCap = 'round';
+      context.lineJoin = 'round';
+      context.lineWidth = thickness[0] * 2;
 
-    setCtx(() => context);
-  }, []);
+      setCtx(() => context);
+    }
+  }, [isDrawingState]);
 
   return (
     <Wrapper>
       <CanvasArea>
         <KeywordDiv>
-          <Keyword>{keyword}</Keyword>
+          {isDrawingState && <Keyword>{keyword}</Keyword>}
+          {isKeywordState && <Keyword>키워드를 입력해주세요</Keyword>}
+          {isGuessingState && <Keyword>정답을 맞춰주세요</Keyword>}
         </KeywordDiv>
-        <CanvasWrapper isSubmitted={isSubmitted}>
+        <CanvasWrapper isDrawingState={isDrawingState} isSubmitted={isSubmitted}>
           {drawSpring()}
-          <Canvas
-            isSubmitted={isSubmitted}
-            ref={canvasRef}
-            onClick={(event) => {
-              if (eventState === 'drawing') drawCircle(event);
-            }}
-            onMouseDown={(event) => {
-              history.push(ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height));
-              historyPointer += 1;
-              history.splice(historyPointer);
-              if (eventState === 'drawing') {
-                startDrawing();
-              }
-              if (eventState === 'fill') {
-                fill(event);
-              }
-            }}
-            onMouseUp={() => {
-              if (eventState === 'drawing') {
-                finishDrawing();
-              }
-            }}
-            onMouseMove={(event) => {
-              if (eventState === 'drawing') {
-                drawing(event);
-              }
-            }}
-            onMouseLeave={() => {
-              if (eventState === 'drawing') {
-                finishDrawing();
-              }
-            }}
-          />
+          {isDrawingState && (
+            <Canvas
+              isSubmitted={isSubmitted}
+              ref={canvasRef}
+              onClick={(event) => {
+                if (eventState === 'drawing') drawCircle(event);
+              }}
+              onMouseDown={(event) => {
+                history.push(ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height));
+                historyPointer += 1;
+                history.splice(historyPointer);
+                if (eventState === 'drawing') {
+                  startDrawing();
+                }
+                if (eventState === 'fill') {
+                  fill(event);
+                }
+              }}
+              onMouseUp={() => {
+                if (eventState === 'drawing') {
+                  finishDrawing();
+                }
+              }}
+              onMouseMove={(event) => {
+                if (eventState === 'drawing') {
+                  drawing(event);
+                }
+              }}
+              onMouseLeave={() => {
+                if (eventState === 'drawing') {
+                  finishDrawing();
+                }
+              }}
+            />
+          )}
+          {isGuessingState && (
+            <ImageWrapper>
+              <Image src={image} alt={nanoid()} />
+              <KeywordBackground>
+                <InputWrapper>
+                  정답:
+                  <TextInput
+                    value={keyword}
+                    onChange={(event) => onKeywordChangeHandler(event)}
+                    width="300px"
+                    readOnly={isSubmitted}
+                  />
+                </InputWrapper>
+              </KeywordBackground>
+            </ImageWrapper>
+          )}
+          {isKeywordState && (
+            <KeywordBackground>
+              <InputWrapper>
+                키워드:
+                <TextInput
+                  value={keyword}
+                  onChange={(event) => onKeywordChangeHandler(event)}
+                  width="300px"
+                  readOnly={isSubmitted}
+                />
+              </InputWrapper>
+            </KeywordBackground>
+          )}
         </CanvasWrapper>
       </CanvasArea>
 
       <RightDiv>
-        {displayThicknessBtn && (
+        {isDrawingState && displayThicknessBtn && (
           <ThicknessBtnWrapper
             style={{
               right: `${-(35 + thickness[thickness.length - 1] * 3)}px`,
@@ -369,31 +417,35 @@ function Paint({
             })}
           </ThicknessBtnWrapper>
         )}
-        <IconButtonWrapper>
-          <IconButton
-            onClick={() => {
-              setDrawing();
-            }}
-            icon={pencil}
-            size="large"
-          />
-          <IconButton onClick={() => setEraser()} icon={eraser} size="large" />
-          <IconButton onClick={() => setEventState('fill')} icon={paint} size="large" />
-          <IconButton onClick={() => toggleThicknessBtn()} icon={pencilThickness} size="large" />
-        </IconButtonWrapper>
-        <ColorBtnWrapper>
-          {color.map((v) => {
-            return (
-              <ColorBtn
-                key={v}
-                style={{ backgroundColor: v }}
-                onClick={() => {
-                  setColor(v);
-                }}
-              />
-            );
-          })}
-        </ColorBtnWrapper>
+        {isDrawingState && (
+          <IconButtonWrapper>
+            <IconButton
+              onClick={() => {
+                setDrawing();
+              }}
+              icon={pencil}
+              size="large"
+            />
+            <IconButton onClick={() => setEraser()} icon={eraser} size="large" />
+            <IconButton onClick={() => setEventState('fill')} icon={paint} size="large" />
+            <IconButton onClick={() => toggleThicknessBtn()} icon={pencilThickness} size="large" />
+          </IconButtonWrapper>
+        )}
+        {isDrawingState && (
+          <ColorBtnWrapper>
+            {color.map((v) => {
+              return (
+                <ColorBtn
+                  key={v}
+                  style={{ backgroundColor: v }}
+                  onClick={() => {
+                    setColor(v);
+                  }}
+                />
+              );
+            })}
+          </ColorBtnWrapper>
+        )}
         {/* <BtnWrapper>
           {opacity.map((v) => {
             return (
@@ -405,23 +457,73 @@ function Paint({
             );
           })}
         </BtnWrapper> */}
-        <Button
-          style={{
-            position: 'absolute',
-            bottom: '0',
-            height: '11%',
-            width: '100%',
-          }}
-          onClick={() => toggleReady(canvasRef.current, isSubmitted)}
-        >
-          <div style={{ fontSize: `${({ theme }) => theme.fontSizes.xl}` }}>
-            {isSubmitted ? '취소' : '제출'}
-          </div>
-        </Button>
+        {isDrawingState && (
+          <Button
+            style={{
+              position: 'absolute',
+              bottom: '0',
+              height: '11%',
+              width: '100%',
+            }}
+            onClick={() => toggleReady(canvasRef.current, isSubmitted)}
+          >
+            <div
+              style={{ fontFamily: 'TTTogether', fontSize: `${({ theme }) => theme.fontSizes.xl}` }}
+            >
+              {isSubmitted ? '취소' : '제출'}
+            </div>
+          </Button>
+        )}
+        {(isKeywordState || isGuessingState) && (
+          <Button
+            style={{
+              position: 'absolute',
+              bottom: '0',
+              height: '11%',
+              width: '100%',
+            }}
+            onClick={() => toggleReady(isSubmitted)}
+          >
+            <div
+              style={{ fontFamily: 'TTTogether', fontSize: `${({ theme }) => theme.fontSizes.xl}` }}
+            >
+              {isSubmitted ? '취소' : '제출'}
+            </div>
+          </Button>
+        )}
       </RightDiv>
     </Wrapper>
   );
 }
+const InputWrapper = styled.div`
+  width: max-content;
+  height: max-content;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  bottom: 15%;
+  font-family: 'TTTogether';
+`;
+
+const KeywordBackground = styled.div`
+  position: relative;
+  background-color: white;
+  width: 100%;
+  height: 100%;
+`;
+
+const ImageWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  position: relative;
+  font-family: 'TTTogether';
+`;
+
+const Image = styled.img`
+  background-color: white;
+  width: 100%;
+  height: 100%;
+`;
 
 const ColorBtnWrapper = styled.div`
   padding: 3px 13px;
@@ -512,7 +614,7 @@ const CanvasWrapper = styled.div`
   width: 100%;
   background-color: white;
   ${(props) =>
-    props.isSubmitted
+    props.isSubmitted && props.isDrawingState
       ? css`
           &:hover {
             cursor: not-allowed;

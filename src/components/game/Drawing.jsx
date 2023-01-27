@@ -10,8 +10,7 @@ import SettingButton from '../button/SettingButton';
 import MicButton from '../button/MicButton';
 import useTimer from '../../hooks/useTimer';
 import CircleTimer from './CircleTimer';
-import head from '../../assets/icons/user-head-icon.svg';
-import body from '../../assets/icons/user-body-icon.svg';
+import SubmittedPlayer from './SubmittedPlayer';
 
 const CIRCLE_RADIUS = 40;
 const CENTER = 40;
@@ -19,6 +18,9 @@ const TIME_LIMIT = 60 * 1000;
 const STROKE_WIDTH = 3;
 
 function Drawing({
+  isKeywordState,
+  isGuessingState,
+  isDrawingState,
   submitNum,
   maxSubmitNum,
   round,
@@ -27,12 +29,15 @@ function Drawing({
   submitImg,
   keyword,
   completeImageSubmit,
+  setKeyword,
+  image,
+  gameState,
 }) {
   const undoRef = useRef(null);
   const redoRef = useRef(null);
   const pathRef = useRef(null);
 
-  useTimer(pathRef, CENTER, CIRCLE_RADIUS, STROKE_WIDTH, TIME_LIMIT);
+  useTimer(pathRef, CENTER, CIRCLE_RADIUS, STROKE_WIDTH, TIME_LIMIT, gameState);
 
   return (
     <>
@@ -55,52 +60,37 @@ function Drawing({
           />
           <SubmittedPlayer submitNum={submitNum} maxSubmitNum={maxSubmitNum} />
           <IconButtonContainer>
-            <IconButton onClick={() => undoRef.current()} size="xlarge" icon={undo} />
-            <IconButton
-              onClick={() => redoRef.current()}
-              style={{ marginTop: '15px', marginBottom: '10px' }}
-              size="xlarge"
-              icon={redo}
-            />
+            {isDrawingState && (
+              <IconButton onClick={() => undoRef.current()} size="xlarge" icon={undo} />
+            )}
+            {isDrawingState && (
+              <IconButton
+                onClick={() => redoRef.current()}
+                style={{ marginTop: '15px', marginBottom: '10px' }}
+                size="xlarge"
+                icon={redo}
+              />
+            )}
           </IconButtonContainer>
         </LeftDiv>
         <Paint
+          isKeywordState={isKeywordState}
+          isGuessingState={isGuessingState}
+          isDrawingState={isDrawingState}
           completeImageSubmit={completeImageSubmit}
           isSubmitted={isSubmitted}
           keyword={keyword}
+          setKeyword={setKeyword}
           undoRef={undoRef}
           redoRef={redoRef}
           toggleReady={toggleReady}
           submitImg={submitImg}
+          image={image}
         />
       </Container>
     </>
   );
 }
-
-const UserIcon = styled.div`
-  width: max-content;
-  display: flex;
-  flex-direction: column;
-  margin-right: 5px;
-`;
-
-const SubmittedPlayerWrapper = styled.div`
-  display: flex;
-  margin: 0 auto;
-  margin-top: 3px;
-  height: max-content;
-  width: max-content;
-`;
-
-const SubmittedPlayer = styled.div`
-  font-family: 'TTTogether';
-  color: ${({ theme }) => theme.colors.DARK_LAVA};
-  font-size: 18px;
-  height: max-content;
-  width: max-content;
-  margin: auto 0;
-`;
 
 const IconButtonContainer = styled.div`
   position: absolute;

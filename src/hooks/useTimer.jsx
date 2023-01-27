@@ -10,7 +10,7 @@ let timerID;
 // 2초 간격으로 세번
 const ALARM_TIME = 6 * 1000;
 
-function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit) {
+function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit, gameState) {
   const [degree, setDegree] = useState(1);
   const dispatch = useDispatch();
 
@@ -98,7 +98,7 @@ function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit) {
     return () => {
       clearInterval(timerID);
     };
-  }, []);
+  }, [gameState]);
 
   useEffect(() => {
     alarmSoundOn();
