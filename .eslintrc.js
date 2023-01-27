@@ -33,5 +33,6 @@ module.exports = {
     'react/no-array-index-key': 0, // array index를 key값으로 사용할 수 없는 규칙 해제
     'import/no-mutable-exports': 0, // var이나 let과 같은 변경가능한 값의 export를 금지하는 규칙 해제
     'no-continue': 0, // continue를 사용하지 못하게 하는 규칙 해제
+    'no-restricted-globals': 0, // global variable 사용을 막는 규칙 해제
   },
 };
