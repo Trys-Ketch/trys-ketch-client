@@ -44,8 +44,8 @@ function Drawing({
       <FloatBox
         top={
           <>
-            <SettingButton />
-            <MicButton />
+            <SettingButton size="xlarge" />
+            <MicButton size="xlarge" />
           </>
         }
       />
