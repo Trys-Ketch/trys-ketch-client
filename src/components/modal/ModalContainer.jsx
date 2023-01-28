@@ -9,6 +9,7 @@ const MODAL_COMPONENTS = {
   inviteCode: loadable(() => import('./InviteCodeModal')),
   setting: loadable(() => import('./SettingModal')),
   kick: loadable(() => import('./KickModal')),
+  editProfile: loadable(() => import('./EditProfileModal')),
 };
 
 function ModalContainer() {
