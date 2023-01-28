@@ -493,6 +493,8 @@ function Paint({
         {(isKeywordState || isGuessingState) && (
           <Button
             style={{
+              position: 'absolute',
+              bottom: '0',
               height: '11%',
               width: '100%',
             }}
@@ -723,4 +725,4 @@ const Canvas = styled.canvas`
         `}
 `;
 
-export default Paint;
+export default React.memo(Paint);
