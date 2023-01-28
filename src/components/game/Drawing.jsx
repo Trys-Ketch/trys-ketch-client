@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import IconButton from '../common/IconButton';
 import Container from '../layout/Container';
 import Paint from '../painting/Paint';
-import undo from '../../assets/icons/undo-icon.svg';
-import redo from '../../assets/icons/redo-icon.svg';
 import useTimer from '../../hooks/useTimer';
 import CircleTimer from './CircleTimer';
 import SubmittedPlayer from './SubmittedPlayer';
@@ -17,7 +15,7 @@ const STROKE_WIDTH = 3;
 function Drawing({
   isKeywordState,
   isGuessingState,
-  isDrawingState,
+  isDrawingState = true,
   submitNum,
   maxSubmitNum,
   round,
@@ -30,8 +28,6 @@ function Drawing({
   image,
   gameState,
 }) {
-  const undoRef = useRef(null);
-  const redoRef = useRef(null);
   const pathRef = useRef(null);
 
   useTimer(pathRef, CENTER, CIRCLE_RADIUS, STROKE_WIDTH, TIME_LIMIT, gameState);
@@ -47,19 +43,6 @@ function Drawing({
           round={round}
         />
         <SubmittedPlayer submitNum={submitNum} maxSubmitNum={maxSubmitNum} />
-        <IconButtonContainer>
-          {isDrawingState && (
-            <IconButton onClick={() => undoRef.current()} size="xlarge" icon={undo} />
-          )}
-          {isDrawingState && (
-            <IconButton
-              onClick={() => redoRef.current()}
-              style={{ marginTop: '15px', marginBottom: '10px' }}
-              size="xlarge"
-              icon={redo}
-            />
-          )}
-        </IconButtonContainer>
       </LeftDiv>
       <Paint
         isKeywordState={isKeywordState}
@@ -69,8 +52,6 @@ function Drawing({
         isSubmitted={isSubmitted}
         keyword={keyword}
         setKeyword={setKeyword}
-        undoRef={undoRef}
-        redoRef={redoRef}
         toggleReady={toggleReady}
         submitImg={submitImg}
         image={image}
