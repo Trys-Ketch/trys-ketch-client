@@ -7,7 +7,6 @@ import Audio from './Audio';
 import { setID } from '../../app/slices/ingameSlice';
 import { closeSocket, setSocket } from '../../app/slices/ingameSlice';
 import { store } from '../../app/configStore';
-import { setMuteUsers } from '../../app/slices/muteSlice';
 import usePreventRefresh from '../../hooks/usePreventRefresh';
 
 let pcs: any;
@@ -19,7 +18,7 @@ let stop: boolean = false;
 
 function AudioCall() {
   const dispatch = useDispatch();
-  const muteUsers = useSelector((state: any) => state.mute.users);
+  const localIsMuted = useSelector((state: any) => state.mute.localMute);
   usePreventRefresh();
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
   // const dispatch = useDispatch();
@@ -331,6 +330,12 @@ function AudioCall() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (localStream) {
+      localStream.getTracks()[0].enabled = !localIsMuted;
+    }
+  }, [localIsMuted]);
 
   return (
     <div>
