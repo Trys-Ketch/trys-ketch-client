@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import Button from '../components/common/Button';
 import { closeStomp } from '../app/slices/ingameSlice';
 import Container from '../components/layout/Container';
 import { store } from '../app/configStore';
@@ -17,6 +16,7 @@ import FloatBox from '../components/layout/FloatBox';
 import SettingButton from '../components/button/SettingButton';
 import MicButton from '../components/button/MicButton';
 import MuteUserList from '../components/mute/MuteUserList';
+import { setLocalMute } from '../app/slices/muteSlice';
 
 let token;
 const subArray = [];
@@ -53,6 +53,8 @@ function GameResult() {
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
   const ingameStompClient = useSelector((state) => state.ingame.stomp);
   const socketID = useSelector((state) => state.ingame.id);
+  const localIsMuted = useSelector((state) => state.mute.localMute);
+
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [isHost, setIsHost] = useState(false);
@@ -153,7 +155,11 @@ function GameResult() {
         top={
           <>
             <SettingButton size="xlarge" />
-            <MicButton size="xlarge" />
+            <MicButton
+              mute={localIsMuted}
+              onClick={() => dispatch(setLocalMute(!localIsMuted))}
+              size="xlarge"
+            />
             <MuteUserList socketID={socketID} />
           </>
         }

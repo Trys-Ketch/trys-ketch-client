@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { store } from '../app/configStore';
 import MicButton from '../components/button/MicButton';
@@ -11,6 +11,7 @@ import MuteUserList from '../components/mute/MuteUserList';
 import { toast } from '../components/toast/ToastProvider';
 import GAEventTrack from '../ga/GAEventTrack';
 import GAEventTypes from '../ga/GAEventTypes';
+import { setLocalMute } from '../app/slices/muteSlice';
 
 let token;
 const subArray = [];
@@ -18,6 +19,7 @@ const subArray = [];
 function InGame() {
   const ingameStompClient = useSelector((state) => state.ingame.stomp);
   const socketID = useSelector((state) => state.ingame.id);
+  const localIsMuted = useSelector((state) => state.mute.localMute);
 
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
 
@@ -37,6 +39,7 @@ function InGame() {
   const [round, setRound] = useState(1);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const { member } = store.getState().login;
@@ -235,7 +238,11 @@ function InGame() {
         top={
           <>
             <SettingButton size="xlarge" />
-            <MicButton size="xlarge" />
+            <MicButton
+              mute={localIsMuted}
+              onClick={() => dispatch(setLocalMute(!localIsMuted))}
+              size="xlarge"
+            />
             <MuteUserList socketID={socketID} />
           </>
         }

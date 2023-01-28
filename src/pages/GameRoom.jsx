@@ -23,6 +23,7 @@ import useDidMountEffect from '../hooks/useDidMountEffect';
 import GAEventTypes from '../ga/GAEventTypes';
 import GAEventTrack from '../ga/GAEventTrack';
 import { setMuteUsers } from '../app/slices/muteSlice';
+import { setLocalMute, setMuteUsers } from '../app/slices/muteSlice';
 import MuteUserList from '../components/mute/MuteUserList';
 
 let token;
@@ -45,6 +46,8 @@ function GameRoom() {
   const socketID = useSelector((state) => state.ingame.id);
   const socket = useSelector((state) => state.ingame.socket);
   const muteUser = useSelector((state) => state.mute.users);
+
+  const localIsMuted = useSelector((state) => state.mute.localMute);
 
   const getRoomDetail = () => {
     roomAPI
@@ -204,7 +207,6 @@ function GameRoom() {
       const newMuteUsers = [];
       for (let i = 0; i < attendees.length; i += 1) {
         for (let j = 0; j < muteUser.length; j += 1) {
-          console.log(attendees[i].socketId, muteUser[j].socketID);
           if (attendees[i].socketId === muteUser[j].socketID) {
             newMuteUsers.push(muteUser[j]);
             break;
@@ -221,7 +223,11 @@ function GameRoom() {
         top={
           <>
             <SettingButton size="xlarge" />
-            <MicButton size="xlarge" />
+            <MicButton
+              mute={localIsMuted}
+              onClick={() => dispatch(setLocalMute(!localIsMuted))}
+              size="xlarge"
+            />
             <MuteUserList socketID={socketID} />
           </>
         }
