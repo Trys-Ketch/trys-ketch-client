@@ -14,11 +14,15 @@ function MuteUserList({ socketID }) {
   //   { nickname: '네임2', socketID: '3eu1o29b', isMuted: true },
   // ];
   return (
-    <UserList>
-      {users.map((v) => {
-        return socketID !== v.socketID && <MuteUser key={v.socketID} user={v} />;
-      })}
-    </UserList>
+    <div>
+      {users.length !== 1 && (
+        <UserList>
+          {users.map((v) => {
+            return socketID !== v.socketID && <MuteUser key={v.socketID} user={v} />;
+          })}
+        </UserList>
+      )}
+    </div>
   );
 }
 

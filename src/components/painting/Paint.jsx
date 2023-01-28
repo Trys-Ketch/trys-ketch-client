@@ -353,8 +353,8 @@ function Paint({
           )}
           {isGuessingState && (
             <ImageWrapper>
-              <Image src={image} alt={nanoid()} />
               <KeywordBackground>
+                <Image src={image} alt={nanoid()} />
                 <InputWrapper>
                   정답:
                   <TextInput

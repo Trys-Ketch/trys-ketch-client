@@ -20,10 +20,13 @@ const Box = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 `;
 
 const Top = styled.div`
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
   & > *:not(:first-child) {
     margin-top: 10px;
   }
