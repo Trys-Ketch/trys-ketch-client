@@ -3,16 +3,16 @@ import mic from '../../assets/icons/mic-icon.svg';
 import micMute from '../../assets/icons/mic-mute-icon.svg';
 import IconButton from '../common/IconButton';
 
-function MicButton({ size }) {
-  const [mute, setMute] = useState(false);
+function MicButton({ size, mute, onClick }) {
+  // const [mute, setMute] = useState(false);
 
-  const handleMute = () => {
-    setMute(!mute);
-  };
+  // const handleMute = () => {
+  //   setMute(!mute);
+  // };
 
   return (
     <IconButton
-      onClick={handleMute}
+      onClick={onClick}
       size={size}
       icon={mute ? micMute : mic}
       selected={mute}

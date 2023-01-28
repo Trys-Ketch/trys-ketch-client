@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   users: [],
+  localMute: false,
 };
 
 const muteSlice = createSlice({
@@ -29,9 +30,17 @@ const muteSlice = createSlice({
         // ),
       };
     },
+    setLocalMute: (state, action) => ({
+      ...state,
+      localMute: action.payload,
+    }),
+    clearMute: () => ({
+      users: [],
+      localMute: false,
+    }),
   },
   extraReducers: {},
 });
 
-export const { setMuteUsers, setMute } = muteSlice.actions;
+export const { setMuteUsers, setMute, setLocalMute, clearMute } = muteSlice.actions;
 export default muteSlice.reducer;
