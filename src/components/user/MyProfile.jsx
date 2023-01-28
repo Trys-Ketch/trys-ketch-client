@@ -43,7 +43,7 @@ function MyProfile() {
 
   return (
     <ProfileBox>
-      <Avatar src={profileImage} width="80px" height="80px" />
+      <Avatar src={profileImage} width="100px" height="100px" />
       <Nickname>{nickname ?? '로그인이 필요합니다'}</Nickname>
     </ProfileBox>
   );
