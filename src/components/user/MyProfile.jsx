@@ -8,7 +8,8 @@ import { setUserInfo } from '../../app/slices/userSlice';
 import { delCookie } from '../../utils/cookie';
 import { toast } from '../toast/ToastProvider';
 
-function LobbyProfile() {
+function MyProfile() {
+  const { member } = useSelector((state) => state.login);
   const { profileImage, nickname } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ function LobbyProfile() {
         }
       })
       .catch((err) => {
+        delCookie(member === 'guest' ? 'guest' : 'access_token');
         toast.error(err.response.data.message);
         navigate('/login');
       });
@@ -59,4 +61,4 @@ const Nickname = styled.h3`
   margin: 10px 0 20px 0;
 `;
 
-export default LobbyProfile;
+export default MyProfile;
