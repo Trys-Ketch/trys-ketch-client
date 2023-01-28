@@ -118,7 +118,7 @@ const ButtonBox = styled.div`
   margin-top: 20px;
   margin-bottom: 30px;
 
-  & div:not(:first-child) {
+  & button:not(:first-child) {
     margin-left: 30px;
   }
 `;
