@@ -12,6 +12,8 @@ import IconButton from '../common/IconButton';
 import { setForceSubmit } from '../../app/slices/ingameSlice';
 import TextInput from '../common/TextInput';
 import { toast } from '../toast/ToastProvider';
+import GAEventTrack from '../../ga/GAEventTrack';
+import GAEventTypes from '../../ga/GAEventTypes';
 import undoIcon from '../../assets/icons/undo-icon.svg';
 import redoIcon from '../../assets/icons/redo-icon.svg';
 
@@ -142,6 +144,7 @@ function Paint({
     context.globalCompositeOperation = 'source-over';
     context.lineWidth = pixel;
     setCtx(context);
+    GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.Thickness);
   }
 
   /**
@@ -155,6 +158,7 @@ function Paint({
     context.globalCompositeOperation = 'source-over';
     context.strokeStyle = c;
     setCtx(context);
+    GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.color, c);
   }
 
   /**
@@ -183,6 +187,7 @@ function Paint({
     context.strokeStyle = '#ffffff';
     setEventState('eraseing');
     setCtx(context);
+    GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.erase);
   }
 
   /**
@@ -194,6 +199,7 @@ function Paint({
     context.strokeStyle = currentColor;
     setEventState('drawing');
     setCtx(context);
+    GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.pencil);
   }
 
   /**

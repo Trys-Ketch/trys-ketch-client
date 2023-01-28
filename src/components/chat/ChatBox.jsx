@@ -9,6 +9,8 @@ import FlatButton from '../common/FlatButton';
 import MessageList from './MessageList';
 import types from '../../utils/types';
 import { toast } from '../toast/ToastProvider';
+import GAEventTrack from '../../ga/GAEventTrack';
+import GAEventTypes from '../../ga/GAEventTypes';
 
 function ChatBox() {
   const client = useRef(null);
@@ -49,6 +51,7 @@ function ChatBox() {
         content: message,
       }),
     });
+    GAEventTrack(GAEventTypes.Category.room, GAEventTypes.Action.room.submitChat);
     setInput('');
   };
 

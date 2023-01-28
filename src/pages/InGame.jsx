@@ -9,6 +9,8 @@ import Drawing from '../components/game/Drawing';
 import FloatBox from '../components/layout/FloatBox';
 import MuteUserList from '../components/mute/MuteUserList';
 import { toast } from '../components/toast/ToastProvider';
+import GAEventTrack from '../ga/GAEventTrack';
+import GAEventTypes from '../ga/GAEventTypes';
 import { setLocalMute } from '../app/slices/muteSlice';
 
 let token;
@@ -155,6 +157,7 @@ function InGame() {
         webSessionId: socketID,
       }),
     });
+    GAEventTrack(GAEventTypes.Category.game, GAEventTypes.Action.game.submitPicture);
   }
 
   /**
@@ -172,6 +175,7 @@ function InGame() {
         webSessionId: socketID,
       }),
     });
+    GAEventTrack(GAEventTypes.Category.game, GAEventTypes.Action.game.submitWord);
   }
 
   function toggleDrawingReady(canvas, isSubmitted) {

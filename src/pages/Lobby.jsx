@@ -13,6 +13,8 @@ import useModal from '../hooks/useModal';
 import LobbyProfile from '../components/user/LobbyProfile';
 import roomAPI from '../api/room';
 import { toast } from '../components/toast/ToastProvider';
+import GAEventTrack from '../ga/GAEventTrack';
+import GAEventTypes from '../ga/GAEventTypes';
 
 function Lobby() {
   // const evtSource = new EventSource(`${process.env.REACT_APP_API_URL}/api/sse/rooms`);
@@ -76,6 +78,7 @@ function Lobby() {
 
   const LinkToMyPage = () => {
     toast.info('준비 중이에요🔨');
+    GAEventTrack(GAEventTypes.Category.mypage, GAEventTypes.Action.mypage.goToMypage);
     // navigate('/myPage');
   };
 

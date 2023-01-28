@@ -1,9 +1,8 @@
-/* src/RouteChangeTracker.js */
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import ReactGA from 'react-ga';
 
-const RouteChangeTracker = () => {
+const GARouteTracker = () => {
   const location = useLocation();
   const [initialized, setInitialized] = useState(false);
 
@@ -22,4 +21,4 @@ const RouteChangeTracker = () => {
   }, [initialized, location]);
 };
 
-export default RouteChangeTracker;
+export default GARouteTracker;

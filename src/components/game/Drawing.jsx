@@ -6,6 +6,8 @@ import Paint from '../painting/Paint';
 import useTimer from '../../hooks/useTimer';
 import CircleTimer from './CircleTimer';
 import SubmittedPlayer from './SubmittedPlayer';
+import GAEventTrack from '../../ga/GAEventTrack';
+import GAEventTypes from '../../ga/GAEventTypes';
 
 const CIRCLE_RADIUS = 40;
 const CENTER = 40;

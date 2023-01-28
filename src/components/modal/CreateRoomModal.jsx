@@ -5,6 +5,8 @@ import roomAPI from '../../api/room';
 import Modal from '../common/Modal';
 import useModal from '../../hooks/useModal';
 import { toast } from '../toast/ToastProvider';
+import GAEventTrack from '../../ga/GAEventTrack';
+import GAEventTypes from '../../ga/GAEventTypes';
 
 function CreateRoomModal() {
   const navigate = useNavigate();
@@ -26,6 +28,7 @@ function CreateRoomModal() {
       .then((res) => {
         if (res.data.statusCode === 200) {
           const { roomId } = res.data.data;
+          GAEventTrack(GAEventTypes.Category.room, GAEventTypes.Action.room.createRoom);
           navigate(`/room/${roomId}`);
           closeModal();
         }

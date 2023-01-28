@@ -5,6 +5,8 @@ import TextInput from '../common/TextInput';
 import roomAPI from '../../api/room';
 import useModal from '../../hooks/useModal';
 import { toast } from '../toast/ToastProvider';
+import GAEventTrack from '../../ga/GAEventTrack';
+import GAEventTypes from '../../ga/GAEventTypes';
 
 function InviteCodeModal() {
   const navigate = useNavigate();
@@ -25,6 +27,7 @@ function InviteCodeModal() {
       .then((res) => {
         if (res.data.statusCode === 200) {
           const { roomId } = res.data.data;
+          GAEventTrack(GAEventTypes.Category.room, GAEventTypes.Action.room.inviteCodeEnter);
           closeModal();
           navigate(`/room/${roomId}`);
         }
