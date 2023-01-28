@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setForceSubmit } from '../app/slices/ingameSlice';
-import alarm from '../assets/sound/alarm.wav';
-import turnOnSound from '../utils/turnOnSound';
+// import alarm from '../assets/sound/alarm.wav';
+// import turnOnSound from '../utils/turnOnSound';
 
 let startTime;
 let timerID;
@@ -14,10 +14,10 @@ function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit, gameSta
   const [degree, setDegree] = useState(1);
   const dispatch = useDispatch();
 
-  const sound = turnOnSound(alarm);
+  // const sound = turnOnSound(alarm);
 
-  let alarmOn;
-  let alarmOff;
+  // let alarmOn;
+  // let alarmOff;
 
   function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
     const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
@@ -69,17 +69,17 @@ function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit, gameSta
     }, 50);
   }
 
-  function alarmSoundOn() {
-    alarmOn = setTimeout(() => {
-      sound.play();
-    }, timeLimit - ALARM_TIME);
-  }
+  // function alarmSoundOn() {
+  //   setTimeout(() => {
+  //     sound.play();
+  //   }, timeLimit - ALARM_TIME);
+  // }
 
-  function alarmSoundOff() {
-    alarmOff = setTimeout(() => {
-      sound.stop();
-    }, timeLimit);
-  }
+  // function alarmSoundOff() {
+  //   setTimeout(() => {
+  //     sound.stop();
+  //   }, timeLimit);
+  // }
 
   useEffect(() => {
     pathRef.current.setAttribute(
@@ -102,14 +102,14 @@ function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit, gameSta
     };
   }, [gameState]);
 
-  useEffect(() => {
-    alarmSoundOn();
-    alarmSoundOff();
-    return () => {
-      clearTimeout(alarmOn);
-      clearTimeout(alarmOff);
-    };
-  }, [gameState]);
+  // useEffect(() => {
+  //   alarmSoundOn();
+  //   alarmSoundOff();
+  //   return () => {
+  //     clearTimeout(alarmSoundOn);
+  //     clearTimeout(alarmSoundOff);
+  //   };
+  // }, [gameState]);
 }
 
 export default useTimer;
