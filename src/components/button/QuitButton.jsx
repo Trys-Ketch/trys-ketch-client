@@ -7,7 +7,7 @@ function QuitButton({ size }) {
   const { openModal } = useModal();
 
   const handleOpenModal = () => {
-    openModal('quitRoom');
+    openModal({ type: 'quitRoom' });
   };
 
   return <IconButton size={size} icon={quit} text="방나가기" onClick={handleOpenModal} />;

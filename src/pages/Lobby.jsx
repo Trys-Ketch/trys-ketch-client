@@ -70,11 +70,11 @@ function Lobby() {
   // }, []);
 
   const handleOpenCreateRoom = () => {
-    openModal('createRoom');
+    openModal({ type: 'createRoom' });
   };
 
   const handleOpenInvite = () => {
-    openModal('inviteCode');
+    openModal({ type: 'inviteCode' });
   };
 
   const LinkToMyPage = () => {

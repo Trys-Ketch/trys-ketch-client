@@ -8,7 +8,7 @@ function SettingButton({ size }) {
   const { openModal } = useModal();
 
   const handleOpenModal = () => {
-    // openModal('setting');
+    // openModal({ type: 'setting' });
     toast.info('준비중이에요 🔨');
   };
 
