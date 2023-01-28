@@ -271,9 +271,6 @@ const PrevNextButton = styled.button`
 `;
 
 const PrevNextButtonWrapper = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: 0;
   display: flex;
   flex-direction: row;
   padding: 10px;

@@ -13,6 +13,7 @@ import useModal from '../hooks/useModal';
 import LobbyProfile from '../components/user/LobbyProfile';
 import roomAPI from '../api/room';
 import { toast } from '../components/toast/ToastProvider';
+import refresh from '../assets/icons/refresh-icon.svg';
 import GAEventTrack from '../ga/GAEventTrack';
 import GAEventTypes from '../ga/GAEventTypes';
 
@@ -100,9 +101,6 @@ function Lobby() {
           <FlatButton size="small" onClick={LinkToMyPage}>
             마이페이지
           </FlatButton>
-          <Button size="small" onClick={() => getRooms(page)} style={{ marginTop: '10px' }}>
-            새로고침
-          </Button>
         </Side>
         <Main>
           <TopBtns>
@@ -121,11 +119,27 @@ function Lobby() {
               <EmptyRoomList />
             )}
           </RoomContainer>
+          <RefreshBtn onClick={() => getRooms(page)}>
+            <img src={refresh} alt="refresh" />
+          </RefreshBtn>
         </Main>
       </Container>
     </>
   );
 }
+
+const RefreshBtn = styled.button`
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  transition: 0.15s linear;
+  img {
+    width: 38px;
+  }
+  &:active {
+    transform: rotate(360deg);
+  }
+`;
 
 const Main = styled.div`
   display: flex;
