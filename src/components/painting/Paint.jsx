@@ -462,8 +462,18 @@ function Paint({
         )}
         {isDrawingState && (
           <UndoRedoWrapper>
-            <IconButton onClick={() => undo()} size="large" icon={undoIcon} />
-            <IconButton onClick={() => redo()} size="large" icon={redoIcon} />
+            <IconButton
+              disabled={isSubmitted}
+              onClick={() => undo()}
+              size="large"
+              icon={undoIcon}
+            />
+            <IconButton
+              disabled={isSubmitted}
+              onClick={() => redo()}
+              size="large"
+              icon={redoIcon}
+            />
           </UndoRedoWrapper>
         )}
         {/* <BtnWrapper>
