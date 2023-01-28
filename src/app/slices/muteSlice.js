@@ -34,7 +34,7 @@ const muteSlice = createSlice({
       ...state,
       localMute: action.payload,
     }),
-    clearMute: (state) => ({
+    clearMute: () => ({
       users: [],
       localMute: false,
     }),
@@ -42,5 +42,5 @@ const muteSlice = createSlice({
   extraReducers: {},
 });
 
-export const { setMuteUsers, setMute, setLocalMute } = muteSlice.actions;
+export const { setMuteUsers, setMute, setLocalMute, clearMute } = muteSlice.actions;
 export default muteSlice.reducer;

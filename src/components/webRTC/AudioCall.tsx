@@ -8,6 +8,7 @@ import { setID } from '../../app/slices/ingameSlice';
 import { closeSocket, setSocket } from '../../app/slices/ingameSlice';
 import { store } from '../../app/configStore';
 import usePreventRefresh from '../../hooks/usePreventRefresh';
+import { clearMute } from '../../app/slices/muteSlice';
 
 let pcs: any;
 let hasPcs: any;
@@ -328,6 +329,7 @@ function AudioCall() {
       if (socketRef.current) {
         socketRef.current.close();
       }
+      dispatch(clearMute(null));
     };
   }, []);
 
