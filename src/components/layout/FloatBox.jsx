@@ -24,6 +24,9 @@ const Box = styled.div`
 `;
 
 const Top = styled.div`
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
   & > *:not(:first-child) {
     margin-top: 10px;
   }
