@@ -16,6 +16,9 @@ function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit, gameSta
 
   const sound = turnOnSound(alarm);
 
+  let alarmOn;
+  let alarmOff;
+
   function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
     const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
 
@@ -67,13 +70,13 @@ function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit, gameSta
   }
 
   function alarmSoundOn() {
-    setTimeout(() => {
+    alarmOn = setTimeout(() => {
       sound.play();
     }, timeLimit - ALARM_TIME);
   }
 
   function alarmSoundOff() {
-    setTimeout(() => {
+    alarmOff = setTimeout(() => {
       sound.stop();
     }, timeLimit);
   }
@@ -103,8 +106,8 @@ function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit, gameSta
     alarmSoundOn();
     alarmSoundOff();
     return () => {
-      clearTimeout(alarmSoundOn);
-      clearTimeout(alarmSoundOff);
+      clearTimeout(alarmOn);
+      clearTimeout(alarmOff);
     };
   }, [gameState]);
 }
