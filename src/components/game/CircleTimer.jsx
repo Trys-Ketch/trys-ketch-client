@@ -13,7 +13,7 @@ function CircleTimer({ strokeWidth, circleRadius, center, pathRef, round }) {
     >
       <Timer>
         <path ref={pathRef} fill="#4e473f" />
-        <circle cx={center - strokeWidth} cy={center - strokeWidth} r="18px" fill="#c9dbaa" />,
+        <circle cx={center - strokeWidth} cy={center - strokeWidth} r="18px" fill="#c9dbaa" />
       </Timer>
       <Round round={round} />
     </TimerBorder>
