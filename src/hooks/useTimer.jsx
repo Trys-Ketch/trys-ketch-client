@@ -106,7 +106,7 @@ function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit, gameSta
       clearTimeout(alarmSoundOn);
       clearTimeout(alarmSoundOff);
     };
-  }, []);
+  }, [gameState]);
 }
 
 export default useTimer;
