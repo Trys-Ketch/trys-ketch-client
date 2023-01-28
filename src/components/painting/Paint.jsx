@@ -12,10 +12,11 @@ import IconButton from '../common/IconButton';
 import { setForceSubmit } from '../../app/slices/ingameSlice';
 import TextInput from '../common/TextInput';
 import { toast } from '../toast/ToastProvider';
+import undoIcon from '../../assets/icons/undo-icon.svg';
+import redoIcon from '../../assets/icons/redo-icon.svg';
 
 let historyPointer = 0;
 let currentColor = 'black';
-let isMounted = false;
 
 function Paint({
   isKeywordState,
@@ -26,8 +27,6 @@ function Paint({
   setKeyword,
   isSubmitted,
   submitImg,
-  undoRef,
-  redoRef,
   completeImageSubmit,
   image,
 }) {
@@ -182,7 +181,7 @@ function Paint({
     const context = canvasRef.current.getContext('2d');
     context.globalCompositeOperation = 'destination-out';
     context.strokeStyle = '#ffffff';
-    setEventState('drawing');
+    setEventState('eraseing');
     setCtx(context);
   }
 
@@ -265,14 +264,6 @@ function Paint({
   }
 
   useEffect(() => {
-    if (ctx && !isMounted) {
-      undoRef.current = undo;
-      redoRef.current = redo;
-      isMounted = true;
-    }
-  }, [ctx]);
-
-  useEffect(() => {
     if (completeImageSubmit) {
       const canvas = canvasRef.current;
       submitImg(canvas);
@@ -324,13 +315,13 @@ function Paint({
               isSubmitted={isSubmitted}
               ref={canvasRef}
               onClick={(event) => {
-                if (eventState === 'drawing') drawCircle(event);
+                if (eventState === 'drawing' || eventState === 'eraseing') drawCircle(event);
               }}
               onMouseDown={(event) => {
                 history.push(ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height));
                 historyPointer += 1;
                 history.splice(historyPointer);
-                if (eventState === 'drawing') {
+                if (eventState === 'drawing' || eventState === 'eraseing') {
                   startDrawing();
                 }
                 if (eventState === 'fill') {
@@ -338,17 +329,17 @@ function Paint({
                 }
               }}
               onMouseUp={() => {
-                if (eventState === 'drawing') {
+                if (eventState === 'drawing' || eventState === 'eraseing') {
                   finishDrawing();
                 }
               }}
               onMouseMove={(event) => {
-                if (eventState === 'drawing') {
+                if (eventState === 'drawing' || eventState === 'eraseing') {
                   drawing(event);
                 }
               }}
               onMouseLeave={() => {
-                if (eventState === 'drawing') {
+                if (eventState === 'drawing' || eventState === 'eraseing') {
                   finishDrawing();
                 }
               }}
@@ -421,15 +412,31 @@ function Paint({
         {isDrawingState && (
           <IconButtonWrapper>
             <IconButton
+              selected={eventState === 'drawing'}
               onClick={() => {
                 setDrawing();
               }}
               icon={pencil}
               size="large"
             />
-            <IconButton onClick={() => setEraser()} icon={eraser} size="large" />
-            <IconButton onClick={() => setEventState('fill')} icon={paint} size="large" />
-            <IconButton onClick={() => toggleThicknessBtn()} icon={pencilThickness} size="large" />
+            <IconButton
+              selected={eventState === 'eraseing'}
+              onClick={() => setEraser()}
+              icon={eraser}
+              size="large"
+            />
+            <IconButton
+              selected={eventState === 'fill'}
+              onClick={() => setEventState('fill')}
+              icon={paint}
+              size="large"
+            />
+            <IconButton
+              selected={displayThicknessBtn}
+              onClick={() => toggleThicknessBtn()}
+              icon={pencilThickness}
+              size="large"
+            />
           </IconButtonWrapper>
         )}
         {isDrawingState && (
@@ -447,6 +454,12 @@ function Paint({
             })}
           </ColorBtnWrapper>
         )}
+        {isDrawingState && (
+          <UndoRedoWrapper>
+            <IconButton onClick={() => undo()} size="large" icon={undoIcon} />
+            <IconButton onClick={() => redo()} size="large" icon={redoIcon} />
+          </UndoRedoWrapper>
+        )}
         {/* <BtnWrapper>
           {opacity.map((v) => {
             return (
@@ -461,8 +474,6 @@ function Paint({
         {isDrawingState && (
           <Button
             style={{
-              position: 'absolute',
-              bottom: '0',
               height: '11%',
               width: '100%',
             }}
@@ -482,8 +493,6 @@ function Paint({
         {(isKeywordState || isGuessingState) && (
           <Button
             style={{
-              position: 'absolute',
-              bottom: '0',
               height: '11%',
               width: '100%',
             }}
@@ -504,6 +513,12 @@ function Paint({
     </Wrapper>
   );
 }
+const UndoRedoWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
 const InputWrapper = styled.div`
   width: max-content;
   height: max-content;
@@ -536,7 +551,6 @@ const Image = styled.img`
 
 const ColorBtnWrapper = styled.div`
   padding: 3px 13px;
-  margin-top: 15px;
   width: 100%;
   height: 50%;
   background-color: ${({ theme }) => theme.colors.FLORAL_WHITE};
@@ -605,7 +619,8 @@ const IconButtonWrapper = styled.div`
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
   place-items: center;
-  gap: 5px;
+  column-gap: 5px;
+  row-gap: 0px;
   width: 100%;
 `;
 
@@ -647,6 +662,9 @@ const RightDiv = styled.div`
   position: relative;
   width: 11%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `;
 
 const Keyword = styled.div`
