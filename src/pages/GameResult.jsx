@@ -17,6 +17,7 @@ import SettingButton from '../components/button/SettingButton';
 import MicButton from '../components/button/MicButton';
 import MuteUserList from '../components/mute/MuteUserList';
 import { setLocalMute } from '../app/slices/muteSlice';
+import { toast } from '../components/toast/ToastProvider';
 
 let token;
 const subArray = [];
@@ -97,6 +98,18 @@ function GameResult() {
       ingameStompClient.subscribe(`/topic/game/prev-keyword-index/${id}`, (message) => {
         const data = JSON.parse(message.body);
         setNowKeywordIndex(data.keywordIndex);
+      }),
+    );
+    subArray.push(
+      // 정해진 인원수보다 게임에 남은 인원이 적어지면 강제로 로비로 리다이렉트합니다.
+      ingameStompClient.subscribe(`/topic/game/shutdown/${id}`, (message) => {
+        const data = JSON.parse(message.body);
+        if (data.shutdown) {
+          ingameStompClient.deactivate();
+          dispatch(closeStomp());
+          navigate(`/room/${id}`, { replace: true });
+          toast.error('인원이 모자라 진행이 어렵습니다.');
+        }
       }),
     );
 

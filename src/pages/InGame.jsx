@@ -12,6 +12,7 @@ import { toast } from '../components/toast/ToastProvider';
 import GAEventTrack from '../ga/GAEventTrack';
 import GAEventTypes from '../ga/GAEventTypes';
 import { setLocalMute } from '../app/slices/muteSlice';
+import { closeStomp } from '../app/slices/ingameSlice';
 
 let token;
 const subArray = [];
@@ -109,6 +110,8 @@ function InGame() {
       ingameStompClient.subscribe(`/topic/game/shutdown/${id}`, (message) => {
         const data = JSON.parse(message.body);
         if (data.shutdown) {
+          ingameStompClient.deactivate();
+          dispatch(closeStomp());
           navigate(`/room/${id}`, { replace: true });
           toast.error('인원이 모자라 진행이 어렵습니다.');
         }
