@@ -31,6 +31,7 @@ function Paint({
   submitImg,
   completeImageSubmit,
   image,
+  gameState,
 }) {
   const thickness = [5, 7, 9, 11, 13];
   const color = [
@@ -303,6 +304,26 @@ function Paint({
       context.lineWidth = thickness[0] * 2;
 
       setCtx(() => context);
+    }
+  }, [isDrawingState]);
+
+  useEffect(() => {
+    if (isDrawingState) {
+      const canvas = canvasRef.current;
+      const context = canvas.getContext('2d');
+
+      currentColor = 'black';
+      context.strokeStyle = 'black';
+      context.lineWidth = thickness[0] * 2;
+      context.globalCompositeOperation = 'source-over';
+      setCtx(() => context);
+
+      historyPointer = 0;
+      history.splice(0);
+
+      setEventState('drawing');
+      setDisplayThicknessBtn(false);
+      setNowThickness(0);
     }
   }, [isDrawingState]);
 
