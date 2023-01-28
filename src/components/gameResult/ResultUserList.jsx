@@ -20,9 +20,10 @@ function ResultUserList({ userList }) {
 const UserArea = styled.div`
   width: 36.2%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  display: grid;
+  grid-template-rows: repeat(8, 1fr);
+  grid-template-columns: repeat(1, 1fr);
+  gap: 10px;
 `;
 
 export default ResultUserList;

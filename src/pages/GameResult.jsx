@@ -271,6 +271,9 @@ const PrevNextButton = styled.button`
 `;
 
 const PrevNextButtonWrapper = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
   display: flex;
   flex-direction: row;
   padding: 10px;
@@ -357,6 +360,7 @@ const ProfileImg = styled.img`
 `;
 
 const ResultArea = styled.div`
+  position: relative;
   padding: 15px;
   width: 62.2%;
   height: 100%;
