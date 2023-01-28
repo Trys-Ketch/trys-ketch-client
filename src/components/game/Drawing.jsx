@@ -1,13 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import IconButton from '../common/IconButton';
 import Container from '../layout/Container';
 import Paint from '../painting/Paint';
-import undo from '../../assets/icons/undo-icon.svg';
-import redo from '../../assets/icons/redo-icon.svg';
-import FloatBox from '../layout/FloatBox';
-import SettingButton from '../button/SettingButton';
-import MicButton from '../button/MicButton';
 import useTimer from '../../hooks/useTimer';
 import CircleTimer from './CircleTimer';
 import SubmittedPlayer from './SubmittedPlayer';
@@ -22,7 +17,7 @@ const STROKE_WIDTH = 3;
 function Drawing({
   isKeywordState,
   isGuessingState,
-  isDrawingState,
+  isDrawingState = true,
   submitNum,
   maxSubmitNum,
   round,
@@ -35,72 +30,35 @@ function Drawing({
   image,
   gameState,
 }) {
-  const undoRef = useRef(null);
-  const redoRef = useRef(null);
   const pathRef = useRef(null);
 
   useTimer(pathRef, CENTER, CIRCLE_RADIUS, STROKE_WIDTH, TIME_LIMIT, gameState);
 
   return (
-    <>
-      <FloatBox
-        top={
-          <>
-            <SettingButton />
-            <MicButton />
-          </>
-        }
-      />
-      <Container style={{ paddingLeft: '0px', height: '680px', width: '1200px' }}>
-        <LeftDiv>
-          <CircleTimer
-            strokeWidth={STROKE_WIDTH}
-            circleRadius={CIRCLE_RADIUS}
-            center={CENTER}
-            pathRef={pathRef}
-            round={round}
-          />
-          <SubmittedPlayer submitNum={submitNum} maxSubmitNum={maxSubmitNum} />
-          <IconButtonContainer>
-            {isDrawingState && (
-              <IconButton
-                onClick={() => {
-                  undoRef.current();
-                  GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.undo);
-                }}
-                size="xlarge"
-                icon={undo}
-              />
-            )}
-            {isDrawingState && (
-              <IconButton
-                onClick={() => {
-                  redoRef.current();
-                  GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.redo);
-                }}
-                style={{ marginTop: '15px', marginBottom: '10px' }}
-                size="xlarge"
-                icon={redo}
-              />
-            )}
-          </IconButtonContainer>
-        </LeftDiv>
-        <Paint
-          isKeywordState={isKeywordState}
-          isGuessingState={isGuessingState}
-          isDrawingState={isDrawingState}
-          completeImageSubmit={completeImageSubmit}
-          isSubmitted={isSubmitted}
-          keyword={keyword}
-          setKeyword={setKeyword}
-          undoRef={undoRef}
-          redoRef={redoRef}
-          toggleReady={toggleReady}
-          submitImg={submitImg}
-          image={image}
+    <Container style={{ paddingLeft: '0px', height: '680px', width: '1200px' }}>
+      <LeftDiv>
+        <CircleTimer
+          strokeWidth={STROKE_WIDTH}
+          circleRadius={CIRCLE_RADIUS}
+          center={CENTER}
+          pathRef={pathRef}
+          round={round}
         />
-      </Container>
-    </>
+        <SubmittedPlayer submitNum={submitNum} maxSubmitNum={maxSubmitNum} />
+      </LeftDiv>
+      <Paint
+        isKeywordState={isKeywordState}
+        isGuessingState={isGuessingState}
+        isDrawingState={isDrawingState}
+        completeImageSubmit={completeImageSubmit}
+        isSubmitted={isSubmitted}
+        keyword={keyword}
+        setKeyword={setKeyword}
+        toggleReady={toggleReady}
+        submitImg={submitImg}
+        image={image}
+      />
+    </Container>
   );
 }
 

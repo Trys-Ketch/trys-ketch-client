@@ -10,6 +10,7 @@ import InGame from '../pages/InGame';
 import Layout from '../components/layout/Layout';
 import GameResult from '../pages/GameResult';
 import BGM from '../components/layout/BGM';
+import NotFound from '../pages/NotFound';
 
 function Router() {
   return (
@@ -30,6 +31,7 @@ function Router() {
             <Route path="/result/:id" element={<GameResult />} />
           </Route>
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

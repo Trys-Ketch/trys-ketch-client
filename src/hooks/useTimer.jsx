@@ -59,7 +59,6 @@ function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit, gameSta
       const nowTime = new Date().getTime();
       setDegree(1 - (nowTime - startTime) / timeLimit);
       if (nowTime - startTime >= timeLimit) {
-        console.log('set force submit');
         setDegree(0);
         clearInterval(timerID);
         dispatch(setForceSubmit(true));

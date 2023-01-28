@@ -3,9 +3,11 @@ import { useCookies } from 'react-cookie';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { store } from '../app/configStore';
+import MicButton from '../components/button/MicButton';
+import SettingButton from '../components/button/SettingButton';
 import Drawing from '../components/game/Drawing';
-import Guessing from '../components/game/Guessing';
-import MakeSentence from '../components/game/MakeSentence';
+import FloatBox from '../components/layout/FloatBox';
+import MuteUserList from '../components/mute/MuteUserList';
 import { toast } from '../components/toast/ToastProvider';
 import GAEventTrack from '../ga/GAEventTrack';
 import GAEventTypes from '../ga/GAEventTypes';
@@ -126,7 +128,6 @@ function InGame() {
 
     return () => {
       if (ingameStompClient) {
-        console.log('client unsubscribes');
         for (let i = 0; i < subArray.length; i += 1) subArray[i].unsubscribe();
       }
     };
@@ -175,7 +176,6 @@ function InGame() {
   }
 
   function toggleDrawingReady(canvas, isSubmitted) {
-    console.log(isSubmitted);
     ingameStompClient.publish({
       destination: '/app/game/toggle-ready',
       body: JSON.stringify({
@@ -211,7 +211,6 @@ function InGame() {
   // 모든 사람들이 키워드를 제출했다면 gameState를 drawing으로 바꿉니다.
   useEffect(() => {
     if (completeKeywordSubmit) {
-      console.log('toDrawing');
       setGameState('drawing');
       submitKeyword();
       setCompleteKeywordSubmit(false);
@@ -223,7 +222,6 @@ function InGame() {
   // 모든 사람들이 그림을 제출했다면 gameState를 guessing으로 바꿉니다.
   useEffect(() => {
     if (completeImageSubmit) {
-      console.log('toGuessing');
       setGameState('guessing');
       setCompleteImageSubmit(false);
       setIsSubmitted(false);
@@ -233,17 +231,18 @@ function InGame() {
 
   return (
     <div>
+      <FloatBox
+        top={
+          <>
+            <SettingButton size="xlarge" />
+            <MicButton size="xlarge" />
+            <MuteUserList socketID={socketID} />
+          </>
+        }
+      />
       {
         {
           keyword: (
-            // <MakeSentence
-            //   submitNum={submitNum}
-            //   maxSubmitNum={maxSubmitNum}
-            //   isSubmitted={isSubmitted}
-            //   toggleReady={(isSubmitted) => toggleKeywordReady(isSubmitted)}
-            //   keyword={keyword}
-            //   setKeyword={setKeyword}
-            // />
             <Drawing
               isKeywordState
               isGuessingState={false}
@@ -275,17 +274,6 @@ function InGame() {
             />
           ),
           guessing: (
-            // <Guessing
-            //   submitNum={submitNum}
-            //   maxSubmitNum={maxSubmitNum}
-            //   isSubmitted={isSubmitted}
-            //   setIsSubmitted={() => setIsSubmitted()}
-            //   toggleReady={(isSubmitted) => toggleKeywordReady(isSubmitted)}
-            //   keyword={keyword}
-            //   setKeyword={setKeyword}
-            //   image={image}
-            //   socketID={socketID}
-            // />
             <Drawing
               isKeywordState={false}
               isGuessingState

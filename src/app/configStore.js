@@ -5,6 +5,7 @@ import login from './slices/loginSlice';
 import user from './slices/userSlice';
 import ingame from './slices/ingameSlice';
 import modal from './slices/modalSlice';
+import mute from './slices/muteSlice';
 
 const persistConfig = {
   key: 'root',
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   user,
   ingame,
   modal,
+  mute,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
