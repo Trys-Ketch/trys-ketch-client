@@ -6,7 +6,7 @@ import SockJS from 'sockjs-client';
 import * as Stomp from '@stomp/stompjs';
 import AttendeeList from '../components/room/AttendeeList';
 import Button from '../components/common/Button';
-import { setStomp, setIngameHost } from '../app/slices/ingameSlice';
+import { setStomp, setIngameHost, closeStomp } from '../app/slices/ingameSlice';
 import Container from '../components/layout/Container';
 import FloatBox from '../components/layout/FloatBox';
 import SettingButton from '../components/button/SettingButton';
@@ -179,7 +179,9 @@ function GameRoom() {
       console.error('Stomp Error!: ', frame.headers.message);
       console.error('Additional details: ', frame.body);
     };
-    client.onDisconnect = (frame) => {};
+    client.onDisconnect = (frame) => {
+      dispatch(closeStomp());
+    };
     dispatch(setStomp(client));
     return () => {
       if (client) {
