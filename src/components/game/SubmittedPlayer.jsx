@@ -41,4 +41,4 @@ const SubmittedPlayerText = styled.div`
   margin: auto 0;
 `;
 
-export default SubmittedPlayer;
+export default React.memo(SubmittedPlayer);

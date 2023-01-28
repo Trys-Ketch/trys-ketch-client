@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import Round from './Round';
 
 function CircleTimer({ strokeWidth, circleRadius, center, pathRef, round }) {
   return (
@@ -12,19 +13,12 @@ function CircleTimer({ strokeWidth, circleRadius, center, pathRef, round }) {
     >
       <Timer>
         <path ref={pathRef} fill="#4e473f" />
-        <circle cx={center - strokeWidth} cy={center - strokeWidth} r="18px" fill="#c9dbaa" />
+        <circle cx={center - strokeWidth} cy={center - strokeWidth} r="18px" fill="#c9dbaa" />,
       </Timer>
-      <Round>{round}</Round>
+      <Round round={round} />
     </TimerBorder>
   );
 }
-
-const Round = styled.div`
-  ${({ theme }) => theme.common.absoluteCenter};
-  font-family: 'TTTogether';
-  color: ${({ theme }) => theme.colors.DARK_LAVA};
-  font-size: ${({ theme }) => theme.fontSizes.xl};
-`;
 
 const TimerBorder = styled.div`
   position: relative;
