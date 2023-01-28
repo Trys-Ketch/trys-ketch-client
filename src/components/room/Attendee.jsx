@@ -40,7 +40,7 @@ function Attendee({ user }) {
           </UserActive> */}
           {isHost && (
             <UserMore onClick={() => kick()}>
-              <img src={cancel} alt="kick" width="14px" height="14px" />
+              <img src={cancel} alt="kick" width="12px" height="12px" />
             </UserMore>
           )}
         </HoverDisplay>
@@ -81,8 +81,8 @@ const Nickname = styled.span`
 
 const UserMore = styled.button`
   position: absolute;
-  right: 15px;
-  top: 15px;
+  right: 12px;
+  top: 10px;
 `;
 
 const HoverDisplay = styled.div`
