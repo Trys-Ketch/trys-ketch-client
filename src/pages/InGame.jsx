@@ -7,6 +7,8 @@ import Drawing from '../components/game/Drawing';
 import Guessing from '../components/game/Guessing';
 import MakeSentence from '../components/game/MakeSentence';
 import { toast } from '../components/toast/ToastProvider';
+import GAEventTrack from '../ga/GAEventTrack';
+import GAEventTypes from '../ga/GAEventTypes';
 
 let token;
 const subArray = [];
@@ -151,6 +153,7 @@ function InGame() {
         webSessionId: socketID,
       }),
     });
+    GAEventTrack(GAEventTypes.Category.game, GAEventTypes.Action.game.submitPicture);
   }
 
   /**
@@ -168,6 +171,7 @@ function InGame() {
         webSessionId: socketID,
       }),
     });
+    GAEventTrack(GAEventTypes.Category.game, GAEventTypes.Action.game.submitWord);
   }
 
   function toggleDrawingReady(canvas, isSubmitted) {

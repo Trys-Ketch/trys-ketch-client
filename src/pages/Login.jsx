@@ -12,6 +12,8 @@ import GoogleLoginBtn from '../components/login/GoogleLoginBtn';
 import Panel from '../components/layout/Panel';
 import logo from '../assets/images/ribbon-logo.svg';
 import { toast } from '../components/toast/ToastProvider';
+import GAEventTrack from '../ga/GAEventTrack';
+import GAEventTypes from '../ga/GAEventTypes';
 
 function Login() {
   const navigate = useNavigate();
@@ -41,6 +43,11 @@ function Login() {
       .catch((err) => {
         toast.error(err.response.data.message);
       });
+    GAEventTrack(
+      GAEventTypes.Category.auth,
+      GAEventTypes.Action.auth.login,
+      GAEventTypes.Label.kakao,
+    );
   }, [code, handleLogin]);
 
   const googleLogin = useCallback(() => {
@@ -50,6 +57,11 @@ function Login() {
       .catch((err) => {
         toast.error(err.response.data.message);
       });
+    GAEventTrack(
+      GAEventTypes.Category.auth,
+      GAEventTypes.Action.auth.login,
+      GAEventTypes.Label.google,
+    );
   }, [code, handleLogin]);
 
   const naverLogin = useCallback(() => {
@@ -59,7 +71,16 @@ function Login() {
       .catch((err) => {
         toast.error(err.response.data.message);
       });
+    GAEventTrack(
+      GAEventTypes.Category.auth,
+      GAEventTypes.Action.auth.login,
+      GAEventTypes.Label.naver,
+    );
   }, [code, handleLogin, state]);
+
+  const guestLogin = () => {
+    navigate('/guest');
+  };
 
   useEffect(() => {
     if (code) {
@@ -88,12 +109,7 @@ function Login() {
         <GoogleLoginBtn />
         <NaverLoginBtn />
       </ButtonBox>
-      <Button
-        onClick={() => {
-          navigate('/guest');
-        }}
-        width="350px"
-      >
+      <Button onClick={guestLogin} width="350px">
         게스트 로그인
       </Button>
     </Panel>

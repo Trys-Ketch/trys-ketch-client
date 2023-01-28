@@ -11,6 +11,8 @@ import { store } from '../app/configStore';
 import ResultUserList from '../components/gameResult/ResultUserList';
 
 import arrow from '../assets/icons/right-arrow.svg';
+import GAEventTypes from '../ga/GAEventTypes';
+import GAEventTrack from '../ga/GAEventTrack';
 
 let token;
 const subArray = [];
@@ -112,6 +114,7 @@ function GameResult() {
       destination: '/app/game/end',
       body: JSON.stringify({ roomId: id, token }),
     });
+    GAEventTrack(GAEventTypes.Category.game, GAEventTypes.Action.game.backToRoom);
   }
 
   function nextKeywordIndex() {

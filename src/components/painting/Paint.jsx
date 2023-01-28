@@ -12,6 +12,8 @@ import IconButton from '../common/IconButton';
 import { setForceSubmit } from '../../app/slices/ingameSlice';
 import TextInput from '../common/TextInput';
 import { toast } from '../toast/ToastProvider';
+import GAEventTrack from '../../ga/GAEventTrack';
+import GAEventTypes from '../../ga/GAEventTypes';
 
 let historyPointer = 0;
 let currentColor = 'black';
@@ -143,6 +145,7 @@ function Paint({
     context.globalCompositeOperation = 'source-over';
     context.lineWidth = pixel;
     setCtx(context);
+    GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.Thickness);
   }
 
   /**
@@ -156,6 +159,7 @@ function Paint({
     context.globalCompositeOperation = 'source-over';
     context.strokeStyle = c;
     setCtx(context);
+    GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.color, c);
   }
 
   /**
@@ -184,6 +188,7 @@ function Paint({
     context.strokeStyle = '#ffffff';
     setEventState('drawing');
     setCtx(context);
+    GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.erase);
   }
 
   /**
@@ -195,6 +200,7 @@ function Paint({
     context.strokeStyle = currentColor;
     setEventState('drawing');
     setCtx(context);
+    GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.pencil);
   }
 
   /**
@@ -428,7 +434,14 @@ function Paint({
               size="large"
             />
             <IconButton onClick={() => setEraser()} icon={eraser} size="large" />
-            <IconButton onClick={() => setEventState('fill')} icon={paint} size="large" />
+            <IconButton
+              onClick={() => {
+                setEventState('fill');
+                GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.paint);
+              }}
+              icon={paint}
+              size="large"
+            />
             <IconButton onClick={() => toggleThicknessBtn()} icon={pencilThickness} size="large" />
           </IconButtonWrapper>
         )}

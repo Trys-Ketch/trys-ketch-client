@@ -20,6 +20,8 @@ import roomAPI from '../api/room';
 import { toast } from '../components/toast/ToastProvider';
 import { getCookie } from '../utils/cookie';
 import useDidMountEffect from '../hooks/useDidMountEffect';
+import GAEventTypes from '../ga/GAEventTypes';
+import GAEventTrack from '../ga/GAEventTrack';
 
 let token;
 const subArray = [];
@@ -70,6 +72,7 @@ function GameRoom() {
       destination: '/app/game/start',
       body: JSON.stringify({ roomId: id, token }),
     });
+    GAEventTrack(GAEventTypes.Category.game, GAEventTypes.Action.game.startGame);
   };
 
   const handleCodeCopy = () => {

@@ -9,6 +9,8 @@ import check from '../../assets/icons/check-icon.svg';
 import micMute from '../../assets/icons/mic-mute-icon.svg';
 import cancel from '../../assets/icons/cancel-icon.svg';
 import Range from '../common/Range';
+import GAEventTypes from '../../ga/GAEventTypes';
+import GAEventTrack from '../../ga/GAEventTrack';
 
 function Attendee({ user }) {
   const { userId } = useSelector((state) => state.user);
@@ -18,6 +20,7 @@ function Attendee({ user }) {
 
   const kick = () => {
     socket.send(JSON.stringify({ type: 'ingame/kick', room: id, kickId: user.socketId }));
+    GAEventTrack(GAEventTypes.Category.host, GAEventTypes.Action.host.forcedExit);
   };
 
   return (

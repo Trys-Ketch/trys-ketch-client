@@ -7,6 +7,8 @@ import useModal from '../../hooks/useModal';
 import speaker from '../../assets/icons/speaker-icon.svg';
 // import speakerMute from '../../assets/icons/speaker-mute-icon.svg';
 import mic from '../../assets/icons/mic-icon.svg';
+import GAEventTrack from '../../ga/GAEventTrack';
+import GAEventTypes from '../../ga/GAEventTypes';
 // import micMute from '../../assets/icons/mic-mute-icon.svg';
 
 function SettingModal() {
@@ -15,6 +17,7 @@ function SettingModal() {
   // const { micVolume, setMicVolume } = useState();
 
   const handleEnter = () => {
+    GAEventTrack(GAEventTypes.Category.setting, GAEventTypes.Action.setting.Settings);
     closeModal();
   };
 

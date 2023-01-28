@@ -5,6 +5,8 @@ import roomAPI from '../../api/room';
 import crown from '../../assets/icons/crown.png';
 import person from '../../assets/icons/person-icon.svg';
 import { toast } from '../toast/ToastProvider';
+import GAEventTrack from '../../ga/GAEventTrack';
+import GAEventTypes from '../../ga/GAEventTypes';
 
 function Room({ randomCode, title, isPlaying, cur, max, host }) {
   const navigate = useNavigate();
@@ -15,6 +17,7 @@ function Room({ randomCode, title, isPlaying, cur, max, host }) {
       .then((res) => {
         if (res.data.statusCode === 200) {
           navigate(`/room/${res.data.data.roomId}`);
+          GAEventTrack(GAEventTypes.Category.room, GAEventTypes.Action.room.enterRoom);
         } else {
           toast.error(res.data.message);
         }

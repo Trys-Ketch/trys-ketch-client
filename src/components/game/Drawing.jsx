@@ -11,6 +11,8 @@ import MicButton from '../button/MicButton';
 import useTimer from '../../hooks/useTimer';
 import CircleTimer from './CircleTimer';
 import SubmittedPlayer from './SubmittedPlayer';
+import GAEventTrack from '../../ga/GAEventTrack';
+import GAEventTypes from '../../ga/GAEventTypes';
 
 const CIRCLE_RADIUS = 40;
 const CENTER = 40;
@@ -61,11 +63,21 @@ function Drawing({
           <SubmittedPlayer submitNum={submitNum} maxSubmitNum={maxSubmitNum} />
           <IconButtonContainer>
             {isDrawingState && (
-              <IconButton onClick={() => undoRef.current()} size="xlarge" icon={undo} />
+              <IconButton
+                onClick={() => {
+                  undoRef.current();
+                  GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.undo);
+                }}
+                size="xlarge"
+                icon={undo}
+              />
             )}
             {isDrawingState && (
               <IconButton
-                onClick={() => redoRef.current()}
+                onClick={() => {
+                  redoRef.current();
+                  GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.redo);
+                }}
                 style={{ marginTop: '15px', marginBottom: '10px' }}
                 size="xlarge"
                 icon={redo}

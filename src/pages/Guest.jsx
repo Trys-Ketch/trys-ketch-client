@@ -12,6 +12,8 @@ import { setLogin } from '../app/slices/loginSlice';
 import { setCookie } from '../utils/cookie';
 import refreshIcon from '../assets/icons/refresh-icon.svg';
 import { toast } from '../components/toast/ToastProvider';
+import GAEventTrack from '../ga/GAEventTrack';
+import GAEventTypes from '../ga/GAEventTypes';
 
 function Guest() {
   const [name, setName] = useState('');
@@ -38,18 +40,33 @@ function Guest() {
           setCookie(res.headers.guest, 'guest');
           navigate('/');
           toast.success('로그인되었습니다.');
+          GAEventTrack(
+            GAEventTypes.Category.auth,
+            GAEventTypes.Action.auth.login,
+            GAEventTypes.Label.guest,
+          );
         }
       })
       .catch(() => toast.error('에러가 발생했습니다.'));
   };
 
   const getRandomNickname = () => {
+    GAEventTrack(
+      GAEventTypes.Category.userProfile,
+      GAEventTypes.Action.userProfile.refreshNickname,
+      GAEventTypes.Label.guest,
+    );
     userAPI.getRandomNickname().then((res) => {
       setName(res.data.message);
     });
   };
 
   const getRandomImage = () => {
+    GAEventTrack(
+      GAEventTypes.Category.userProfile,
+      GAEventTypes.Action.userProfile.refreshNickname,
+      GAEventTypes.Label.guest,
+    );
     userAPI.getRandomImage().then((res) => {
       setImage(res.data.message);
     });
