@@ -22,7 +22,6 @@ import { getCookie } from '../utils/cookie';
 import useDidMountEffect from '../hooks/useDidMountEffect';
 import GAEventTypes from '../ga/GAEventTypes';
 import GAEventTrack from '../ga/GAEventTrack';
-import { setMuteUsers } from '../app/slices/muteSlice';
 import { setLocalMute, setMuteUsers } from '../app/slices/muteSlice';
 import MuteUserList from '../components/mute/MuteUserList';
 
