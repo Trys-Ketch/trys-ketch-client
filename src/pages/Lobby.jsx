@@ -10,9 +10,10 @@ import EmptyRoomList from '../components/room/EmptyRoomList';
 import SettingButton from '../components/button/SettingButton';
 import FloatBox from '../components/layout/FloatBox';
 import useModal from '../hooks/useModal';
-import LobbyProfile from '../components/user/LobbyProfile';
+import MyProfile from '../components/user/MyProfile';
 import roomAPI from '../api/room';
 import { toast } from '../components/toast/ToastProvider';
+import RefreshButton from '../components/button/RefreshButton';
 import refresh from '../assets/icons/refresh-icon.svg';
 import GAEventTrack from '../ga/GAEventTrack';
 import GAEventTypes from '../ga/GAEventTypes';
@@ -78,9 +79,8 @@ function Lobby() {
   };
 
   const LinkToMyPage = () => {
-    toast.info('준비 중이에요🔨');
+    navigate('/myPage');
     GAEventTrack(GAEventTypes.Category.mypage, GAEventTypes.Action.mypage.goToMypage);
-    // navigate('/myPage');
   };
 
   useEffect(() => {
@@ -97,7 +97,7 @@ function Lobby() {
       <FloatBox top={<SettingButton size="xlarge" />} />
       <Container>
         <Side>
-          <LobbyProfile />
+          <MyProfile />
           <FlatButton size="small" onClick={LinkToMyPage}>
             마이페이지
           </FlatButton>
@@ -119,26 +119,19 @@ function Lobby() {
               <EmptyRoomList />
             )}
           </RoomContainer>
-          <RefreshBtn onClick={() => getRooms(page)}>
+          <RoomRefreshButton onClick={() => getRooms(page)}>
             <img src={refresh} alt="refresh" />
-          </RefreshBtn>
+          </RoomRefreshButton>
         </Main>
       </Container>
     </>
   );
 }
 
-const RefreshBtn = styled.button`
+const RoomRefreshButton = styled(RefreshButton)`
   position: absolute;
   bottom: 20px;
   right: 20px;
-  transition: 0.15s linear;
-  img {
-    width: 38px;
-  }
-  &:active {
-    transform: rotate(360deg);
-  }
 `;
 
 const Main = styled.div`
