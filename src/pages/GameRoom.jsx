@@ -235,7 +235,7 @@ function GameRoom() {
   }, [attendees]);
 
   useEffect(() => {
-    openModal({ type: 'discription' });
+    openModal({ type: 'description' });
   }, []);
 
   return (
