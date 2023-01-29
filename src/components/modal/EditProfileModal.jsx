@@ -54,7 +54,7 @@ function EditProfileModal() {
         }
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
       });
   };
 
