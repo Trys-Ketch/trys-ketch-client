@@ -8,14 +8,16 @@ const MODAL_COMPONENTS = {
   quitRoom: loadable(() => import('./QuitRoomModal')),
   inviteCode: loadable(() => import('./InviteCodeModal')),
   setting: loadable(() => import('./SettingModal')),
+  kick: loadable(() => import('./KickModal')),
+  editProfile: loadable(() => import('./EditProfileModal')),
 };
 
 function ModalContainer() {
   const modalList = useSelector((state) => state.modal);
 
-  const renderModal = modalList.map(({ type }) => {
+  const renderModal = modalList.map(({ type, props }) => {
     const ModalComponent = MODAL_COMPONENTS[type];
-    return <ModalComponent key={nanoid()} id={type} />;
+    return <ModalComponent key={nanoid()} id={type} {...props} />;
   });
 
   return <div className="modals">{renderModal}</div>;

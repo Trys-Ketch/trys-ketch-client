@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import { nanoid } from 'nanoid';
 import { closeStomp } from '../app/slices/ingameSlice';
 import Container from '../components/layout/Container';
 import { store } from '../app/configStore';
 import ResultUserList from '../components/gameResult/ResultUserList';
-
-import arrow from '../assets/icons/right-arrow.svg';
 import GAEventTypes from '../ga/GAEventTypes';
 import GAEventTrack from '../ga/GAEventTrack';
 import FloatBox from '../components/layout/FloatBox';
@@ -18,36 +16,13 @@ import MicButton from '../components/button/MicButton';
 import MuteUserList from '../components/mute/MuteUserList';
 import { setLocalMute } from '../app/slices/muteSlice';
 import { toast } from '../components/toast/ToastProvider';
+import arrow from '../assets/icons/right-arrow.svg';
+import KeywordResult from '../components/gameResult/KeywordResult';
+import ImageResult from '../components/gameResult/ImageResult';
 
 let token;
 const subArray = [];
 let resultArray;
-// [
-//   [
-//     ['name1-1', 'test1-1'],
-//     ['name1-2', '/img/sanic.webp'],
-//     ['name1-3', 'test1-2'],
-//     ['name1-4', '/img/sanic.webp'],
-//     ['name1-5', 'test1-3'],
-//     ['name1-6', '/img/sanic.webp'],
-//   ],
-//   [
-//     ['name2-1', 'test2-1'],
-//     ['name2-2', '/img/sanic.webp'],
-//     ['name2-3', 'test2-2'],
-//     ['name2-4', '/img/sanic.webp'],
-//     ['name2-5', 'test2-3'],
-//     ['name2-6', '/img/sanic.webp'],
-//   ],
-//   [
-//     ['name3-1', 'test3-1'],
-//     ['name3-2', '/img/sanic.webp'],
-//     ['name3-3', 'test3-2'],
-//     ['name3-4', '/img/sanic.webp'],
-//     ['name3-5', 'test3-3'],
-//     ['name3-6', '/img/sanic.webp'],
-//   ],
-// ];
 let userList;
 
 function GameResult() {
@@ -188,37 +163,31 @@ function GameResult() {
       >
         {isLoading ? null : <ResultUserList userList={userList} />}
         <ResultArea>
-          {isLoading ? null : <FirstKeyword>{resultArray[nowKeywordIndex][0][1]}</FirstKeyword>}
+          {isLoading ? null : (
+            <FirstKeyword>{resultArray[nowKeywordIndex][0].keyword}</FirstKeyword>
+          )}
           {isLoading
             ? null
-            : resultArray[nowKeywordIndex].map((v, i) => {
-                if (i % 2 === 0)
+            : resultArray[nowKeywordIndex].map((result, idx) => {
+                if (idx % 2 === 0)
                   return (
-                    <div key={`${v[0]}-1`}>
-                      <KeywordNickname key={`${v[0]}0`}>{v[0]}</KeywordNickname>
-                      <KeywordWrapper key={`${v[0]}1`}>
-                        <ProfileImg src={v[2]} alt={`profile_${i}`} />
-                        <Keyword key={`${v[0]}2`}>{v[1]}</Keyword>
-                      </KeywordWrapper>
-                    </div>
+                    <KeywordResult
+                      key={`keyword-${nanoid()}`}
+                      nickname={result.nickname}
+                      userImg={result.userImgPath}
+                      keyword={result.keyword}
+                    />
                   );
                 return (
-                  <div key={`${v[0]}4`}>
-                    <ImageNickname key={`${v[0]}5`}>{v[0]}</ImageNickname>
-                    <ImageContainer key={`${v[0]}6`}>
-                      <ImageWrapper key={`${v[0]}7`}>
-                        <Image key={`${v[0]}8`} src={v[1]} alt={`img_${i}`} />
-                      </ImageWrapper>
-                      <ProfileImg src={v[2]} alt={`profile_${i}`} key={`${v[0]}8`} />
-                    </ImageContainer>
-                  </div>
+                  <ImageResult
+                    key={`image-${result.imgId}`}
+                    nickname={result.nickname}
+                    imgId={result.imgId}
+                    img={result.imgPath}
+                    userImg={result.userImgPath}
+                  />
                 );
               })}
-          {/* {isHost && !(nowKeywordIndex === 0) && (
-          <Button onClick={() => prevKeywordIndex()}>이전</Button>
-        )}
-        {isHost && !isLast && <Button onClick={() => nextKeywordIndex()}>다음</Button>}
-        {isHost && isLast && <Button onClick={() => endGame()}>게임 종료</Button>} */}
           {isHost && (
             <PrevNextButtonWrapper>
               {!(nowKeywordIndex === 0) && (
@@ -327,47 +296,6 @@ const Keyword = styled.pre`
   border-radius: 10px;
   background-color: ${({ theme }) => theme.colors.ANTIQUE_WHITE};
   line-height: 20px;
-`;
-
-const ImageContainer = styled.div`
-  display: flex;
-`;
-
-const ImageNickname = styled.div`
-  margin-right: 65px;
-  margin-left: auto;
-  width: max-content;
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  color: ${({ theme }) => theme.colors.DARK_LAVA};
-`;
-
-const ImageWrapper = styled.div`
-  font-family: 'TTTogether';
-  color: ${({ theme }) => theme.colors.DARK_LAVA};
-  padding: 15px;
-  width: max-content;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 15px;
-  margin-top: 10px;
-  margin-left: auto;
-  margin-right: 15px;
-  border-radius: 10px;
-  background-color: ${({ theme }) => theme.colors.ANTIQUE_WHITE};
-`;
-
-const Image = styled.img`
-  margin-left: auto;
-  width: 300px;
-  aspect-ratio: auto 1/1;
-  background-color: white;
-`;
-
-const ProfileImg = styled.img`
-  border-radius: 50%;
-  /* background-color: #1290cb; */
-  width: 50px;
-  height: 50px;
 `;
 
 const ResultArea = styled.div`

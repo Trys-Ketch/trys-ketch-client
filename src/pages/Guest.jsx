@@ -10,7 +10,7 @@ import Button from '../components/common/Button';
 import Panel from '../components/layout/Panel';
 import { setLogin } from '../app/slices/loginSlice';
 import { setCookie } from '../utils/cookie';
-import refreshIcon from '../assets/icons/refresh-icon.svg';
+import RefreshButton from '../components/button/RefreshButton';
 import { toast } from '../components/toast/ToastProvider';
 import GAEventTrack from '../ga/GAEventTrack';
 import GAEventTypes from '../ga/GAEventTypes';
@@ -84,9 +84,7 @@ function Guest() {
     <Panel>
       <ProfileBox>
         <Avatar src={image} width="128px" height="128px" />
-        <ProfileRefreshBtn onClick={getRandomImage}>
-          <img src={refreshIcon} alt="refresh" />
-        </ProfileRefreshBtn>
+        <ProfileRefreshBtn onClick={getRandomImage} />
       </ProfileBox>
       <InputBox>
         <TextInput
@@ -96,9 +94,7 @@ function Guest() {
           onChange={handleInput}
           placeholder="닉네임을 입력해주세요"
         />
-        <NameRefreshBtn onClick={getRandomNickname}>
-          <img src={refreshIcon} alt="refresh" />
-        </NameRefreshBtn>
+        <NameRefreshBtn onClick={getRandomNickname} />
       </InputBox>
       <Button width="350px" onClick={handleSubmit}>
         완료
@@ -117,23 +113,13 @@ const InputBox = styled.div`
   margin-bottom: 38px;
 `;
 
-const RefreshBtn = styled.button`
-  transition: 0.15s linear;
-  img {
-    width: 38px;
-  }
-  &:active {
-    transform: rotate(360deg);
-  }
-`;
-
-const ProfileRefreshBtn = styled(RefreshBtn)`
+const ProfileRefreshBtn = styled(RefreshButton)`
   position: absolute;
   right: 0;
   bottom: 0;
 `;
 
-const NameRefreshBtn = styled(RefreshBtn)`
+const NameRefreshBtn = styled(RefreshButton)`
   position: absolute;
   right: 12px;
   top: 9px;

@@ -1,26 +1,27 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import Avatar from '../common/Avatar';
 import crown from '../../assets/icons/crown.png';
-import mic from '../../assets/icons/mic-icon.svg';
 import check from '../../assets/icons/check-icon.svg';
-import micMute from '../../assets/icons/mic-mute-icon.svg';
 import cancel from '../../assets/icons/cancel-icon.svg';
-import Range from '../common/Range';
-import GAEventTypes from '../../ga/GAEventTypes';
-import GAEventTrack from '../../ga/GAEventTrack';
+import useModal from '../../hooks/useModal';
 
 function Attendee({ user }) {
   const { userId } = useSelector((state) => state.user);
   const { isHost } = useSelector((state) => state.ingame);
   const { socket } = useSelector((state) => state.ingame);
   const { id } = useParams();
+  const { openModal } = useModal();
 
   const kick = () => {
     socket.send(JSON.stringify({ type: 'ingame/kick', room: id, kickId: user.socketId }));
-    GAEventTrack(GAEventTypes.Category.host, GAEventTypes.Action.host.forcedExit);
+  };
+
+  const openKickModal = () => {
+    openModal({ type: 'kick', props: { onKick: kick } });
+    // openModal({ type: 'kick' });
   };
 
   return (
@@ -30,16 +31,10 @@ function Attendee({ user }) {
         {user.isHost && <img className="host" src={crown} width="18px" height="18px" alt="host" />}
         <Nickname>{user.nickname}</Nickname>
       </UserInfo>
-      {/* 내가 아니면 마이크 조절 */}
       {user.userId !== userId && (
         <HoverDisplay>
-          {/* 마이크 음량 조절 기능 추가 시 주석 해제 */}
-          {/* <UserActive>
-            <img src={mic} width="20px" height="20px" alt="mic" />
-            <Range />
-          </UserActive> */}
           {isHost && (
-            <UserMore onClick={() => kick()}>
+            <UserMore onClick={() => openKickModal()}>
               <img src={cancel} alt="kick" width="12px" height="12px" />
             </UserMore>
           )}

@@ -7,8 +7,8 @@ const modalSlice = createSlice({
   initialState,
   reducers: {
     openModal: (state, action) => {
-      const type = action.payload;
-      return [...state, { type }];
+      const { type, props } = action.payload;
+      return [...state, { type, props }];
     },
     closeModal: (state, action) => {
       state.pop();
