@@ -27,6 +27,7 @@ let userList;
 
 function GameResult() {
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
+  const { member } = useSelector((state) => state.login);
   const ingameStompClient = useSelector((state) => state.ingame.stomp);
   const socketID = useSelector((state) => state.ingame.id);
   const localIsMuted = useSelector((state) => state.mute.localMute);
@@ -55,7 +56,6 @@ function GameResult() {
         userList = data.gamerList;
         setIsHost(data.isHost);
         setIsLoading(false);
-        console.log(resultArray);
       }),
     );
     subArray.push(
@@ -181,6 +181,7 @@ function GameResult() {
                 return (
                   <ImageResult
                     key={`image-${result.imgId}`}
+                    member={member}
                     nickname={result.nickname}
                     imgId={result.imgId}
                     img={result.imgPath}
