@@ -6786,6 +6786,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"file-saver@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "file-saver@npm:2.0.5"
+  checksum: c62d96e5cebc58b4bdf3ae8a60d5cf9607ad82f75f798c33a4ee63435ac2203002584d5256a2a780eda7feb5e19dc3b6351c2212e58b3f529e63d265a7cc79f7
+  languageName: node
+  linkType: hard
+
 "filelist@npm:^1.0.1":
   version: 1.0.4
   resolution: "filelist@npm:1.0.4"
@@ -11462,13 +11469,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-ga@npm:^3.3.1":
-  version: 3.3.1
-  resolution: "react-ga@npm:3.3.1"
-  peerDependencies:
-    prop-types: ^15.6.0
-    react: ^15.6.2 || ^16.0 || ^17 || ^18
-  checksum: 3026976d0249fbf80e7b5dad7707964198064d7ac460f3397de40524e76dd6c29dead0900f850e2bd3135a86a9b083af8cda9cfa087f195852bf8d2b17c1fcfb
+"react-ga4@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "react-ga4@npm:2.0.0"
+  checksum: 7cb9f2d7863466f429e0256ed4903c84e3e7c3f21d913455716555ea7649240d142ad36586994daece67d1a8383482f58a35898d432fb43e4884ce0234235e68
   languageName: node
   linkType: hard
 
@@ -13184,6 +13188,7 @@ __metadata:
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-react: ^7.31.11
     eslint-plugin-react-hooks: ^4.6.0
+    file-saver: ^2.0.5
     framer-motion: ^8.5.2
     howler: ^2.2.3
     nanoid: ^4.0.0
@@ -13192,7 +13197,7 @@ __metadata:
     react: ^18.2.0
     react-cookie: ^4.1.1
     react-dom: ^18.2.0
-    react-ga: ^3.3.1
+    react-ga4: ^2.0.0
     react-hooks: ^1.0.1
     react-is: ^18.2.0
     react-redux: ^8.0.5

@@ -9,6 +9,7 @@ import { closeSocket, setSocket } from '../../app/slices/ingameSlice';
 import { store } from '../../app/configStore';
 import usePreventRefresh from '../../hooks/usePreventRefresh';
 import { clearMute } from '../../app/slices/muteSlice';
+import usePreventGoBack from '../../hooks/usePreventGoBack';
 
 let pcs: any;
 let hasPcs: any;
@@ -18,6 +19,7 @@ let getUserMediaState: string = 'pending';
 let stop: boolean = false;
 
 function AudioCall() {
+  usePreventGoBack();
   const dispatch = useDispatch();
   const localIsMuted = useSelector((state: any) => state.mute.localMute);
   usePreventRefresh();

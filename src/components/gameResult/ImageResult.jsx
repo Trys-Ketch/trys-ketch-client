@@ -1,23 +1,60 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+// import { saveAs } from 'file-saver';
+import axios from 'axios';
 import Download from '../../assets/icons/download-icon.svg';
 import EmptyLike from '../../assets/icons/empty-like-icon.svg';
 import Like from '../../assets/icons/like-icon.svg';
+import { toast } from '../toast/ToastProvider';
+import myAPI from '../../api/my';
 
-function ImageResult({ nickname, imgId, img, userImg }) {
-  // TODO - 좋아요 api 추가
+function ImageResult({ member, nickname, imgId, img, userImg }) {
+  const [like, setLike] = useState(false);
+
+  const handleLike = () => {
+    myAPI
+      .imageToggleLike(imgId)
+      .then((res) => {
+        if (res.data.statusCode === 200) {
+          setLike(res.data.isLike);
+          if (res.data.isLike) {
+            toast.success('좋아요하셨습니다');
+          } else {
+            toast.info('좋아요 취소하셨습니다');
+          }
+        }
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
+  };
+
+  // const downloadImage = async () => {
+  //   axios.get(img).then((res) => {
+  //     res.blob().then((imgBlob) => {
+  //       const blob = new Blob(imgBlob, { type: 'data:image/png;base64' });
+  //       saveAs(blob, `trys-ketch-${nickname}.png`);
+  //     });
+  //   });
+  // };
+
   return (
     <div key={`image-${imgId}`}>
       <ImageNickname>{nickname}</ImageNickname>
       <ImageContainer>
         <ImageWrapper>
-          <DownloadButton>
-            <img src={Download} alt="download" />
-          </DownloadButton>
+          {member !== 'guest' && (
+            <>
+              {/* <DownloadButton onClick={downloadImage}> */}
+              <DownloadButton>
+                <img src={Download} alt="download" />
+              </DownloadButton>
+              <LikeButton onClick={handleLike}>
+                {like ? <img src={Like} alt="like" /> : <img src={EmptyLike} alt="like" />}
+              </LikeButton>
+            </>
+          )}
           <Image src={img} alt="img" />
-          <LikeButton>
-            <img src={Like} alt="like" />
-          </LikeButton>
         </ImageWrapper>
         <ProfileImg src={userImg} alt="profile" />
       </ImageContainer>
@@ -38,8 +75,7 @@ const ImageNickname = styled.div`
 `;
 
 const IconButton = styled.button`
-  & img {
-  }
+  cursor: pointer;
 `;
 
 const LikeButton = styled(IconButton)`
@@ -73,6 +109,7 @@ const ImageWrapper = styled.div`
 const Image = styled.img`
   margin-left: auto;
   width: 400px;
+  height: 227px;
   aspect-ratio: auto 1/1;
   background-color: white;
 `;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Modal from '../common/Modal';
 import TextInput from '../common/TextInput';
 import useModal from '../../hooks/useModal';
@@ -11,8 +11,10 @@ import GAEventTypes from '../../ga/GAEventTypes';
 import userAPI from '../../api/user';
 import myAPI from '../../api/my';
 import { toast } from '../toast/ToastProvider';
+import { setUserInfo } from '../../app/slices/userSlice';
 
 function EditProfileModal() {
+  const dispatch = useDispatch();
   const { closeModal } = useModal();
   const { nickname: initialNickname, profileImage: initialProfileImage } = useSelector(
     (state) => state.user,
@@ -20,7 +22,7 @@ function EditProfileModal() {
   const [nickname, setNickname] = useState(initialNickname);
   const [profileImage, setImage] = useState(initialProfileImage);
 
-  const handleChange = (event) => {
+  const handleChangeNickname = (event) => {
     setNickname(event.target.value);
   };
 
@@ -35,11 +37,18 @@ function EditProfileModal() {
     });
   };
 
-  const handleEdit = (nickname) => {
+  const handleEdit = () => {
     myAPI
-      .changeNickname(nickname)
+      .changeProfile(nickname, profileImage)
       .then((res) => {
         if (res.data.statusCode === 200) {
+          const { id, imagePath, nickname } = res.data.data;
+          const payload = {
+            profileImage: imagePath,
+            userId: id,
+            nickname,
+          };
+          dispatch(setUserInfo(payload));
           closeModal();
           toast.success('닉네임이 변경되었습니다.');
         }
@@ -50,7 +59,7 @@ function EditProfileModal() {
   };
 
   return (
-    <Modal title="프로필 편집" btnText="완료" onConfirm={() => handleEdit(nickname)}>
+    <Modal title="프로필 편집" btnText="완료" onConfirm={handleEdit}>
       <AvatarBox>
         <Avatar src={profileImage} width="120px" height="120px" />
         <ProfileRefreshButton onClick={getRandomImage} />
@@ -59,7 +68,7 @@ function EditProfileModal() {
         autoFocus
         placeholder="변경할 닉네임을 입력해주세요"
         value={nickname}
-        onChange={handleChange}
+        onChange={handleChangeNickname}
       />
     </Modal>
   );
