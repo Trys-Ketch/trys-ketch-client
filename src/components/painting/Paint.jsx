@@ -326,6 +326,8 @@ function Paint({
       setEventState('drawing');
       setDisplayThicknessBtn(false);
       setNowThickness(0);
+
+      setSelectedColorIndex(color.length - 1);
     }
   }, [isDrawingState]);
 
@@ -472,7 +474,7 @@ function Paint({
               return (
                 <ColorBtn
                   selected={selectedColorIndex === i && eventState !== 'eraseing'}
-                  disabled={eventState === 'eraseing'}
+                  disabled={eventState === 'eraseing' || isSubmitted}
                   key={v}
                   style={{ backgroundColor: v }}
                   onClick={() => {
