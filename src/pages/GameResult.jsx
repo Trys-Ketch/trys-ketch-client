@@ -80,6 +80,7 @@ function GameResult() {
         userList = data.gamerList;
         setIsHost(data.isHost);
         setIsLoading(false);
+        console.log(resultArray);
       }),
     );
     subArray.push(

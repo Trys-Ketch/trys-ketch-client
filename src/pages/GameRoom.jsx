@@ -172,14 +172,14 @@ function GameRoom() {
       splitLargeFrames: true,
       webSocketFactory: () => new SockJS(`${process.env.REACT_APP_API_URL}/ws`),
     });
-    client.onConnect = (frame) => {
-      subArray.push(
-        client.subscribe(`/topic/game/start/${id}`, (message) => {
-          const data = JSON.parse(message.body);
-          setIsIngame(data.isIngame);
-        }),
-      );
-    };
+    // client.onConnect = (frame) => {
+    //   subArray.push(
+    //     client.subscribe(`/topic/game/start/${id}`, (message) => {
+    //       const data = JSON.parse(message.body);
+    //       setIsIngame(data.isIngame);
+    //     }),
+    //   );
+    // };
     client.onStompError = (frame) => {
       console.error('Stomp Error!: ', frame.headers.message);
       console.error('Additional details: ', frame.body);
@@ -187,6 +187,22 @@ function GameRoom() {
     client.onDisconnect = (frame) => {
       dispatch(closeStomp());
     };
+
+    const p = new Promise((resolve, reject) => {
+      client.onConnect = (frame) => {
+        subArray.push(
+          client.subscribe(`/topic/game/start/${id}`, (message) => {
+            const data = JSON.parse(message.body);
+            setIsIngame(data.isIngame);
+          }),
+        );
+        resolve();
+      };
+    }).then(() => {
+      console.log('dispatch stomp');
+      console.log(client);
+      dispatch(setStomp(client));
+    });
 
     dispatch(setStomp(client));
     return () => {
