@@ -50,7 +50,7 @@ function EditProfileModal() {
           };
           dispatch(setUserInfo(payload));
           closeModal();
-          toast.success('닉네임이 변경되었습니다.');
+          toast.success('프로필이 변경되었습니다.');
         }
       })
       .catch((err) => {

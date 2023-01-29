@@ -16,8 +16,8 @@ function ImageResult({ member, nickname, imgId, img, userImg }) {
       .imageToggleLike(imgId)
       .then((res) => {
         if (res.data.statusCode === 200) {
-          setLike(res.data.isLike);
-          if (res.data.isLike) {
+          setLike(res.data.data.isLike);
+          if (res.data.data.isLike) {
             toast.success('좋아요하셨습니다');
           } else {
             toast.info('좋아요 취소하셨습니다');
