@@ -18,7 +18,7 @@ const Overlay = styled.div`
 
 const ModalWrap = styled.div`
   ${({ theme }) => theme.common.absoluteCenter};
-  width: 400px;
+  width: ${(props) => props.width};
   padding: 20px;
   border-radius: 15px;
   background-color: ${({ theme }) => theme.colors.ANTIQUE_WHITE};
@@ -69,7 +69,7 @@ const BtnArea = styled.div`
   }
 `;
 
-function Modal({ children, title, btnText, onConfirm }) {
+function Modal({ width = '400px', children, title, btnText, onConfirm }) {
   const { closeModal } = useModal();
 
   const handleClose = () => {
@@ -84,7 +84,7 @@ function Modal({ children, title, btnText, onConfirm }) {
 
   return (
     <Overlay>
-      <ModalWrap>
+      <ModalWrap width={width}>
         <CloseButton onClick={handleClose}>
           <img src={cancel} alt="X" />
         </CloseButton>

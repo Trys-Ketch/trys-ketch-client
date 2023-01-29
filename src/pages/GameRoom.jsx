@@ -24,6 +24,8 @@ import GAEventTypes from '../ga/GAEventTypes';
 import GAEventTrack from '../ga/GAEventTrack';
 import { setLocalMute, setMuteUsers } from '../app/slices/muteSlice';
 import MuteUserList from '../components/mute/MuteUserList';
+import useModal from '../hooks/useModal';
+import Modal from '../components/common/Modal';
 
 let token;
 const subArray = [];
@@ -45,8 +47,9 @@ function GameRoom() {
   const socketID = useSelector((state) => state.ingame.id);
   const socket = useSelector((state) => state.ingame.socket);
   const muteUser = useSelector((state) => state.mute.users);
-
   const localIsMuted = useSelector((state) => state.mute.localMute);
+
+  const { openModal } = useModal();
 
   const getRoomDetail = () => {
     roomAPI
@@ -230,6 +233,10 @@ function GameRoom() {
       dispatch(setMuteUsers([...newMuteUsers]));
     }
   }, [attendees]);
+
+  useEffect(() => {
+    openModal({ type: 'discription' });
+  }, []);
 
   return (
     <>
