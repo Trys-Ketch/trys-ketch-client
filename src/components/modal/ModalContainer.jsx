@@ -10,7 +10,7 @@ const MODAL_COMPONENTS = {
   setting: loadable(() => import('./SettingModal')),
   kick: loadable(() => import('./KickModal')),
   editProfile: loadable(() => import('./EditProfileModal')),
-  discription: loadable(() => import('./DiscriptionModal')),
+  description: loadable(() => import('./DescriptionModal')),
 };
 
 function ModalContainer() {
