@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const InputBlock = styled.input`
   width: ${(props) => props.width || '100%'};
@@ -8,7 +8,15 @@ const InputBlock = styled.input`
   text-indent: 12px;
   border: none;
   border-radius: 10px;
-  background-color: ${({ theme }) => theme.colors.FLORAL_WHITE2};
+
+  ${(props) =>
+    props.backgroundColor
+      ? css`
+          background-color: ${(props) => props.backgroundColor};
+        `
+      : css`
+          background-color: ${({ theme }) => theme.colors.FLORAL_WHITE2};
+        `}
 
   &:focus {
     outline: none;
@@ -27,7 +35,16 @@ const InputBlock = styled.input`
   }
 `;
 
-function TextInput({ placeholder, onChange, value, width, maxlength, readOnly, ...rest }) {
+function TextInput({
+  placeholder,
+  onChange,
+  value,
+  width,
+  maxlength,
+  readOnly,
+  backgroundColor,
+  ...rest
+}) {
   const htmlProps = rest;
   return (
     <InputBlock
@@ -38,6 +55,7 @@ function TextInput({ placeholder, onChange, value, width, maxlength, readOnly, .
       width={width}
       maxlength={maxlength}
       readOnly={readOnly}
+      backgroundColor={backgroundColor}
       {...htmlProps}
     />
   );

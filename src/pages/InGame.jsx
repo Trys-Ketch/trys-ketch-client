@@ -75,7 +75,8 @@ function InGame() {
       // game state가 drawing이 됐을 때 다른 플레이어가 작성한 키워드를 받아옵니다.
       ingameStompClient.subscribe(`/queue/game/before-word/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
-        setKeyword(data.keyword);
+        if (data.keyword === 'null') setKeyword('미제출');
+        else setKeyword(data.keyword);
         keywordIndex.current = data.keywordIndex;
         setRound((prev) => prev + 1);
       }),
@@ -85,7 +86,8 @@ function InGame() {
       ingameStompClient.subscribe(`/queue/game/before-image/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
         setKeyword('');
-        setImage(data.image);
+        if (data.image === 'null') setImage('/img/non_submit.png');
+        else setImage(data.image);
         keywordIndex.current = data.keywordIndex;
         setRound((prev) => prev + 1);
       }),
