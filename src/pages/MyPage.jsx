@@ -4,24 +4,16 @@ import Container from '../components/layout/Container';
 import MyProfile from '../components/user/MyProfile';
 import FloatBox from '../components/layout/FloatBox';
 import SettingButton from '../components/button/SettingButton';
-import useModal from '../hooks/useModal';
 import like from '../assets/icons/empty-like-icon.svg';
 import badge from '../assets/icons/badge-icon.svg';
 
 function MyPage() {
-  const { openModal } = useModal();
-
-  const openEditProfileModal = () => {
-    openModal({ type: 'editProfile' });
-  };
-
   return (
     <>
       <FloatBox top={<SettingButton size="xlarge" />} />
       <Container>
         <MyProfileArea>
           <MyProfile />
-          <EditProfile onClick={openEditProfileModal}>프로필 편집</EditProfile>
         </MyProfileArea>
         <MyButtonArea>
           <MyButton>
@@ -38,14 +30,6 @@ function MyPage() {
     </>
   );
 }
-
-const EditProfile = styled.p`
-  color: ${({ theme }) => theme.colors.DARK_LAVA};
-  font-weight: ${({ theme }) => theme.fontWeight.bold};
-  font-size: ${({ theme }) => theme.fontSizes.lg};
-  text-decoration: underline;
-  cursor: pointer;
-`;
 
 const MyProfileArea = styled.div`
   width: 20%;

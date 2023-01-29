@@ -1,7 +1,7 @@
 import instance from './core/axios';
 
-// 이미지 좋아요
-const imageLike = async (imageId) => {
+// 이미지 좋아요 토글
+const imageToggleLike = async (imageId) => {
   const response = await instance.post(`/api/image/like/${imageId}`);
   return response;
 };
@@ -12,23 +12,16 @@ const getLikedImages = async () => {
   return response;
 };
 
-// 좋아요한 이미지 취소
-const cancelImageLike = async (imageId) => {
-  const response = await instance.post(`/api/mypage/cancel-like/${imageId}`);
-  return response;
-};
-
-// 닉네임 변경
-const changeNickname = async (nickname) => {
-  const response = await instance.patch(`/api/mypage/nickname`, nickname);
+// 프로필 변경
+const changeProfile = async (nickname, imgUrl) => {
+  const response = await instance.patch(`/api/mypage/profile`, { nickname, imgUrl });
   return response;
 };
 
 const myAPI = {
-  imageLike,
+  imageToggleLike,
   getLikedImages,
-  cancelImageLike,
-  changeNickname,
+  changeProfile,
 };
 
 export default myAPI;
