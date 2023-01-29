@@ -166,9 +166,7 @@ function GameRoom() {
 
   useEffect(() => {
     const client = new Stomp.Client({
-      debug: (str) => {
-        console.log(str);
-      },
+      debug: (str) => {},
       splitLargeFrames: true,
       webSocketFactory: () => new SockJS(`${process.env.REACT_APP_API_URL}/ws`),
     });
@@ -199,8 +197,6 @@ function GameRoom() {
         resolve();
       };
     }).then(() => {
-      console.log('dispatch stomp');
-      console.log(client);
       dispatch(setStomp(client));
     });
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-// import { saveAs } from 'file-saver';
 import axios from 'axios';
+import { saveAs } from 'file-saver';
 import Download from '../../assets/icons/download-icon.svg';
 import EmptyLike from '../../assets/icons/empty-like-icon.svg';
 import Like from '../../assets/icons/like-icon.svg';
@@ -29,14 +29,11 @@ function ImageResult({ member, nickname, imgId, img, userImg }) {
       });
   };
 
-  // const downloadImage = async () => {
-  //   axios.get(img).then((res) => {
-  //     res.blob().then((imgBlob) => {
-  //       const blob = new Blob(imgBlob, { type: 'data:image/png;base64' });
-  //       saveAs(blob, `trys-ketch-${nickname}.png`);
-  //     });
-  //   });
-  // };
+  const downloadImage = async () => {
+    axios.get(img, { responseType: 'blob' }).then(async (res) => {
+      saveAs(res.data, `trys-ketch-${nickname}.png`);
+    });
+  };
 
   return (
     <div key={`image-${imgId}`}>
@@ -46,7 +43,7 @@ function ImageResult({ member, nickname, imgId, img, userImg }) {
           {member !== 'guest' && (
             <>
               {/* <DownloadButton onClick={downloadImage}> */}
-              <DownloadButton>
+              <DownloadButton onClick={() => downloadImage()}>
                 <img src={Download} alt="download" />
               </DownloadButton>
               <LikeButton onClick={handleLike}>

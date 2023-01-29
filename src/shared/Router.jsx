@@ -3,7 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Guest from '../pages/Guest';
 import Login from '../pages/Login';
 import Lobby from '../pages/Lobby';
-import MyPage from '../pages/MyPage';
+// import MyPage from '../pages/MyPage';
 import GameRoom from '../pages/GameRoom';
 import AudioCall from '../components/webRTC/AudioCall.tsx';
 import InGame from '../pages/InGame';
@@ -22,7 +22,7 @@ function Router() {
             <Route path="/login" element={<Login />} />
             <Route path="/login/:sns" element={<Login />} />
             <Route path="/guest" element={<Guest />} />
-            <Route path="/myPage" element={<MyPage />} />
+            {/* <Route path="/myPage" element={<MyPage />} /> */}
           </Route>
           <Route path="room" element={<Navigate to="/" replace />} />
           <Route element={<AudioCall />}>
