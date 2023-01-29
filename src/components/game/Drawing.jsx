@@ -32,12 +32,6 @@ function Drawing({
 
   useTimer(pathRef, CENTER, CIRCLE_RADIUS, STROKE_WIDTH, TIME_LIMIT, gameState);
 
-  useEffect(() => {
-    console.log('isKeywordState:', isKeywordState);
-    console.log('isGuessingState:', isGuessingState);
-    console.log('isDrawingState:', isDrawingState);
-  }, []);
-
   return (
     <Container style={{ paddingLeft: '0px', height: '680px', width: '1200px' }}>
       <LeftDiv>

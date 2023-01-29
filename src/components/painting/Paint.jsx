@@ -278,12 +278,6 @@ function Paint({
   }, [completeImageSubmit]);
 
   useEffect(() => {
-    console.log('isKeywordState:', isKeywordState);
-    console.log('isGuessingState:', isGuessingState);
-    console.log('isDrawingState:', isDrawingState);
-  }, []);
-
-  useEffect(() => {
     if (forceSubmit && isDrawingState) {
       const canvas = canvasRef.current;
       toggleReady(canvas, false);
