@@ -23,7 +23,7 @@ let currentColor = 'black';
 function Paint({
   isKeywordState,
   isGuessingState,
-  isDrawingState,
+  isDrawingState = true,
   toggleReady,
   keyword = '이거 발견하면 ㄹㅇ 천재 ㅇㅈ',
   setKeyword,
@@ -36,7 +36,7 @@ function Paint({
   const thickness = [5, 7, 9, 11, 13];
   const color = [
     '#8B4513',
-    '#B9062F',
+    // '#B9062F',
     '#CD0000',
     '#FF1493',
     '#006400',
@@ -48,6 +48,7 @@ function Paint({
     `#800080`,
     '#0000FF',
     '#00008C',
+    '#ffffff',
     '#000000',
   ];
   const opacity = ['1A', '33', '4D', '66', '80', '99', 'B3', 'CC', 'E6', 'FF']; // hex코드용 opacity
@@ -60,6 +61,7 @@ function Paint({
   const [eventState, setEventState] = useState('drawing');
   const [displayThicknessBtn, setDisplayThicknessBtn] = useState(false);
   const [nowThickness, setNowThickness] = useState(0);
+  const [selectedColorIndex, setSelectedColorIndex] = useState(color.length - 1);
 
   const dispatch = useDispatch();
   const forceSubmit = useSelector((state) => state.ingame.forceSubmit);
@@ -466,13 +468,16 @@ function Paint({
         )}
         {isDrawingState && (
           <ColorBtnWrapper>
-            {color.map((v) => {
+            {color.map((v, i) => {
               return (
                 <ColorBtn
+                  selected={selectedColorIndex === i && eventState !== 'eraseing'}
+                  disabled={eventState === 'eraseing'}
                   key={v}
                   style={{ backgroundColor: v }}
                   onClick={() => {
                     setColor(v);
+                    setSelectedColorIndex(i);
                   }}
                 />
               );
@@ -589,7 +594,7 @@ const Image = styled.img`
 const ColorBtnWrapper = styled.div`
   padding: 3px 13px;
   width: 100%;
-  height: 50%;
+  height: 52%;
   background-color: ${({ theme }) => theme.colors.FLORAL_WHITE};
   border-bottom: 8px solid ${({ theme }) => theme.colors.DIM_GRAY};
   border-radius: 16px;
@@ -613,9 +618,26 @@ const ColorBtn = styled.button`
   width: 15px;
   height: 15px;
   box-sizing: content-box;
-  border: none !important;
-  background-color: black;
   border-radius: 50%;
+  /* box-shadow: 0 0 0 2px #ff0000, 0 0 0 4px #0000ff; */
+  ${(props) =>
+    props.selected
+      ? css`
+          box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.FLORAL_WHITE},
+            0 0 0 4px ${({ theme }) => theme.colors.DARK_LAVA};
+        `
+      : css`
+          border: none;
+        `}
+`;
+
+const SelectedColorBtn = styled.div`
+  padding: 10px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  box-sizing: content-box;
+  border: 2px solid ${({ theme }) => theme.colors.DARK_LAVA};
 `;
 
 const ThicknessBtnWrapper = styled.div`

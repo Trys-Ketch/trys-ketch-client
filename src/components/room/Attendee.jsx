@@ -21,7 +21,7 @@ function Attendee({ user }) {
 
   const openKickModal = () => {
     openModal({ type: 'kick', props: { onKick: kick } });
-    // openModal({ type: 'kick' });
+    // ({ type: 'kick' });
   };
 
   return (
