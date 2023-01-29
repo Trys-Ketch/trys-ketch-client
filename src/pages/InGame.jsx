@@ -84,7 +84,6 @@ function InGame() {
       // game state가 guessing이 됐을 때 다른 플레이어가 그린 이미지를 받아옵니다.
       ingameStompClient.subscribe(`/queue/game/before-image/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
-        setCompleteImageSubmit(true);
         setKeyword('');
         setImage(data.image);
         keywordIndex.current = data.keywordIndex;
