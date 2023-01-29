@@ -11462,6 +11462,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-ga4@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "react-ga4@npm:2.0.0"
+  checksum: 7cb9f2d7863466f429e0256ed4903c84e3e7c3f21d913455716555ea7649240d142ad36586994daece67d1a8383482f58a35898d432fb43e4884ce0234235e68
+  languageName: node
+  linkType: hard
+
 "react-ga@npm:^3.3.1":
   version: 3.3.1
   resolution: "react-ga@npm:3.3.1"
@@ -13193,6 +13200,7 @@ __metadata:
     react-cookie: ^4.1.1
     react-dom: ^18.2.0
     react-ga: ^3.3.1
+    react-ga4: ^2.0.0
     react-hooks: ^1.0.1
     react-is: ^18.2.0
     react-redux: ^8.0.5
