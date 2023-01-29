@@ -7,7 +7,7 @@ function KeywordResult({ nickname, userImg, keyword }) {
       <KeywordNickname>{nickname}</KeywordNickname>
       <KeywordWrapper>
         <ProfileImg src={userImg} alt="profile" />
-        <Keyword>{keyword}</Keyword>
+        <Keyword>{keyword !== 'null' ? keyword : '미제출'}</Keyword>
       </KeywordWrapper>
     </StKeywordResult>
   );

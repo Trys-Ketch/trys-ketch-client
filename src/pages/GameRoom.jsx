@@ -185,6 +185,7 @@ function GameRoom() {
     client.onDisconnect = (frame) => {
       dispatch(closeStomp());
     };
+    dispatch(setStomp(client));
 
     const p = new Promise((resolve, reject) => {
       client.onConnect = (frame) => {
@@ -200,11 +201,8 @@ function GameRoom() {
       dispatch(setStomp(client));
     });
 
-    dispatch(setStomp(client));
     return () => {
-      if (client) {
-        for (let i = 0; i < subArray.length; i += 1) subArray[i].unsubscribe();
-      }
+      for (let i = 0; i < subArray.length; i += 1) subArray[i].unsubscribe();
     };
   }, []);
 

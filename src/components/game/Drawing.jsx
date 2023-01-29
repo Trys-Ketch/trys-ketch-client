@@ -1,5 +1,6 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
+import IconButton from '../common/IconButton';
 import Container from '../layout/Container';
 import Paint from '../painting/Paint';
 import useTimer from '../../hooks/useTimer';
@@ -14,7 +15,7 @@ const STROKE_WIDTH = 3;
 function Drawing({
   isKeywordState,
   isGuessingState,
-  isDrawingState = true,
+  isDrawingState,
   submitNum,
   maxSubmitNum,
   round,
@@ -54,6 +55,7 @@ function Drawing({
         toggleReady={toggleReady}
         submitImg={submitImg}
         image={image}
+        gameState={gameState}
       />
     </Container>
   );

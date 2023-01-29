@@ -330,11 +330,26 @@ function Paint({
   return (
     <Wrapper>
       <CanvasArea>
-        <KeywordDiv>
-          {isDrawingState && <Keyword>{keyword}</Keyword>}
-          {isKeywordState && <Keyword>키워드를 입력해주세요</Keyword>}
-          {isGuessingState && <Keyword>정답을 맞춰주세요</Keyword>}
-        </KeywordDiv>
+        {isDrawingState ? (
+          <KeywordDiv style={{ marginBottom: '2%' }}>
+            <Keyword>{keyword}</Keyword>
+          </KeywordDiv>
+        ) : (
+          <KeywordDiv style={{ position: 'absolute', bottom: '0' }}>
+            <Keyword>
+              {isKeywordState && '키워드를 입력해주세요: '}
+              {isGuessingState && '정답을 맞춰주세요: '}
+              <TextInput
+                value={keyword}
+                onChange={(event) => onKeywordChangeHandler(event)}
+                width="400px"
+                backgroundColor="#c9dbaa"
+                readOnly={isSubmitted}
+              />
+            </Keyword>
+          </KeywordDiv>
+        )}
+
         <CanvasWrapper isDrawingState={isDrawingState} isSubmitted={isSubmitted}>
           {drawSpring()}
           {isDrawingState && (
@@ -376,30 +391,13 @@ function Paint({
             <ImageWrapper>
               <KeywordBackground>
                 <Image src={image} alt={nanoid()} />
-                <InputWrapper>
-                  정답:
-                  <TextInput
-                    value={keyword}
-                    onChange={(event) => onKeywordChangeHandler(event)}
-                    width="400px"
-                    readOnly={isSubmitted}
-                  />
-                </InputWrapper>
               </KeywordBackground>
             </ImageWrapper>
           )}
           {isKeywordState && (
-            <KeywordBackground>
-              <InputWrapper>
-                키워드:
-                <TextInput
-                  value={keyword}
-                  onChange={(event) => onKeywordChangeHandler(event)}
-                  width="400px"
-                  readOnly={isSubmitted}
-                />
-              </InputWrapper>
-            </KeywordBackground>
+            <ImageWrapper>
+              <KeywordBackground />
+            </ImageWrapper>
           )}
         </CanvasWrapper>
       </CanvasArea>
@@ -669,12 +667,18 @@ const Wrapper = styled.div`
   height: 100%;
 `;
 
+const KeywordDiv = styled.div`
+  line-height: 100%;
+  width: 100%;
+  height: 15%;
+  background-color: ${({ theme }) => theme.colors.FLORAL_WHITE};
+`;
+
 const CanvasWrapper = styled.div`
   display: flex;
-  position: absolute;
-  bottom: 0;
   height: 83%;
   width: 100%;
+  position: relative;
   background-color: white;
   ${(props) =>
     props.isSubmitted && props.isDrawingState
@@ -714,13 +718,6 @@ const Keyword = styled.div`
   position: relative;
   top: 50%;
   transform: translateY(-50%);
-`;
-
-const KeywordDiv = styled.div`
-  line-height: 100%;
-  width: 100%;
-  height: 15%;
-  background-color: ${({ theme }) => theme.colors.FLORAL_WHITE};
 `;
 
 const Spring = styled.div`

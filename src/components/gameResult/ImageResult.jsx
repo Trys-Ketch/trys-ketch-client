@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { saveAs } from 'file-saver';
@@ -51,7 +51,7 @@ function ImageResult({ member, nickname, imgId, img, userImg }) {
               </LikeButton>
             </>
           )}
-          <Image src={img} alt="img" />
+          <Image src={img !== 'null' ? img : '/img/non_submit.png'} alt="img" />
         </ImageWrapper>
         <ProfileImg src={userImg} alt="profile" />
       </ImageContainer>
