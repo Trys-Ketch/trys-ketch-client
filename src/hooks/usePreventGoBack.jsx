@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { toast } from '../components/toast/ToastProvider';
 
 const usePreventGoBack = () => {
+  const location = useLocation();
+
   const preventGoBack = () => {
     history.pushState(null, '', location.href);
     toast.info('뒤로 갈 수 없어요😅');
@@ -18,6 +21,10 @@ const usePreventGoBack = () => {
       window.removeEventListener('popstate', preventGoBack);
     };
   }, []);
+
+  useEffect(() => {
+    history.pushState(null, '', location.href);
+  }, [location]);
 };
 
 export default usePreventGoBack;
