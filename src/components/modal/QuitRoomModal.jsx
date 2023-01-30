@@ -9,7 +9,7 @@ function QuitRoomModal() {
 
   const handleQuit = () => {
     closeModal();
-    navigate('/');
+    navigate('/', { replace: true });
   };
 
   return (
