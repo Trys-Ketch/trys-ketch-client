@@ -66,6 +66,7 @@ function EditProfileModal() {
       </AvatarBox>
       <TextInput
         autoFocus
+        maxLength="12"
         placeholder="변경할 닉네임을 입력해주세요"
         value={nickname}
         onChange={handleChangeNickname}
