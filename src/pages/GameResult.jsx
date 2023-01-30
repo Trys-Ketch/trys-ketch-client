@@ -175,7 +175,7 @@ function GameResult() {
                       key={`keyword-${nanoid()}`}
                       nickname={result.nickname}
                       userImg={result.userImgPath}
-                      keyword={result.keyword}
+                      keyword={result.keyword !== 'null' ? result.keyword : '미제출'}
                     />
                   );
                 return (
