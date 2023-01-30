@@ -4,12 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useCookies } from 'react-cookie';
 import * as SockJS from 'sockjs-client';
 import Audio from './Audio';
-import { setID } from '../../app/slices/ingameSlice';
+import { setID, setReconnect } from '../../app/slices/ingameSlice';
 import { closeSocket, setSocket } from '../../app/slices/ingameSlice';
 import { store } from '../../app/configStore';
 import usePreventRefresh from '../../hooks/usePreventRefresh';
-import { clearMute } from '../../app/slices/muteSlice';
+import { clearMute, setConnectedMuteUser, setMuteUsers } from '../../app/slices/muteSlice';
 import usePreventGoBack from '../../hooks/usePreventGoBack';
+import { toast } from '../toast/ToastProvider';
 
 let pcs: any;
 let hasPcs: any;
@@ -21,9 +22,9 @@ let stop: boolean = false;
 function AudioCall() {
   usePreventGoBack();
   const dispatch = useDispatch();
-  const localIsMuted = useSelector((state: any) => state.mute.localMute);
   usePreventRefresh();
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
+  const muteUser: any[] = useSelector((state: any) => state.mute.users);
   // const dispatch = useDispatch();
   /**
    * socket을 관리하는 ref입니다.
@@ -136,10 +137,16 @@ function AudioCall() {
       })
       .catch((error) => {
         getUserMediaState = 'rejected';
+        toast.error('음성 채팅 연결 에러');
+        toast.error('다른 유저들이 플레이어님의 말을 들을 수 없어요!');
       });
   }, []);
 
   useEffect(() => {
+    pcs = {};
+    hasPcs = {};
+    getUserMediaState = 'pending';
+    stop = false;
     // 시그널링 서버와 소켓 연결
     socketRef.current = new SockJS(`${process.env.REACT_APP_API_URL}/signal`);
 
@@ -170,13 +177,14 @@ function AudioCall() {
           dispatch(setID(sender));
           // 나를 제외했으므로 방에 나밖에 없으면 length는 0
           const len = allUsers.length;
+          console.log('stop:', stop);
           for (let i = 0; i < len; i += 1) {
             while (getUserMediaState === 'pending') {
               if (stop) return;
               // eslint-disable-next-line
               await sleep(300);
             }
-            if (getUserMediaState === 'rejected') return;
+            // if (getUserMediaState === 'rejected') return;
 
             hasPcs = { ...hasPcs, [allUsers[i].id]: false };
             // i번째 유저와 나의 peer connection 생성
@@ -214,12 +222,13 @@ function AudioCall() {
         }
         // 2. 상대방이 offer를 받으면
         case 'rtc/offer': {
+          console.log('stop:', stop);
           while (getUserMediaState === 'pending') {
             if (stop) return;
             // eslint-disable-next-line
             await sleep(300);
           }
-          if (getUserMediaState === 'rejected') return;
+          // if (getUserMediaState === 'rejected') return;
 
           hasPcs = { ...hasPcs, [data.sender]: false };
           // offer를 요청한 상대방과의 peer connection을 생성합니다.
@@ -269,13 +278,6 @@ function AudioCall() {
           break;
         }
         case 'rtc/candidate': {
-          while (getUserMediaState === 'pending') {
-            if (stop) return;
-            // eslint-disable-next-line
-            await sleep(300);
-          }
-          if (getUserMediaState === 'rejected') return;
-
           while (!hasPcs[data.sender]) {
             if (stop) return;
             // eslint-disable-next-line
@@ -296,10 +298,12 @@ function AudioCall() {
         }
         // 유저가 연결을 종료하면
         case 'rtc/user_exit': {
-          // 해당 유저와의 peer connection을 종료하고
-          pcs[data.sender].close();
-          // pcs 배열에서 해당 user를 삭제합니다.
-          delete pcs[data.sender];
+          if (hasPcs[data.sender]) {
+            // 해당 유저와의 peer connection을 종료하고
+            pcs[data.sender].close();
+            // pcs 배열에서 해당 user를 삭제합니다.
+            delete pcs[data.sender];
+          }
           // user state를 업데이트하고 리렌더링시킵니다.
           setUsers((oldUsers) => oldUsers.filter((user) => user.id !== data.sender));
           // dispatch(setMuteUsers(muteUsers.filter((user) => user.id !== data.sender)));
@@ -316,6 +320,7 @@ function AudioCall() {
     };
 
     return () => {
+      getUserMediaState = 'pending';
       if (!stop) stop = true;
       if (localStream) {
         const localMediaTrack = localStream.getTracks();
@@ -339,10 +344,18 @@ function AudioCall() {
   }, []);
 
   useEffect(() => {
-    if (localStream) {
-      localStream.getTracks()[0].enabled = !localIsMuted;
+    const newMuteUser: any = [];
+    for (let i = 0; i < muteUser.length; i += 1) {
+      for (let k = 0; k < users.length; k += 1) {
+        if (muteUser[i].socketID === users[k].id) {
+          newMuteUser.push(muteUser[i]);
+          break;
+        }
+      }
     }
-  }, [localIsMuted]);
+
+    dispatch(setConnectedMuteUser(newMuteUser));
+  }, [users, muteUser]);
 
   return (
     <div>

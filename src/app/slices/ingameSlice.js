@@ -6,6 +6,7 @@ const initialState = {
   socket: null,
   isHost: false,
   forceSubmit: false,
+  reconnect: () => {},
 };
 
 const ingameSlice = createSlice({
@@ -41,6 +42,10 @@ const ingameSlice = createSlice({
       ...state,
       forceSubmit: action.payload,
     }),
+    setReconnect: (state, action) => ({
+      ...state,
+      // reconnect: action.payload,
+    }),
   },
   extraReducers: {},
 });
@@ -53,5 +58,6 @@ export const {
   closeStomp,
   setIngameHost,
   setForceSubmit,
+  setReconnect,
 } = ingameSlice.actions;
 export default ingameSlice.reducer;
