@@ -13,8 +13,8 @@ function DiscriptionModal() {
       <DiscriptionText>아직은 미완성이라서, 다음 사항들은 양해 부탁드려요&#x1F625;</DiscriptionText>
       <BoldText>음성채팅이 원활하지 않을 경우 해결 방법</BoldText>
       <DiscriptionText>
-        {`1. 방을 나간 다음에 새로고침하고 다시 들어와주세요
-2. 그래도 연결이 되지 않으면 현재 창을 닫고 새로운 창으로 접속 부탁드려요`}
+        {`1. 브라우저의 마이크 접근 권한을 허가해주세요
+2. 허가하지 않으면 다른 유저들이 플레이어님의 말을 들을 수 없어요!`}
       </DiscriptionText>
       <BoldText>제한시간 관련</BoldText>
       <DiscriptionText>

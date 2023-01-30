@@ -10,6 +10,7 @@ import { store } from '../../app/configStore';
 import usePreventRefresh from '../../hooks/usePreventRefresh';
 import { clearMute, setConnectedMuteUser, setMuteUsers } from '../../app/slices/muteSlice';
 import usePreventGoBack from '../../hooks/usePreventGoBack';
+import { toast } from '../toast/ToastProvider';
 
 let pcs: any;
 let hasPcs: any;
@@ -136,6 +137,8 @@ function AudioCall() {
       })
       .catch((error) => {
         getUserMediaState = 'rejected';
+        toast.error('음성 채팅 연결 에러');
+        toast.error('다른 유저들이 플레이어님의 말을 들을 수 없어요!');
       });
   }, []);
 
@@ -181,7 +184,7 @@ function AudioCall() {
               // eslint-disable-next-line
               await sleep(300);
             }
-            if (getUserMediaState === 'rejected') return;
+            // if (getUserMediaState === 'rejected') return;
 
             hasPcs = { ...hasPcs, [allUsers[i].id]: false };
             // i번째 유저와 나의 peer connection 생성
@@ -225,7 +228,7 @@ function AudioCall() {
             // eslint-disable-next-line
             await sleep(300);
           }
-          if (getUserMediaState === 'rejected') return;
+          // if (getUserMediaState === 'rejected') return;
 
           hasPcs = { ...hasPcs, [data.sender]: false };
           // offer를 요청한 상대방과의 peer connection을 생성합니다.
