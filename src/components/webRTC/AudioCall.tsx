@@ -287,7 +287,10 @@ function AudioCall() {
           // candidatePc가 존재하면
           if (candidatePc) {
             // cadidate 요청을 보낸 상대방의 candidate 정보로 candidate를 추가합니다.
-            candidatePc.addIceCandidate(new RTCIceCandidate(data.candidate)).then(() => {});
+            candidatePc.addIceCandidate(new RTCIceCandidate(data.candidate)).then(() => {
+              console.log(localStream);
+              console.log(pcs);
+            });
           }
           break;
         }
