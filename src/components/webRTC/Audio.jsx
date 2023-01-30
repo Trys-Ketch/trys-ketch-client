@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMuteUsers } from '../../app/slices/muteSlice';
 
+const localAttendee = null;
+
 function Audio({ stream, socketID }) {
   const ref = useRef(null);
   const users = useSelector((state) => state.mute.users);
@@ -12,12 +14,6 @@ function Audio({ stream, socketID }) {
   useEffect(() => {
     if (ref.current) ref.current.srcObject = stream;
   }, [stream]);
-
-  useEffect(() => {
-    return () => {
-      dispatch(setMuteUsers(users.filter((v) => v.socketID !== socketID)));
-    };
-  }, []);
 
   return (
     <audio ref={ref} muted={isMuted} autoPlay>
