@@ -5,9 +5,7 @@
 
 @font-face {
   font-family: 'TTTogether';
-  src: url('../assets/fonts/TTTogether.woff2') format('woff2'),
-    url('../assets/fonts/TTTogether.woff') format('woff'),
-    url('../assets/fonts/TTTogether.ttf') format('truetype');
+  src: url('../assets/fonts/TTTogether.ttf');
 }
 
 * {
