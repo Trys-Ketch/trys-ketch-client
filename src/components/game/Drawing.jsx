@@ -30,18 +30,18 @@ function Drawing({
 }) {
   const pathRef = useRef(null);
 
-  // useTimer(pathRef, CENTER, CIRCLE_RADIUS, STROKE_WIDTH, TIME_LIMIT, gameState);
+  useTimer(pathRef, CENTER, CIRCLE_RADIUS, STROKE_WIDTH, TIME_LIMIT, gameState);
 
   return (
     <Container style={{ paddingLeft: '0px', height: '680px', width: '1200px' }}>
       <LeftDiv>
-        {/* <CircleTimer
+        <CircleTimer
           strokeWidth={STROKE_WIDTH}
           circleRadius={CIRCLE_RADIUS}
           center={CENTER}
           pathRef={pathRef}
           round={round}
-        /> */}
+        />
         <SubmittedPlayer submitNum={submitNum} maxSubmitNum={maxSubmitNum} />
       </LeftDiv>
       <Paint

@@ -274,20 +274,6 @@ const FirstKeyword = styled.div`
   text-align: center;
 `;
 
-const KeywordWrapper = styled.div`
-  margin-top: 10px;
-  align-items: center;
-  display: flex;
-`;
-
-const KeywordNickname = styled.div`
-  width: max-content;
-  margin-left: 65px;
-  margin-top: 18px;
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  color: ${({ theme }) => theme.colors.DARK_LAVA};
-`;
-
 const Keyword = styled.pre`
   color: ${({ theme }) => theme.colors.DARK_LAVA};
   display: block;
