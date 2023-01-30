@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { saveAs } from 'file-saver';
@@ -12,21 +12,25 @@ function ImageResult({ member, nickname, imgId, img, userImg }) {
   const [like, setLike] = useState(false);
 
   const handleLike = () => {
-    myAPI
-      .imageToggleLike(imgId)
-      .then((res) => {
-        if (res.data.statusCode === 200) {
-          setLike(res.data.data.isLike);
-          if (res.data.data.isLike) {
-            toast.success('좋아요하셨습니다');
-          } else {
-            toast.info('좋아요 취소하셨습니다');
+    if (member === 'guest') {
+      toast.error('회원만 이용가능합니다😯');
+    } else {
+      myAPI
+        .imageToggleLike(imgId)
+        .then((res) => {
+          if (res.data.statusCode === 200) {
+            setLike(res.data.data.isLike);
+            if (res.data.data.isLike) {
+              toast.success('좋아요하셨습니다');
+            } else {
+              toast.info('좋아요 취소하셨습니다');
+            }
           }
-        }
-      })
-      .catch((err) => {
-        toast.error(err.response.data.message);
-      });
+        })
+        .catch((err) => {
+          toast.error(err.response.data.message);
+        });
+    }
   };
 
   const downloadImage = async () => {
@@ -40,17 +44,12 @@ function ImageResult({ member, nickname, imgId, img, userImg }) {
       <ImageNickname>{nickname}</ImageNickname>
       <ImageContainer>
         <ImageWrapper>
-          {member !== 'guest' && (
-            <>
-              {/* <DownloadButton onClick={downloadImage}> */}
-              <DownloadButton onClick={() => downloadImage()}>
-                <img src={Download} alt="download" />
-              </DownloadButton>
-              <LikeButton onClick={handleLike}>
-                {like ? <img src={Like} alt="like" /> : <img src={EmptyLike} alt="like" />}
-              </LikeButton>
-            </>
-          )}
+          <DownloadButton onClick={() => downloadImage()}>
+            <img src={Download} alt="download" />
+          </DownloadButton>
+          <LikeButton onClick={handleLike}>
+            {like ? <img src={Like} alt="like" /> : <img src={EmptyLike} alt="like" />}
+          </LikeButton>
           <Image src={img !== 'null' ? img : '/img/non_submit.png'} alt="img" />
         </ImageWrapper>
         <ProfileImg src={userImg} alt="profile" />
