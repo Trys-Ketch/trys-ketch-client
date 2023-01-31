@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Container from '../components/layout/Container';
@@ -45,28 +45,50 @@ function Lobby() {
     getRooms(page);
   }, [page]);
 
-  // TODO - SSE 임시 제거 API로 대체
-  // const openEvtSource = () => {
-  //   // 연결됐을때 방 정보 받아오기
-  //   evtSource.addEventListener('connect', (event) => {
-  //     const data = JSON.parse(event.data);
-  //     setRooms(data);
-  //   });
-  //   // 방 정보가 변할 때 방 정보 받아오기
-  //   evtSource.addEventListener('changeRoom', (event) => {
-  //     const data = JSON.parse(event.data);
-  //     setRooms(data);
-  //   });
-  // };
-
-  // const closeEvtSource = () => {
-  //   evtSource.close();
-  // };
-
   // useEffect(() => {
-  //   openEvtSource();
+  //   const evtSource = new EventSource(`${process.env.REACT_APP_API_URL}/api/sse/rooms`);
+
+  //   evtSource.onopen = () => {
+  //     console.log('open');
+  //     // 연결됐을때 방 정보 받아오기
+  //     evtSource.addEventListener('connect', (event) => {
+  //       const data = JSON.parse(event.data);
+  //       console.log(data);
+  //       setRooms(data);
+  //     });
+  //     // 방 정보가 변할 때 방 정보 받아오기
+  //     evtSource.addEventListener('changeRoom', (event) => {
+  //       const data = JSON.parse(event.data);
+  //       console.log(data);
+  //       setRooms(data);
+  //     });
+  //   };
+  //   evtSource.onmessage = (event) => {
+  //     console.log(onmessage);
+  //   };
+
+  //   // evtSource.onmessage = (event) => {
+  //   //   const data = JSON.parse(event.data);
+  //   //   console.log(data);
+
+  //   //   switch (data.type) {
+  //   //     case 'ingame/attendee': {
+  //   //       setAttendees(data.attendee);
+  //   //       break;
+  //   //     }
+  //   //     case 'ingame/be_kicked': {
+  //   //       navigate('/', { replace: true });
+  //   //       toast.info('강퇴되었습니다');
+  //   //       break;
+  //   //     }
+  //   //     default: {
+  //   //       break;
+  //   //     }
+  //   //   }
+  //   // };
+
   //   return () => {
-  //     closeEvtSource();
+  //     evtSource.close();
   //   };
   // }, []);
 
@@ -78,8 +100,9 @@ function Lobby() {
     openModal({ type: 'inviteCode' });
   };
 
-  const LinkToMyPage = () => {
-    navigate('/myPage');
+  const linkToMyPage = () => {
+    // navigate('/myPage');
+    toast.info('준비중이에요🔨');
     GAEventTrack(GAEventTypes.Category.mypage, GAEventTypes.Action.mypage.goToMypage);
   };
 
@@ -98,7 +121,7 @@ function Lobby() {
       <Container>
         <Side>
           <MyProfile />
-          <FlatButton size="small" onClick={LinkToMyPage}>
+          <FlatButton size="small" onClick={linkToMyPage}>
             마이페이지
           </FlatButton>
         </Side>

@@ -258,8 +258,9 @@ const PrevNextButtonWrapper = styled.div`
   display: flex;
   flex-direction: row;
   padding: 10px;
-  width: 100%;
+  height: max-content;
   background-color: ${({ theme }) => theme.colors.FLORAL_WHITE};
+  border-radius: 10px;
 `;
 
 const FirstKeyword = styled.div`

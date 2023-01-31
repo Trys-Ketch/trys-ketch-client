@@ -34,7 +34,7 @@ function Paint({
   image,
   gameState,
 }) {
-  const thickness = [5, 7, 9, 11, 13];
+  const thickness = [2, 3, 4, 6, 8, 10];
   const color = [
     '#8B4513',
     // '#B9062F',
@@ -43,10 +43,11 @@ function Paint({
     '#006400',
     '#2E8B57',
     '#FFB400',
+    '#fbceb1',
     '#FF8200',
     '#D2691E',
     '#9932CC',
-    `#800080`,
+    // '#800080',
     '#0000FF',
     '#00008C',
     '#ffffff',
@@ -61,7 +62,7 @@ function Paint({
   const [isDrawing, setIsDrawing] = useState();
   const [eventState, setEventState] = useState('drawing');
   const [displayThicknessBtn, setDisplayThicknessBtn] = useState(false);
-  const [nowThickness, setNowThickness] = useState(0);
+  const [nowThickness, setNowThickness] = useState(2);
   const [selectedColorIndex, setSelectedColorIndex] = useState(color.length - 1);
 
   const dispatch = useDispatch();
@@ -304,29 +305,19 @@ function Paint({
       context.strokeStyle = 'black';
       context.lineCap = 'round';
       context.lineJoin = 'round';
-      context.lineWidth = thickness[0] * 2;
+      context.lineWidth = thickness[2] * 2;
+      context.globalCompositeOperation = 'source-over';
 
       setCtx(() => context);
-    }
-  }, [isDrawingState]);
-
-  useEffect(() => {
-    if (isDrawingState) {
-      const canvas = canvasRef.current;
-      const context = canvas.getContext('2d');
 
       currentColor = 'black';
-      context.strokeStyle = 'black';
-      context.lineWidth = thickness[0] * 2;
-      context.globalCompositeOperation = 'source-over';
-      setCtx(() => context);
 
       historyPointer = 0;
       history.splice(0);
 
       setEventState('drawing');
       setDisplayThicknessBtn(false);
-      setNowThickness(0);
+      setNowThickness(2);
 
       setSelectedColorIndex(color.length - 1);
     }
@@ -411,32 +402,36 @@ function Paint({
         {isDrawingState && displayThicknessBtn && (
           <ThicknessBtnWrapper
             style={{
-              right: `${-(35 + thickness[thickness.length - 1] * 3)}px`,
+              right: `${-(35 + (thickness.length - 1 + 6) * 3)}px`,
             }}
           >
-            {thickness.map((v, i) => {
-              return (
-                <ThicknessBtn
-                  key={v}
-                  style={{
-                    width: `${v * 3}px`,
-                    height: `${v * 3}px`,
-                  }}
-                  onClick={() => {
-                    setThickness(v * 2);
-                    setNowThickness(() => i);
-                  }}
-                >
-                  <ThicknessCircle key={v} style={{ width: `${v * 2}px`, height: `${v * 2}px` }}>
-                    {nowThickness === i && (
-                      <InnerThicknessCircle
-                        style={{ width: `${v * 2 - 5}px`, height: `${v * 2 - 5}px` }}
-                      />
-                    )}
-                  </ThicknessCircle>
-                </ThicknessBtn>
-              );
-            })}
+            {thickness
+              .map((v, i) => {
+                return 6 + i;
+              })
+              .map((v, i) => {
+                return (
+                  <ThicknessBtn
+                    key={v}
+                    style={{
+                      width: `${v * 3}px`,
+                      height: `${v * 3}px`,
+                    }}
+                    onClick={() => {
+                      setThickness(thickness[i] * 2);
+                      setNowThickness(() => i);
+                    }}
+                  >
+                    <ThicknessCircle key={v} style={{ width: `${v * 2}px`, height: `${v * 2}px` }}>
+                      {nowThickness === i && (
+                        <InnerThicknessCircle
+                          style={{ width: `${v * 2 - 5}px`, height: `${v * 2 - 5}px` }}
+                        />
+                      )}
+                    </ThicknessCircle>
+                  </ThicknessBtn>
+                );
+              })}
           </ThicknessBtnWrapper>
         )}
         {isDrawingState && (
