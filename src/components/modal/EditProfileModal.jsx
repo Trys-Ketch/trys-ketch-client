@@ -38,6 +38,12 @@ function EditProfileModal() {
   };
 
   const handleEdit = () => {
+    const trimedNickname = nickname.trim();
+    if (trimedNickname === '') {
+      toast.error('닉네임을 입력해주세요');
+    } else if (trimedNickname < 2) {
+      toast.error('2자 이상 입력해주세요');
+    }
     myAPI
       .changeProfile(nickname, profileImage)
       .then((res) => {
