@@ -79,8 +79,7 @@ function Lobby() {
   };
 
   const LinkToMyPage = () => {
-    // navigate('/myPage');
-    toast.info('준비중이에요🔨');
+    navigate('/myPage');
     GAEventTrack(GAEventTypes.Category.mypage, GAEventTypes.Action.mypage.goToMypage);
   };
 

@@ -23,6 +23,10 @@ function CreateRoomModal() {
       toast.error('방 제목을 입력해주세요');
       return;
     }
+    if (trimedTitle.length < 2) {
+      toast.error('2자 이상 입력해주세요');
+      return;
+    }
     roomAPI
       .createRoom(trimedTitle)
       .then((res) => {
@@ -42,7 +46,7 @@ function CreateRoomModal() {
     <Modal title="방 만들기" btnText="만들기" onConfirm={handleCreate}>
       <TextInput
         autoFocus
-        maxlength="15"
+        maxLength="25"
         placeholder="방 이름을 입력해주세요"
         value={title}
         onChange={handleChange}

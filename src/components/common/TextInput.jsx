@@ -35,16 +35,7 @@ const InputBlock = styled.input`
   }
 `;
 
-function TextInput({
-  placeholder,
-  onChange,
-  value,
-  width,
-  maxlength,
-  readOnly,
-  backgroundColor,
-  ...rest
-}) {
+function TextInput({ placeholder, onChange, value, width, readOnly, backgroundColor, ...rest }) {
   const htmlProps = rest;
   return (
     <InputBlock
@@ -53,7 +44,6 @@ function TextInput({
       onChange={onChange}
       value={value}
       width={width}
-      maxlength={maxlength}
       readOnly={readOnly}
       backgroundColor={backgroundColor}
       {...htmlProps}

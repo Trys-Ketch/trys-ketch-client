@@ -6,6 +6,7 @@ import Paint from '../painting/Paint';
 // import useTimer from '../../hooks/useTimer';
 import CircleTimer from './CircleTimer';
 import SubmittedPlayer from './SubmittedPlayer';
+import Tooltip from '../common/Tooltip';
 
 const CIRCLE_RADIUS = 40;
 const CENTER = 40;
@@ -42,7 +43,9 @@ function Drawing({
           pathRef={pathRef}
           round={round}
         /> */}
-        <SubmittedPlayer submitNum={submitNum} maxSubmitNum={maxSubmitNum} />
+        <Tooltip message="제출/총인원">
+          <SubmittedPlayer submitNum={submitNum} maxSubmitNum={maxSubmitNum} />
+        </Tooltip>
       </LeftDiv>
       <Paint
         isKeywordState={isKeywordState}
@@ -62,7 +65,9 @@ function Drawing({
 }
 
 const LeftDiv = styled.div`
-  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
   height: 100%;
   width: 10%;
 `;
