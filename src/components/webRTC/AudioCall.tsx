@@ -176,7 +176,6 @@ function AudioCall() {
           dispatch(setID(sender));
           // 나를 제외했으므로 방에 나밖에 없으면 length는 0
           const len = allUsers.length;
-          console.log('stop:', stop);
           for (let i = 0; i < len; i += 1) {
             while (getUserMediaState === 'pending') {
               if (stop) return;
@@ -221,7 +220,6 @@ function AudioCall() {
         }
         // 2. 상대방이 offer를 받으면
         case 'rtc/offer': {
-          console.log('stop:', stop);
           while (getUserMediaState === 'pending') {
             if (stop) return;
             // eslint-disable-next-line
@@ -288,10 +286,7 @@ function AudioCall() {
           // candidatePc가 존재하면
           if (candidatePc) {
             // cadidate 요청을 보낸 상대방의 candidate 정보로 candidate를 추가합니다.
-            candidatePc.addIceCandidate(new RTCIceCandidate(data.candidate)).then(() => {
-              console.log(localStream);
-              console.log(pcs);
-            });
+            candidatePc.addIceCandidate(new RTCIceCandidate(data.candidate)).then(() => {});
           }
           break;
         }
@@ -359,7 +354,6 @@ function AudioCall() {
   useEffect(() => {
     if (localStream) {
       localStream.getTracks()[0].enabled = !localMute;
-      console.log(localStream.getTracks()[0].enabled);
     }
   }, [localMute]);
 
