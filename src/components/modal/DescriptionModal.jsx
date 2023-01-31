@@ -2,9 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import Modal from '../common/Modal';
 import useModal from '../../hooks/useModal';
-import { toast } from '../toast/ToastProvider';
-import GAEventTrack from '../../ga/GAEventTrack';
-import GAEventTypes from '../../ga/GAEventTypes';
 
 function DiscriptionModal() {
   const { closeModal } = useModal();
