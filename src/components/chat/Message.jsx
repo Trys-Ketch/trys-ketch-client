@@ -69,6 +69,7 @@ const Nickname = styled.span`
 `;
 
 const Content = styled.span`
+  max-width: 400px;
   border-radius: 10px;
   padding: 12px;
   color: ${({ theme }) => theme.colors.DARK_LAVA};

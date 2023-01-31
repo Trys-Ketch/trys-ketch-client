@@ -22,7 +22,7 @@ function ChatBox() {
   const CHAT_SERVER_URL = `/topic/chat/room/${id}`;
 
   const handleInput = (e) => {
-    setInput(e.target.value);
+    setInput(e.target.value.substr(0, 150));
   };
 
   const subscribe = () => {
@@ -93,7 +93,11 @@ function ChatBox() {
     <StChatBox>
       <MessageList messages={messages} />
       <MessageForm>
-        <TextInput placeholder="채팅을 입력하세요" value={input} onChange={handleInput} />
+        <TextInput
+          placeholder="채팅을 입력하세요 (최대 150자)"
+          value={input}
+          onChange={handleInput}
+        />
         <FlatButton
           disabled={input === ''}
           size="small"
