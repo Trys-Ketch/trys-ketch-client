@@ -16,6 +16,7 @@ import GAEventTrack from '../../ga/GAEventTrack';
 import GAEventTypes from '../../ga/GAEventTypes';
 import undoIcon from '../../assets/icons/undo-icon.svg';
 import redoIcon from '../../assets/icons/redo-icon.svg';
+import Tooltip from '../common/Tooltip';
 
 let historyPointer = 0;
 let currentColor = 'black';
@@ -435,32 +436,40 @@ function Paint({
         )}
         {isDrawingState && (
           <IconButtonWrapper>
-            <IconButton
-              selected={eventState === 'drawing'}
-              onClick={() => {
-                setDrawing();
-              }}
-              icon={pencil}
-              size="large"
-            />
-            <IconButton
-              selected={eventState === 'eraseing'}
-              onClick={() => setEraser()}
-              icon={eraser}
-              size="large"
-            />
-            <IconButton
-              selected={eventState === 'fill'}
-              onClick={() => setEventState('fill')}
-              icon={paint}
-              size="large"
-            />
-            <IconButton
-              selected={displayThicknessBtn}
-              onClick={() => toggleThicknessBtn()}
-              icon={pencilThickness}
-              size="large"
-            />
+            <Tooltip message="연필">
+              <IconButton
+                selected={eventState === 'drawing'}
+                onClick={() => {
+                  setDrawing();
+                }}
+                icon={pencil}
+                size="large"
+              />
+            </Tooltip>
+            <Tooltip message="지우개">
+              <IconButton
+                selected={eventState === 'eraseing'}
+                onClick={() => setEraser()}
+                icon={eraser}
+                size="large"
+              />
+            </Tooltip>
+            <Tooltip message="채우기">
+              <IconButton
+                selected={eventState === 'fill'}
+                onClick={() => setEventState('fill')}
+                icon={paint}
+                size="large"
+              />
+            </Tooltip>
+            <Tooltip message="펜굵기">
+              <IconButton
+                selected={displayThicknessBtn}
+                onClick={() => toggleThicknessBtn()}
+                icon={pencilThickness}
+                size="large"
+              />
+            </Tooltip>
           </IconButtonWrapper>
         )}
         {isDrawingState && (
@@ -483,31 +492,24 @@ function Paint({
         )}
         {isDrawingState && (
           <UndoRedoWrapper>
-            <IconButton
-              disabled={isSubmitted}
-              onClick={() => undo()}
-              size="large"
-              icon={undoIcon}
-            />
-            <IconButton
-              disabled={isSubmitted}
-              onClick={() => redo()}
-              size="large"
-              icon={redoIcon}
-            />
+            <Tooltip message="취소하기">
+              <IconButton
+                disabled={isSubmitted}
+                onClick={() => undo()}
+                size="large"
+                icon={undoIcon}
+              />
+            </Tooltip>
+            <Tooltip message="되돌리기">
+              <IconButton
+                disabled={isSubmitted}
+                onClick={() => redo()}
+                size="large"
+                icon={redoIcon}
+              />
+            </Tooltip>
           </UndoRedoWrapper>
         )}
-        {/* <BtnWrapper>
-          {opacity.map((v) => {
-            return (
-              <OpacityBtn
-                key={v}
-                style={{ backgroundColor: `#000000${v}` }}
-                onClick={() => setOpacity(v)}
-              />
-            );
-          })}
-        </BtnWrapper> */}
         {isDrawingState && (
           <Button
             style={{
@@ -600,15 +602,6 @@ const ColorBtnWrapper = styled.div`
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(7, 1fr);
 `;
-
-// const OpacityBtn = styled.button`
-//   padding: 10px;
-//   margin-right: 5px;
-//   box-sizing: content-box;
-//   border: none !important;
-//   background-color: black;
-//   border-radius: 50%;
-// `;
 
 const ColorBtn = styled.button`
   padding: 10px;
