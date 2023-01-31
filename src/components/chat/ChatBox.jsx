@@ -94,7 +94,12 @@ function ChatBox() {
       <MessageList messages={messages} />
       <MessageForm>
         <TextInput placeholder="채팅을 입력하세요" value={input} onChange={handleInput} />
-        <FlatButton size="small" onClick={handleSubmit} style={{ fontSize: '20px' }}>
+        <FlatButton
+          disabled={input === ''}
+          size="small"
+          onClick={handleSubmit}
+          style={{ fontSize: '20px' }}
+        >
           전송
         </FlatButton>
       </MessageForm>

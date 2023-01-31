@@ -113,15 +113,12 @@ const StUserCard = styled.div`
   background-color: ${({ theme }) => theme.colors.FLORAL_WHITE};
   padding: 20px;
   transition: 0.2 ease;
-
   &:hover ${HoverDisplay} {
     display: block;
   }
-
   &.mycard {
     box-shadow: inset 0 0 0 4px ${({ theme }) => theme.colors.BLUE2};
   }
-
   & img.host {
     position: absolute;
     top: 11px;
