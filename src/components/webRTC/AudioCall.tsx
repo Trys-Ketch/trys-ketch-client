@@ -9,7 +9,6 @@ import { closeSocket, setSocket } from '../../app/slices/ingameSlice';
 import { store } from '../../app/configStore';
 import usePreventRefresh from '../../hooks/usePreventRefresh';
 import { clearMute, setConnectedMuteUser, setMuteUsers } from '../../app/slices/muteSlice';
-import usePreventGoBack from '../../hooks/usePreventGoBack';
 import { toast } from '../toast/ToastProvider';
 
 let pcs: any;
@@ -20,7 +19,6 @@ let getUserMediaState: string = 'pending';
 let stop: boolean = false;
 
 function AudioCall() {
-  usePreventGoBack();
   const dispatch = useDispatch();
   usePreventRefresh();
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);

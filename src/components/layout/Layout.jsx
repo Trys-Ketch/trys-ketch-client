@@ -3,9 +3,11 @@ import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import background from '../../assets/images/background.svg';
 import ModalContainer from '../modal/ModalContainer';
+import usePreventGoBack from '../../hooks/usePreventGoBack';
 import GARouteTracker from '../../ga/GARouteTracker';
 
 function Layout() {
+  usePreventGoBack();
   GARouteTracker();
 
   return (
