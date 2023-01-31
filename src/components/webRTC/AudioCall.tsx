@@ -23,6 +23,7 @@ function AudioCall() {
   usePreventRefresh();
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
   const muteUser: any[] = useSelector((state: any) => state.mute.users);
+  const localMute: any = useSelector((state: any) => state.mute.localMute);
   // const dispatch = useDispatch();
   /**
    * socket을 관리하는 ref입니다.
@@ -354,6 +355,13 @@ function AudioCall() {
 
     dispatch(setConnectedMuteUser(newMuteUser));
   }, [users, muteUser]);
+
+  useEffect(() => {
+    if (localStream) {
+      localStream.getTracks()[0].enabled = !localMute;
+      console.log(localStream.getTracks()[0].enabled);
+    }
+  }, [localMute]);
 
   return (
     <div>
