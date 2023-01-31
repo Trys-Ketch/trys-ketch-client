@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import IconButton from '../common/IconButton';
 import Container from '../layout/Container';
 import Paint from '../painting/Paint';
-import useTimer from '../../hooks/useTimer';
+// import useTimer from '../../hooks/useTimer';
 import CircleTimer from './CircleTimer';
 import SubmittedPlayer from './SubmittedPlayer';
 
@@ -30,18 +30,18 @@ function Drawing({
 }) {
   const pathRef = useRef(null);
 
-  useTimer(pathRef, CENTER, CIRCLE_RADIUS, STROKE_WIDTH, TIME_LIMIT, gameState);
+  // useTimer(pathRef, CENTER, CIRCLE_RADIUS, STROKE_WIDTH, TIME_LIMIT, gameState);
 
   return (
     <Container style={{ paddingLeft: '0px', height: '680px', width: '1200px' }}>
       <LeftDiv>
-        <CircleTimer
+        {/* <CircleTimer
           strokeWidth={STROKE_WIDTH}
           circleRadius={CIRCLE_RADIUS}
           center={CENTER}
           pathRef={pathRef}
           round={round}
-        />
+        /> */}
         <SubmittedPlayer submitNum={submitNum} maxSubmitNum={maxSubmitNum} />
       </LeftDiv>
       <Paint
@@ -60,13 +60,6 @@ function Drawing({
     </Container>
   );
 }
-
-const IconButtonContainer = styled.div`
-  position: absolute;
-  transform: translate(-50%, 0);
-  bottom: 0;
-  left: 50%;
-`;
 
 const LeftDiv = styled.div`
   position: relative;
