@@ -22,14 +22,6 @@ const ButtonBlock = styled.button`
   padding-bottom: 0;
 
   ${(props) =>
-    props.inline &&
-    css`
-      & + & {
-        margin-left: 0.75rem;
-      }
-    `}
-
-  ${(props) =>
     props.size === 'small' &&
     css`
       height: 3.5rem;
@@ -61,22 +53,12 @@ const ButtonBlock = styled.button`
   }
 `;
 
-function FlatButton({
-  children,
-  ref,
-  bgcolor,
-  color,
-  inline = false,
-  size = 'medium',
-  width = 'auto',
-  ...rest
-}) {
+function FlatButton({ children, ref, bgcolor, color, size = 'medium', width = 'auto', ...rest }) {
   const htmlProps = rest;
   return (
     <ButtonBlock
       bgcolor={bgcolor}
       color={color}
-      inline={inline}
       width={width}
       size={size}
       {...htmlProps}

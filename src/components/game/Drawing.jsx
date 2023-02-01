@@ -35,13 +35,15 @@ function Drawing({
   return (
     <Container style={{ paddingLeft: '0px', height: '680px', width: '1200px' }}>
       <LeftDiv>
-        <CircleTimer
-          strokeWidth={STROKE_WIDTH}
-          circleRadius={CIRCLE_RADIUS}
-          center={CENTER}
-          pathRef={pathRef}
-          round={round}
-        />
+        <Tooltip message="타이머/라운드">
+          <CircleTimer
+            strokeWidth={STROKE_WIDTH}
+            circleRadius={CIRCLE_RADIUS}
+            center={CENTER}
+            pathRef={pathRef}
+            round={round}
+          />
+        </Tooltip>
         <Tooltip message="제출/총인원">
           <SubmittedPlayer submitNum={submitNum} maxSubmitNum={maxSubmitNum} />
         </Tooltip>
@@ -65,8 +67,9 @@ function Drawing({
 
 const LeftDiv = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   height: 100%;
   width: 10%;
 `;

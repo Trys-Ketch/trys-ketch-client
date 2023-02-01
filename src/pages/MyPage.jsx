@@ -79,6 +79,7 @@ const BackButton = styled.div`
   top: 0px;
   left: 0px;
   padding: 15px 10px;
+  cursor: pointer;
 
   & img {
     width: 30px;

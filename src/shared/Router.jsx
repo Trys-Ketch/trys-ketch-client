@@ -11,6 +11,7 @@ import Layout from '../components/layout/Layout';
 import GameResult from '../pages/GameResult';
 import BGM from '../components/layout/BGM';
 import NotFound from '../pages/NotFound';
+import Practice from '../pages/Practice';
 
 function Router() {
   return (
@@ -22,9 +23,10 @@ function Router() {
             <Route path="/login" element={<Login />} />
             <Route path="/login/:sns" element={<Login />} />
             <Route path="/guest" element={<Guest />} />
+            <Route path="/practice" element={<Practice />} />
             <Route path="/myPage" element={<MyPage />} />
           </Route>
-          <Route path="room" element={<Navigate to="/" replace />} />
+          <Route path="/room" element={<Navigate to="/" replace />} />
           <Route element={<AudioCall />}>
             <Route path="/room/:id" element={<GameRoom />} />
             <Route path="/ingame/:id" element={<InGame />} />

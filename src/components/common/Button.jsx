@@ -26,14 +26,6 @@ const ButtonBlock = styled.button`
   }
 
   ${(props) =>
-    props.inline &&
-    css`
-      & + & {
-        margin-left: 0.75rem;
-      }
-    `}
-
-  ${(props) =>
     props.size === 'small' &&
     css`
       height: 3rem;
@@ -74,7 +66,6 @@ function Button({
   txtcolor,
   bgcolor,
   shadow,
-  inline = false,
   size = 'medium',
   width = 'auto',
   ...rest
@@ -85,7 +76,6 @@ function Button({
       txtcolor={txtcolor}
       bgcolor={bgcolor}
       shadow={shadow}
-      inline={inline}
       width={width}
       size={size}
       {...htmlProps}

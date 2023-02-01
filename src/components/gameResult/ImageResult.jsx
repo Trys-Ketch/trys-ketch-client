@@ -7,6 +7,7 @@ import EmptyLike from '../../assets/icons/empty-like-icon.svg';
 import Like from '../../assets/icons/like-icon.svg';
 import { toast } from '../toast/ToastProvider';
 import myAPI from '../../api/my';
+import nonSubmit from '../../assets/images/non_submit.png';
 
 function ImageResult({ member, nickname, imgId, img, userImg }) {
   const [like, setLike] = useState(false);
@@ -50,7 +51,7 @@ function ImageResult({ member, nickname, imgId, img, userImg }) {
           <LikeButton onClick={handleLike}>
             {like ? <img src={Like} alt="like" /> : <img src={EmptyLike} alt="like" />}
           </LikeButton>
-          <Image src={img !== 'null' ? img : '/img/non_submit.png'} alt="img" />
+          <Image src={img !== 'null' ? img : nonSubmit} alt="img" />
         </ImageWrapper>
         <ProfileImg src={userImg} alt="profile" />
       </ImageContainer>

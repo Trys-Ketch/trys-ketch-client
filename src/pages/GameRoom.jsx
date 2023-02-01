@@ -337,7 +337,6 @@ function GameRoom() {
               width="100%"
               size="large"
               disabled={!allReady}
-              style={{ marginLeft: 0 }}
             >
               게임 시작
             </Button>
@@ -349,7 +348,6 @@ function GameRoom() {
               width="100%"
               size="large"
               onClick={toggleReady}
-              style={{ marginLeft: 0 }}
             >
               {myState?.isReady ? '취소' : '준비 완료'}
             </Button>
