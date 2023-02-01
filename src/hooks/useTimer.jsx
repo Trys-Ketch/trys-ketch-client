@@ -58,6 +58,7 @@ function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit, gameSta
   }
 
   function getTimerRadius() {
+    console.log(timeLimit);
     timerID = setInterval(() => {
       const nowTime = new Date().getTime();
       setDegree(1 - (nowTime - startTime) / timeLimit);
@@ -100,7 +101,7 @@ function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit, gameSta
     return () => {
       clearInterval(timerID);
     };
-  }, [gameState]);
+  }, [gameState, timeLimit]);
 
   // useEffect(() => {
   //   alarmSoundOn();

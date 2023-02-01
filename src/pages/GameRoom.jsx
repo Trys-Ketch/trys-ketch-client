@@ -44,8 +44,9 @@ function GameRoom() {
   const [isIngame, setIsIngame] = useState(false);
   // [ { userId: 2, nickname: "닉네임", imgUrl: "avatar.png", isHost: true, isReady: true, socketId: "akef4dof"}, ... ]
   const [attendees, setAttendees] = useState([]);
-  const [difficulty, setDifficulty] = useState('easy');
+  const [difficulty, setDifficulty] = useState('');
   const [timeLimit, setTimeLimit] = useState(60000);
+
   const ingameStompClient = useSelector((state) => state.ingame.stomp);
   const member = useSelector((state) => state.login.member);
   const userId = useSelector((state) => state.user.userId);
@@ -180,18 +181,12 @@ function GameRoom() {
       splitLargeFrames: true,
       webSocketFactory: () => new SockJS(`${process.env.REACT_APP_API_URL}/ws`),
     });
-    // client.onConnect = (frame) => {
-    //   subArray.push(
-    //     client.subscribe(`/topic/game/start/${id}`, (message) => {
-    //       const data = JSON.parse(message.body);
-    //       setIsIngame(data.isIngame);
-    //     }),
-    //   );
-    // };
+
     client.onStompError = (frame) => {
       console.error('Stomp Error!: ', frame.headers.message);
       console.error('Additional details: ', frame.body);
     };
+
     client.onDisconnect = (frame) => {
       dispatch(closeStomp());
     };
@@ -217,6 +212,19 @@ function GameRoom() {
             setTimeLimit(data.timeLimit);
           }),
         );
+        subArray.push(
+          client.subscribe(`/queue/game/gameroom-data/${socketID}`, (message) => {
+            const data = JSON.parse(message.body);
+            setDifficulty(data.difficulty);
+            setTimeLimit(data.timeLimit);
+          }),
+        );
+
+        client.publish({
+          destination: '/app/game/gameroom-data',
+          body: JSON.stringify({ roomId: id, token, webSessionId: socketID }),
+        });
+
         resolve();
       };
     }).then(() => {
@@ -266,21 +274,21 @@ function GameRoom() {
 
   function increaseTime() {
     ingameStompClient.publish({
-      destination: 'app/game/increase-time',
+      destination: '/app/game/increase-time',
       body: JSON.stringify({ roomId: id, token }),
     });
   }
 
   function decreaseTime() {
     ingameStompClient.publish({
-      destination: 'app/game/decrease-time',
+      destination: '/app/game/decrease-time',
       body: JSON.stringify({ roomId: id, token }),
     });
   }
 
   function milsecToMinute(milsec) {
     const sec = milsec / 1000;
-    const returnMinute = `${sec / 60}`;
+    const returnMinute = `${Math.floor(sec / 60)}`;
     const returnSec = `${sec % 60}`.length === 1 ? `0${sec % 60}` : `${sec % 60}`;
 
     return `${returnMinute}:${returnSec}`;
@@ -309,16 +317,28 @@ function GameRoom() {
           <ChatBox />
         </Main>
         <Side>
-          <Difficulty difficulty={difficulty} sendDifficulty={() => sendDifficulty()} />
+          <Difficulty
+            disabled={!myState?.isHost}
+            difficulty={difficulty}
+            sendDifficulty={(dif) => sendDifficulty(dif)}
+          />
           <SetTime>
             <Subtitle>제한 시간</Subtitle>
             <Time>
               {milsecToMinute(timeLimit)}
               <IncDecButtonWrapper>
-                <IncDecButton onClick={() => increaseTime()} style={{ marginBottom: '2px' }}>
+                <IncDecButton
+                  disabled={!myState?.isHost}
+                  onClick={() => increaseTime()}
+                  style={{ marginBottom: '2px' }}
+                >
                   <img src={inc} alt="increase" />
                 </IncDecButton>
-                <IncDecButton onClick={() => decreaseTime()} style={{ marginTop: '2px' }}>
+                <IncDecButton
+                  disabled={!myState?.isHost}
+                  onClick={() => decreaseTime()}
+                  style={{ marginTop: '2px' }}
+                >
                   <img src={dec} alt="decrease" />
                 </IncDecButton>
               </IncDecButtonWrapper>
@@ -391,6 +411,10 @@ const IncDecButton = styled.button`
   width: max-content;
   height: max-content;
   cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+  }
 `;
 
 const IncDecButtonWrapper = styled.div`

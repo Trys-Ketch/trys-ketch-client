@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import info from '../../assets/icons/info-icon.svg';
 import useModal from '../../hooks/useModal';
 
-function Difficulty({ difficulty, sendDifficulty }) {
+function Difficulty({ disabled, difficulty, sendDifficulty }) {
   const { openModal } = useModal();
   function handleOpenModal() {
     openModal({ type: 'gameMode' });
@@ -17,10 +17,18 @@ function Difficulty({ difficulty, sendDifficulty }) {
         </InfoButton>
       </GameModeTextWrapper>
 
-      <DifficultyButton selected={difficulty === 'easy'} onClick={() => sendDifficulty('easy')}>
+      <DifficultyButton
+        disabled={disabled}
+        selected={difficulty === 'easy'}
+        onClick={() => sendDifficulty('easy')}
+      >
         EASY
       </DifficultyButton>
-      <DifficultyButton selected={difficulty === 'hard'} onClick={() => sendDifficulty('hard')}>
+      <DifficultyButton
+        disabled={disabled}
+        selected={difficulty === 'hard'}
+        onClick={() => sendDifficulty('hard')}
+      >
         HARD
       </DifficultyButton>
       {/* <Explain /> */}
@@ -74,6 +82,10 @@ const DifficultyButton = styled.button`
   margin-top: 10px;
   font-size: ${({ theme }) => theme.fontSizes.xl};
   cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+  }
 
   ${(props) =>
     props.selected

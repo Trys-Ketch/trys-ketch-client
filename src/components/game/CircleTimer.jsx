@@ -31,7 +31,6 @@ const TimerBorder = styled.div`
 const Timer = styled.svg`
   width: 80px;
   height: 80px;
-  /* ${({ theme }) => theme.common.absoluteCenter}; */
 `;
 
 export default CircleTimer;
