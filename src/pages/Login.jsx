@@ -10,11 +10,12 @@ import KakaoLoginBtn from '../components/login/KakaoLoginBtn';
 import NaverLoginBtn from '../components/login/NaverLoginBtn';
 import GoogleLoginBtn from '../components/login/GoogleLoginBtn';
 import Panel from '../components/layout/Panel';
-// import logo from '../assets/images/ribbon-logo.svg';
 import logo from '../assets/images/logo-characters.svg';
 import { toast } from '../components/toast/ToastProvider';
 import GAEventTrack from '../ga/GAEventTrack';
 import GAEventTypes from '../ga/GAEventTypes';
+import FloatBox from '../components/layout/FloatBox';
+import SettingButton from '../components/button/SettingButton';
 
 function Login() {
   const navigate = useNavigate();
@@ -102,18 +103,21 @@ function Login() {
   }, [googleLogin, kakaoLogin, naverLogin, sns, code]);
 
   return (
-    <Panel>
-      <Logo src={logo} alt="logo" />
-      <Typography>간편로그인</Typography>
-      <ButtonBox>
-        <KakaoLoginBtn />
-        <GoogleLoginBtn />
-        <NaverLoginBtn />
-      </ButtonBox>
-      <Button onClick={guestLogin} width="350px">
-        게스트 로그인
-      </Button>
-    </Panel>
+    <>
+      <FloatBox top={<SettingButton size="xlarge" />} />
+      <Panel>
+        <Logo src={logo} alt="logo" />
+        <Typography>간편로그인</Typography>
+        <ButtonBox>
+          <KakaoLoginBtn />
+          <GoogleLoginBtn />
+          <NaverLoginBtn />
+        </ButtonBox>
+        <Button onClick={guestLogin} width="350px">
+          게스트 로그인
+        </Button>
+      </Panel>
+    </>
   );
 }
 
