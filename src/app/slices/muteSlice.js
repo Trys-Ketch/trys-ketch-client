@@ -45,7 +45,6 @@ const muteSlice = createSlice({
       localMute: false,
     }),
   },
-  extraReducers: {},
 });
 
 export const { setMuteUsers, setConnectedMuteUser, setMute, setLocalMute, clearMute } =

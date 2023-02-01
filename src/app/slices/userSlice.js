@@ -28,7 +28,6 @@ const userSlice = createSlice({
       ...action.payload,
     }),
   },
-  extraReducers: {},
 });
 
 export const { setProfileImage, setUserId, setNickname, setUserInfo } = userSlice.actions;
