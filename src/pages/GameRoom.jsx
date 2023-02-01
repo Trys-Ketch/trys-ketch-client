@@ -177,9 +177,7 @@ function GameRoom() {
 
   useEffect(() => {
     const client = new Stomp.Client({
-      debug: (str) => {
-        console.log(str);
-      },
+      debug: (str) => {},
       splitLargeFrames: true,
       webSocketFactory: () => new SockJS(`${process.env.REACT_APP_API_URL}/ws`),
     });
@@ -217,7 +215,6 @@ function GameRoom() {
         subArray.push(
           client.subscribe(`/queue/game/gameroom-data/${socketID}`, (message) => {
             const data = JSON.parse(message.body);
-            console.log(data);
             setDifficulty(data.difficulty);
             setTimeLimit(data.timeLimit);
           }),

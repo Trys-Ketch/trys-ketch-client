@@ -55,7 +55,6 @@ function InGame() {
       // 서버에서 랜덤 키워드를 받아옵니다.
       ingameStompClient.subscribe(`/queue/game/ingame-data/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
-        console.log('data: ', data);
         setKeyword(data.keyword);
         keywordIndex.current = data.keywordIndex;
         setTimeLimit(data.timeLimit);
@@ -139,7 +138,6 @@ function InGame() {
     return () => {
       if (ingameStompClient) {
         for (let i = 0; i < subArray.length; i += 1) {
-          console.log(subArray[i]);
           subArray[i].unsubscribe();
         }
       }
