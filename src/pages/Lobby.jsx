@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Container from '../components/layout/Container';
@@ -101,9 +101,12 @@ function Lobby() {
   };
 
   const linkToMyPage = () => {
-    // navigate('/myPage');
-    toast.info('준비중이에요🔨');
+    navigate('/myPage');
     GAEventTrack(GAEventTypes.Category.mypage, GAEventTypes.Action.mypage.goToMypage);
+  };
+
+  const linkToPractice = () => {
+    navigate('/practice');
   };
 
   useEffect(() => {
@@ -128,7 +131,7 @@ function Lobby() {
           </SideTop>
           <SideBottom>
             <Button>게임 방법</Button>
-            <Button>연습장</Button>
+            <Button onClick={linkToPractice}>연습장</Button>
           </SideBottom>
         </Side>
         <Main>
@@ -173,17 +176,24 @@ const SideTop = styled.div`
 `;
 
 const SideBottom = styled.div`
-  width: 100%;
   ${({ theme }) => theme.common.flexCenterColumn};
+
+  Button {
+    width: 100%;
+  }
+
+  & :not(:first-child) {
+    margin-top: 10px;
+  }
 `;
 
 const Side = styled.div`
   width: 20%;
   height: 100%;
-  margin-top: 30px;
+  padding: 30px 10px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
 `;
 
