@@ -1,17 +1,30 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Outlet } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import bgm from '../../assets/sound/main-bgm.mp3';
 import turnOnSound from '../../utils/turnOnSound';
 
 function BGM() {
-  const sound = turnOnSound(bgm, { autoplay: true, loop: true }, 0.3);
+  const { volume } = useSelector((state) => state.sound);
+  const sound = useRef(null);
 
   useEffect(() => {
-    sound.play();
+    sound.current = turnOnSound(bgm, { autoplay: true, loop: true }, volume);
+    sound.current.play();
     return () => {
-      sound.stop();
+      sound.current.stop();
     };
   }, []);
+
+  useEffect(() => {
+    if (volume) {
+      if (volume === 0) {
+        sound.current.stop();
+      } else {
+        sound.current.volume(volume);
+      }
+    }
+  }, [sound, volume]);
 
   return <Outlet />;
 }

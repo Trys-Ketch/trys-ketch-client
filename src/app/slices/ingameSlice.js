@@ -47,7 +47,6 @@ const ingameSlice = createSlice({
       // reconnect: action.payload,
     }),
   },
-  extraReducers: {},
 });
 
 export const {

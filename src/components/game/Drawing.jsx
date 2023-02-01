@@ -1,9 +1,8 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
-import IconButton from '../common/IconButton';
 import Container from '../layout/Container';
 import Paint from '../painting/Paint';
-// import useTimer from '../../hooks/useTimer';
+import useTimer from '../../hooks/useTimer';
 import CircleTimer from './CircleTimer';
 import SubmittedPlayer from './SubmittedPlayer';
 import Tooltip from '../common/Tooltip';
@@ -31,18 +30,18 @@ function Drawing({
 }) {
   const pathRef = useRef(null);
 
-  // useTimer(pathRef, CENTER, CIRCLE_RADIUS, STROKE_WIDTH, TIME_LIMIT, gameState);
+  useTimer(pathRef, CENTER, CIRCLE_RADIUS, STROKE_WIDTH, TIME_LIMIT, gameState);
 
   return (
     <Container style={{ paddingLeft: '0px', height: '680px', width: '1200px' }}>
       <LeftDiv>
-        {/* <CircleTimer
+        <CircleTimer
           strokeWidth={STROKE_WIDTH}
           circleRadius={CIRCLE_RADIUS}
           center={CENTER}
           pathRef={pathRef}
           round={round}
-        /> */}
+        />
         <Tooltip message="제출/총인원">
           <SubmittedPlayer submitNum={submitNum} maxSubmitNum={maxSubmitNum} />
         </Tooltip>

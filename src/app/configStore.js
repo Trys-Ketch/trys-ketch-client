@@ -6,13 +6,14 @@ import user from './slices/userSlice';
 import ingame from './slices/ingameSlice';
 import modal from './slices/modalSlice';
 import mute from './slices/muteSlice';
+import sound from './slices/soundSlice';
 
 const persistConfig = {
   key: 'root',
   // localStorage에 저장합니다.
   storage,
   // 여러개의 reducer 중에 todo reducer만 localstorage에 저장합니다.
-  whitelist: ['login', 'user'],
+  whitelist: ['login', 'user', 'sound'],
   // blacklist -> 그것만 제외합니다
 };
 
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   ingame,
   modal,
   mute,
+  sound,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

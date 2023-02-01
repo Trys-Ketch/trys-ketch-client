@@ -18,7 +18,6 @@ const loginSlice = createSlice({
       isLogin: false,
     }),
   },
-  extraReducers: {},
 });
 
 export const { setLogin, setLogout } = loginSlice.actions;
