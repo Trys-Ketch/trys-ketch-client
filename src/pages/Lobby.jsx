@@ -120,17 +120,21 @@ function Lobby() {
       <FloatBox top={<SettingButton size="xlarge" />} />
       <Container>
         <Side>
-          <MyProfile />
-          <FlatButton size="small" onClick={linkToMyPage}>
-            마이페이지
-          </FlatButton>
+          <SideTop>
+            <MyProfile />
+            <FlatButton size="small" onClick={linkToMyPage}>
+              마이페이지
+            </FlatButton>
+          </SideTop>
+          <SideBottom>
+            <Button>게임 방법</Button>
+            <Button>연습장</Button>
+          </SideBottom>
         </Side>
         <Main>
           <TopBtns>
             <Button onClick={handleOpenCreateRoom}>방 만들기</Button>
-            <Button inline onClick={handleOpenInvite}>
-              초대 코드
-            </Button>
+            <Button onClick={handleOpenInvite}>초대 코드</Button>
           </TopBtns>
           <RoomContainer>
             {rooms.length !== 0 ? (
@@ -164,6 +168,15 @@ const Main = styled.div`
   height: 100%;
 `;
 
+const SideTop = styled.div`
+  ${({ theme }) => theme.common.flexCenterColumn};
+`;
+
+const SideBottom = styled.div`
+  width: 100%;
+  ${({ theme }) => theme.common.flexCenterColumn};
+`;
+
 const Side = styled.div`
   width: 20%;
   height: 100%;
@@ -182,6 +195,10 @@ const TopBtns = styled.div`
   Button {
     width: 50%;
     flex-grow: 1;
+  }
+
+  Button:not(:first-child) {
+    margin-left: 0.75rem;
   }
 `;
 
