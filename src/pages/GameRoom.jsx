@@ -176,9 +176,7 @@ function GameRoom() {
 
   useEffect(() => {
     const client = new Stomp.Client({
-      debug: (str) => {
-        console.log(str);
-      },
+      debug: (str) => {},
       splitLargeFrames: true,
       webSocketFactory: () => new SockJS(`${process.env.REACT_APP_API_URL}/ws`),
     });
@@ -260,7 +258,6 @@ function GameRoom() {
   }, []);
 
   function sendDifficulty(difficulty) {
-    console.log(token);
     ingameStompClient.publish({
       destination: '/app/game/difficulty',
       body: JSON.stringify({ roomId: id, token, difficulty }),
@@ -286,7 +283,6 @@ function GameRoom() {
     const returnMinute = `${sec / 60}`;
     const returnSec = `${sec % 60}`.length === 1 ? `0${sec % 60}` : `${sec % 60}`;
 
-    console.log(`${returnMinute}:${returnSec}`);
     return `${returnMinute}:${returnSec}`;
   }
 
