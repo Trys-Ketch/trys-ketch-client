@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import SockJS from 'sockjs-client';
@@ -12,6 +12,8 @@ import FloatBox from '../components/layout/FloatBox';
 import SettingButton from '../components/button/SettingButton';
 import MicButton from '../components/button/MicButton';
 import copy from '../assets/icons/copy-icon.svg';
+import inc from '../assets/icons/time-increase-icon.svg';
+import dec from '../assets/icons/time-decrease-icon.svg';
 import QuitButton from '../components/button/QuitButton';
 import RoomTitle from '../components/room/RoomTitle';
 import ChatBox from '../components/chat/ChatBox';
@@ -41,6 +43,8 @@ function GameRoom() {
   const [isIngame, setIsIngame] = useState(false);
   // [ { userId: 2, nickname: "닉네임", imgUrl: "avatar.png", isHost: true, isReady: true, socketId: "akef4dof"}, ... ]
   const [attendees, setAttendees] = useState([]);
+  const [difficulty, setDifficulty] = useState('easy');
+  const [timeLimit, setTimeLimit] = useState(60000);
   const ingameStompClient = useSelector((state) => state.ingame.stomp);
   const member = useSelector((state) => state.login.member);
   const userId = useSelector((state) => state.user.userId);
@@ -74,8 +78,6 @@ function GameRoom() {
   };
 
   const start = () => {
-    token = getCookie(member === 'guest' ? 'guest' : 'access_token');
-
     ingameStompClient.publish({
       destination: '/app/game/start',
       body: JSON.stringify({ roomId: id, token }),
@@ -168,8 +170,14 @@ function GameRoom() {
   }, [attendees]);
 
   useEffect(() => {
+    token = getCookie(member === 'guest' ? 'guest' : 'access_token');
+  }, []);
+
+  useEffect(() => {
     const client = new Stomp.Client({
-      debug: (str) => {},
+      debug: (str) => {
+        console.log(str);
+      },
       splitLargeFrames: true,
       webSocketFactory: () => new SockJS(`${process.env.REACT_APP_API_URL}/ws`),
     });
@@ -196,6 +204,18 @@ function GameRoom() {
           client.subscribe(`/topic/game/start/${id}`, (message) => {
             const data = JSON.parse(message.body);
             setIsIngame(data.isIngame);
+          }),
+        );
+        subArray.push(
+          client.subscribe(`/topic/game/difficulty/${id}`, (message) => {
+            const data = JSON.parse(message.body);
+            setDifficulty(data.difficulty);
+          }),
+        );
+        subArray.push(
+          client.subscribe(`/topic/game/time-limit/${id}`, (message) => {
+            const data = JSON.parse(message.body);
+            setTimeLimit(data.timeLimit);
           }),
         );
         resolve();
@@ -238,6 +258,37 @@ function GameRoom() {
     openModal({ type: 'description' });
   }, []);
 
+  function sendDifficulty(difficulty) {
+    console.log(token);
+    ingameStompClient.publish({
+      destination: '/app/game/difficulty',
+      body: JSON.stringify({ roomId: id, token, difficulty }),
+    });
+  }
+
+  function increaseTime() {
+    ingameStompClient.publish({
+      destination: 'app/game/increase-time',
+      body: JSON.stringify({ roomId: id, token }),
+    });
+  }
+
+  function decreaseTime() {
+    ingameStompClient.publish({
+      destination: 'app/game/decrease-time',
+      body: JSON.stringify({ roomId: id, token }),
+    });
+  }
+
+  function milsecToMinute(milsec) {
+    const sec = milsec / 1000;
+    const returnMinute = `${sec / 60}`;
+    const returnSec = `${sec % 60}`.length === 1 ? `0${sec % 60}` : `${sec % 60}`;
+
+    console.log(`${returnMinute}:${returnSec}`);
+    return `${returnMinute}:${returnSec}`;
+  }
+
   return (
     <>
       <FloatBox
@@ -261,12 +312,35 @@ function GameRoom() {
           <ChatBox />
         </Main>
         <Side>
-          <ExplainArea>
-            <Explain />
-          </ExplainArea>
+          <DifficultyArea>
+            게임 모드
+            <DifficultyButton
+              selected={difficulty === 'easy'}
+              onClick={() => sendDifficulty('easy')}
+            >
+              EASY
+            </DifficultyButton>
+            <DifficultyButton
+              selected={difficulty === 'hard'}
+              onClick={() => sendDifficulty('hard')}
+            >
+              HARD
+            </DifficultyButton>
+            {/* <Explain /> */}
+          </DifficultyArea>
           <SetTime>
             <Subtitle>제한 시간</Subtitle>
-            <Time>1:00</Time>
+            <Time>
+              {milsecToMinute(timeLimit)}
+              <IncDecButtonWrapper>
+                <IncDecButton onClick={() => increaseTime()} style={{ marginBottom: '2px' }}>
+                  <img src={inc} alt="increase" />
+                </IncDecButton>
+                <IncDecButton onClick={() => decreaseTime()} style={{ marginTop: '2px' }}>
+                  <img src={dec} alt="decrease" />
+                </IncDecButton>
+              </IncDecButtonWrapper>
+            </Time>
           </SetTime>
           <Button onClick={handleCodeCopy} width="100%">
             초대코드 복사
@@ -332,8 +406,58 @@ const Box = styled.div`
   padding: 10px;
 `;
 
-const ExplainArea = styled(Box)`
+const IncDecButton = styled.button`
+  border: none;
+  width: max-content;
+  height: max-content;
+  cursor: pointer;
+`;
+
+const IncDecButtonWrapper = styled.div`
+  margin-left: 10px;
+  width: max-content;
+  height: max-content;
+  display: flex;
+  flex-direction: column;
+`;
+
+const DifficultyArea = styled(Box)`
   height: 45%;
+  padding: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  font-family: 'TTTogether';
+  font-size: ${({ theme }) => theme.fontSizes.xxl};
+  color: ${({ theme }) => theme.colors.DARK_LAVA};
+`;
+
+const DifficultyButton = styled.button`
+  width: 70%;
+  height: 60px;
+  border: none;
+  border-radius: 10px;
+  background-color: ${({ theme }) => theme.colors.DIM_GRAY};
+  font-family: 'TTTogether';
+  color: ${({ theme }) => theme.colors.FLORAL_WHITE};
+  margin-top: 10px;
+  font-size: ${({ theme }) => theme.fontSizes.xl};
+  cursor: pointer;
+
+  ${(props) =>
+    props.selected
+      ? css`
+          opacity: 100%;
+        `
+      : css`
+          opacity: 50%;
+        `}
+
+  &:first-child {
+    margin-top: 40px;
+  }
 `;
 
 const SetTime = styled(Box)`
