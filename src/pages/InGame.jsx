@@ -35,6 +35,7 @@ function InGame() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submitNum, setSubmitNum] = useState(0);
   const [maxSubmitNum, setMaxSubmitNum] = useState(0);
+  const [timeLimit, setTimeLimit] = useState(60000);
 
   const keywordIndex = useRef();
   const [round, setRound] = useState(1);
@@ -52,10 +53,12 @@ function InGame() {
 
     subArray.push(
       // 서버에서 랜덤 키워드를 받아옵니다.
-      ingameStompClient.subscribe(`/queue/game/keyword/${socketID}`, (message) => {
+      ingameStompClient.subscribe(`/queue/game/ingame-data/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
+        console.log('data: ', data);
         setKeyword(data.keyword);
         keywordIndex.current = data.keywordIndex;
+        setTimeLimit(data.timeLimit);
       }),
     );
     subArray.push(
@@ -135,7 +138,10 @@ function InGame() {
 
     return () => {
       if (ingameStompClient) {
-        for (let i = 0; i < subArray.length; i += 1) subArray[i].unsubscribe();
+        for (let i = 0; i < subArray.length; i += 1) {
+          console.log(subArray[i]);
+          subArray[i].unsubscribe();
+        }
       }
     };
   }, []);
@@ -262,6 +268,7 @@ function InGame() {
               submitNum={submitNum}
               maxSubmitNum={maxSubmitNum}
               round={round}
+              timeLimit={timeLimit}
               isSubmitted={isSubmitted}
               toggleReady={(isSubmitted) => toggleKeywordReady(isSubmitted)}
               keyword={keyword}
@@ -277,6 +284,7 @@ function InGame() {
               submitNum={submitNum}
               maxSubmitNum={maxSubmitNum}
               round={round}
+              timeLimit={timeLimit}
               isSubmitted={isSubmitted}
               toggleReady={(canvas, isSubmitted) => toggleDrawingReady(canvas, isSubmitted)}
               keyword={keyword}
@@ -293,6 +301,7 @@ function InGame() {
               submitNum={submitNum}
               maxSubmitNum={maxSubmitNum}
               round={round}
+              timeLimit={timeLimit}
               isSubmitted={isSubmitted}
               toggleReady={(isSubmitted) => toggleKeywordReady(isSubmitted)}
               keyword={keyword}

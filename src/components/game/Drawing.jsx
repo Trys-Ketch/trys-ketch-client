@@ -18,7 +18,8 @@ function Drawing({
   isDrawingState,
   submitNum,
   maxSubmitNum,
-  round,
+  round = 1,
+  timeLimit = 120000,
   toggleReady,
   isSubmitted,
   submitImg,
@@ -30,7 +31,7 @@ function Drawing({
 }) {
   const pathRef = useRef(null);
 
-  useTimer(pathRef, CENTER, CIRCLE_RADIUS, STROKE_WIDTH, TIME_LIMIT, gameState);
+  useTimer(pathRef, CENTER, CIRCLE_RADIUS, STROKE_WIDTH, timeLimit, gameState);
 
   return (
     <Container style={{ paddingLeft: '0px', height: '680px', width: '1200px' }}>
@@ -64,9 +65,11 @@ function Drawing({
 }
 
 const LeftDiv = styled.div`
+  /* position: relative; */
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   height: 100%;
   width: 10%;
 `;
