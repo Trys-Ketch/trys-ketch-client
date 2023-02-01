@@ -10,7 +10,7 @@ import KakaoLoginBtn from '../components/login/KakaoLoginBtn';
 import NaverLoginBtn from '../components/login/NaverLoginBtn';
 import GoogleLoginBtn from '../components/login/GoogleLoginBtn';
 import Panel from '../components/layout/Panel';
-import logo from '../assets/images/logo-characters.svg';
+import logo from '../assets/images/logo-characters.png';
 import { toast } from '../components/toast/ToastProvider';
 import GAEventTrack from '../ga/GAEventTrack';
 import GAEventTypes from '../ga/GAEventTypes';
