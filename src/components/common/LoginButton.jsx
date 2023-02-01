@@ -1,14 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { toast } from '../toast/ToastProvider';
 
 function LoginButton({ src, sns, url }) {
   const handleLogin = () => {
-    if (sns === 'naver') {
-      toast.info('준비중이에요🔨');
-    } else {
-      window.location.href = url;
-    }
+    window.location.href = url;
   };
 
   return (
