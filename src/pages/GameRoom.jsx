@@ -12,6 +12,8 @@ import FloatBox from '../components/layout/FloatBox';
 import SettingButton from '../components/button/SettingButton';
 import MicButton from '../components/button/MicButton';
 import copy from '../assets/icons/copy-icon.svg';
+import inc from '../assets/icons/time-increase-icon.svg';
+import dec from '../assets/icons/time-decrease-icon.svg';
 import QuitButton from '../components/button/QuitButton';
 import RoomTitle from '../components/room/RoomTitle';
 import ChatBox from '../components/chat/ChatBox';
@@ -26,6 +28,7 @@ import { setLocalMute, setMuteUsers } from '../app/slices/muteSlice';
 import MuteUserList from '../components/mute/MuteUserList';
 import useModal from '../hooks/useModal';
 import Modal from '../components/common/Modal';
+import Difficulty from '../components/room/Difficulty';
 
 let token;
 const subArray = [];
@@ -41,6 +44,8 @@ function GameRoom() {
   const [isIngame, setIsIngame] = useState(false);
   // [ { userId: 2, nickname: "닉네임", imgUrl: "avatar.png", isHost: true, isReady: true, socketId: "akef4dof"}, ... ]
   const [attendees, setAttendees] = useState([]);
+  const [difficulty, setDifficulty] = useState('easy');
+  const [timeLimit, setTimeLimit] = useState(60000);
   const ingameStompClient = useSelector((state) => state.ingame.stomp);
   const member = useSelector((state) => state.login.member);
   const userId = useSelector((state) => state.user.userId);
@@ -74,8 +79,6 @@ function GameRoom() {
   };
 
   const start = () => {
-    token = getCookie(member === 'guest' ? 'guest' : 'access_token');
-
     ingameStompClient.publish({
       destination: '/app/game/start',
       body: JSON.stringify({ roomId: id, token }),
@@ -168,6 +171,10 @@ function GameRoom() {
   }, [attendees]);
 
   useEffect(() => {
+    token = getCookie(member === 'guest' ? 'guest' : 'access_token');
+  }, []);
+
+  useEffect(() => {
     const client = new Stomp.Client({
       debug: (str) => {},
       splitLargeFrames: true,
@@ -196,6 +203,18 @@ function GameRoom() {
           client.subscribe(`/topic/game/start/${id}`, (message) => {
             const data = JSON.parse(message.body);
             setIsIngame(data.isIngame);
+          }),
+        );
+        subArray.push(
+          client.subscribe(`/topic/game/difficulty/${id}`, (message) => {
+            const data = JSON.parse(message.body);
+            setDifficulty(data.difficulty);
+          }),
+        );
+        subArray.push(
+          client.subscribe(`/topic/game/time-limit/${id}`, (message) => {
+            const data = JSON.parse(message.body);
+            setTimeLimit(data.timeLimit);
           }),
         );
         resolve();
@@ -238,6 +257,35 @@ function GameRoom() {
     openModal({ type: 'description' });
   }, []);
 
+  function sendDifficulty(difficulty) {
+    ingameStompClient.publish({
+      destination: '/app/game/difficulty',
+      body: JSON.stringify({ roomId: id, token, difficulty }),
+    });
+  }
+
+  function increaseTime() {
+    ingameStompClient.publish({
+      destination: 'app/game/increase-time',
+      body: JSON.stringify({ roomId: id, token }),
+    });
+  }
+
+  function decreaseTime() {
+    ingameStompClient.publish({
+      destination: 'app/game/decrease-time',
+      body: JSON.stringify({ roomId: id, token }),
+    });
+  }
+
+  function milsecToMinute(milsec) {
+    const sec = milsec / 1000;
+    const returnMinute = `${sec / 60}`;
+    const returnSec = `${sec % 60}`.length === 1 ? `0${sec % 60}` : `${sec % 60}`;
+
+    return `${returnMinute}:${returnSec}`;
+  }
+
   return (
     <>
       <FloatBox
@@ -261,12 +309,20 @@ function GameRoom() {
           <ChatBox />
         </Main>
         <Side>
-          <ExplainArea>
-            <Explain />
-          </ExplainArea>
+          <Difficulty difficulty={difficulty} sendDifficulty={() => sendDifficulty()} />
           <SetTime>
             <Subtitle>제한 시간</Subtitle>
-            <Time>1:00</Time>
+            <Time>
+              {milsecToMinute(timeLimit)}
+              <IncDecButtonWrapper>
+                <IncDecButton onClick={() => increaseTime()} style={{ marginBottom: '2px' }}>
+                  <img src={inc} alt="increase" />
+                </IncDecButton>
+                <IncDecButton onClick={() => decreaseTime()} style={{ marginTop: '2px' }}>
+                  <img src={dec} alt="decrease" />
+                </IncDecButton>
+              </IncDecButtonWrapper>
+            </Time>
           </SetTime>
           <Button onClick={handleCodeCopy} width="100%">
             초대코드 복사
@@ -332,8 +388,19 @@ const Box = styled.div`
   padding: 10px;
 `;
 
-const ExplainArea = styled(Box)`
-  height: 45%;
+const IncDecButton = styled.button`
+  border: none;
+  width: max-content;
+  height: max-content;
+  cursor: pointer;
+`;
+
+const IncDecButtonWrapper = styled.div`
+  margin-left: 10px;
+  width: max-content;
+  height: max-content;
+  display: flex;
+  flex-direction: column;
 `;
 
 const SetTime = styled(Box)`

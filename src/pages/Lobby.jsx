@@ -64,7 +64,7 @@ function Lobby() {
   //     });
   //   };
   //   evtSource.onmessage = (event) => {
-  //     console.log(onmessage);
+  //     console.log(event);
   //   };
 
   //   // evtSource.onmessage = (event) => {

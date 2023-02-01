@@ -16,7 +16,7 @@ const STROKE_WIDTH = 3;
 function Drawing({
   isKeywordState,
   isGuessingState,
-  isDrawingState = true,
+  isDrawingState,
   submitNum,
   maxSubmitNum,
   round,

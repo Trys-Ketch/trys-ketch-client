@@ -223,6 +223,7 @@ function InGame() {
       setCompleteKeywordSubmit(false);
       setIsSubmitted(false);
       setSubmitNum(0);
+      setImage('');
     }
   }, [completeKeywordSubmit]);
 

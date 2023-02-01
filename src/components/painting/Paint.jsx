@@ -462,7 +462,7 @@ function Paint({
                 size="large"
               />
             </Tooltip>
-            <Tooltip message="펜굵기">
+            <Tooltip message="펜 굵기">
               <IconButton
                 selected={displayThicknessBtn}
                 onClick={() => toggleThicknessBtn()}
