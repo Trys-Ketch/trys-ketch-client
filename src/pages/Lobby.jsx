@@ -106,7 +106,7 @@ function Lobby() {
   };
 
   const linkToPractice = () => {
-    navigate('/practice');
+    // navigate('/practice');
   };
 
   useEffect(() => {
