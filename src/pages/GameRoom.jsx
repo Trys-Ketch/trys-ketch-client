@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import SockJS from 'sockjs-client';
@@ -28,6 +28,7 @@ import { setLocalMute, setMuteUsers } from '../app/slices/muteSlice';
 import MuteUserList from '../components/mute/MuteUserList';
 import useModal from '../hooks/useModal';
 import Modal from '../components/common/Modal';
+import Difficulty from '../components/room/Difficulty';
 
 let token;
 const subArray = [];
@@ -312,22 +313,7 @@ function GameRoom() {
           <ChatBox />
         </Main>
         <Side>
-          <DifficultyArea>
-            게임 모드
-            <DifficultyButton
-              selected={difficulty === 'easy'}
-              onClick={() => sendDifficulty('easy')}
-            >
-              EASY
-            </DifficultyButton>
-            <DifficultyButton
-              selected={difficulty === 'hard'}
-              onClick={() => sendDifficulty('hard')}
-            >
-              HARD
-            </DifficultyButton>
-            {/* <Explain /> */}
-          </DifficultyArea>
+          <Difficulty difficulty={difficulty} sendDifficulty={() => sendDifficulty()} />
           <SetTime>
             <Subtitle>제한 시간</Subtitle>
             <Time>
@@ -419,45 +405,6 @@ const IncDecButtonWrapper = styled.div`
   height: max-content;
   display: flex;
   flex-direction: column;
-`;
-
-const DifficultyArea = styled(Box)`
-  height: 45%;
-  padding: 20px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  align-content: center;
-  font-family: 'TTTogether';
-  font-size: ${({ theme }) => theme.fontSizes.xxl};
-  color: ${({ theme }) => theme.colors.DARK_LAVA};
-`;
-
-const DifficultyButton = styled.button`
-  width: 70%;
-  height: 60px;
-  border: none;
-  border-radius: 10px;
-  background-color: ${({ theme }) => theme.colors.DIM_GRAY};
-  font-family: 'TTTogether';
-  color: ${({ theme }) => theme.colors.FLORAL_WHITE};
-  margin-top: 10px;
-  font-size: ${({ theme }) => theme.fontSizes.xl};
-  cursor: pointer;
-
-  ${(props) =>
-    props.selected
-      ? css`
-          opacity: 100%;
-        `
-      : css`
-          opacity: 50%;
-        `}
-
-  &:first-child {
-    margin-top: 40px;
-  }
 `;
 
 const SetTime = styled(Box)`

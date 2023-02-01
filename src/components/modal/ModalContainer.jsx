@@ -11,6 +11,7 @@ const MODAL_COMPONENTS = {
   kick: loadable(() => import('./KickModal')),
   editProfile: loadable(() => import('./EditProfileModal')),
   description: loadable(() => import('./DescriptionModal')),
+  gameMode: loadable(() => import('./GameModeModal')),
 };
 
 function ModalContainer() {
