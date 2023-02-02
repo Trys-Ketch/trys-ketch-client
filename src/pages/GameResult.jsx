@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import { nanoid } from 'nanoid';
 import { closeStomp } from '../app/slices/ingameSlice';
 import Container from '../components/layout/Container';
 import { store } from '../app/configStore';
@@ -16,12 +15,11 @@ import MicButton from '../components/button/MicButton';
 import MuteUserList from '../components/mute/MuteUserList';
 import { setLocalMute } from '../app/slices/muteSlice';
 import { toast } from '../components/toast/ToastProvider';
-import arrow from '../assets/icons/right-arrow.svg';
-import KeywordResult from '../components/gameResult/KeywordResult';
-import ImageResult from '../components/gameResult/ImageResult';
+import PrevNextButton from '../components/gameResult/PrevNextButton';
+import KeywordImageResult from '../components/gameResult/KeywordImageResult';
 
 let token;
-const subArray = [];
+let subArray = [];
 let resultArray;
 let userList;
 
@@ -42,6 +40,11 @@ function GameResult() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    token = '';
+    subArray = [];
+    resultArray = [];
+    userList = [];
+
     const { member } = store.getState().login;
     if (member === 'guest') {
       token = cookies.guest;
@@ -50,6 +53,7 @@ function GameResult() {
     }
 
     subArray.push(
+      // 게임 결과 화면에서 필요한 정보를 받아옵니다.
       ingameStompClient.subscribe(`/queue/game/result/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
         resultArray = data.result;
@@ -59,18 +63,21 @@ function GameResult() {
       }),
     );
     subArray.push(
+      // 게임이 끝났으면 서버로부터 끝났다는 데이터를 받아옵니다.
       ingameStompClient.subscribe(`/topic/game/end/${id}`, (message) => {
         const data = JSON.parse(message.body);
         setIsGameEnd(data.end);
       }),
     );
     subArray.push(
+      // 다음 키워드 인덱스를 가져옵니다.
       ingameStompClient.subscribe(`/topic/game/next-keyword-index/${id}`, (message) => {
         const data = JSON.parse(message.body);
         setNowKeywordIndex(data.keywordIndex);
       }),
     );
     subArray.push(
+      // 키워드 인덱스를 이전으로 되돌립니다.
       ingameStompClient.subscribe(`/topic/game/prev-keyword-index/${id}`, (message) => {
         const data = JSON.parse(message.body);
         setNowKeywordIndex(data.keywordIndex);
@@ -161,73 +168,24 @@ function GameResult() {
           width: '1200px',
         }}
       >
-        {isLoading ? null : <ResultUserList userList={userList} />}
+        {!isLoading && <ResultUserList userList={userList} />}
         <ResultArea>
-          {isLoading ? null : (
-            <FirstKeyword>{resultArray[nowKeywordIndex][0].keyword}</FirstKeyword>
-          )}
-          {isLoading
-            ? null
-            : resultArray[nowKeywordIndex].map((result, idx) => {
-                if (idx % 2 === 0)
-                  return (
-                    <KeywordResult
-                      key={`keyword-${nanoid()}`}
-                      nickname={result.nickname}
-                      userImg={result.userImgPath}
-                      keyword={result.keyword !== 'null' ? result.keyword : '미제출'}
-                    />
-                  );
-                return (
-                  <ImageResult
-                    key={`image-${result.imgId}`}
-                    member={member}
-                    nickname={result.nickname}
-                    imgId={result.imgId}
-                    img={result.imgPath}
-                    userImg={result.userImgPath}
-                  />
-                );
-              })}
+          {!isLoading && <FirstKeyword>{resultArray[nowKeywordIndex][0].keyword}</FirstKeyword>}
+          <KeywordImageResult
+            isLoading={isLoading}
+            resultArray={resultArray}
+            nowKeywordIndex={nowKeywordIndex}
+            member={member}
+          />
           {isHost && (
             <PrevNextButtonWrapper>
               {!(nowKeywordIndex === 0) && (
-                <PrevNextButton onClick={() => prevKeywordIndex()} style={{ marginRight: 'auto' }}>
-                  <img
-                    style={{
-                      transform: 'scaleX(-1)',
-                      marginRight: '10px',
-                    }}
-                    src={arrow}
-                    alt="prev"
-                  />
-                  이전
-                </PrevNextButton>
+                <PrevNextButton isPrev handleChange={() => prevKeywordIndex()} />
               )}
               {!isLast && (
-                <PrevNextButton onClick={() => nextKeywordIndex()} style={{ marginLeft: 'auto' }}>
-                  다음
-                  <ArrowImg
-                    style={{
-                      marginLeft: '10px',
-                    }}
-                    src={arrow}
-                    alt="next"
-                  />
-                </PrevNextButton>
+                <PrevNextButton isPrev={false} isNext handleChange={() => nextKeywordIndex()} />
               )}
-              {isLast && (
-                <PrevNextButton onClick={() => endGame()} style={{ marginLeft: 'auto' }}>
-                  게임 종료
-                  <ArrowImg
-                    style={{
-                      marginLeft: '10px',
-                    }}
-                    src={arrow}
-                    alt="next"
-                  />
-                </PrevNextButton>
-              )}
+              {isLast && <PrevNextButton isPrev={false} isLast handleChange={() => endGame()} />}
             </PrevNextButtonWrapper>
           )}
         </ResultArea>
@@ -235,24 +193,6 @@ function GameResult() {
     </>
   );
 }
-
-const ArrowImg = styled.img`
-  height: '80%';
-  aspect-ratio: 'auto 1/1';
-  vertical-align: 'middle';
-  margin: 'auto 0';
-  margin-left: '10px';
-`;
-
-const PrevNextButton = styled.button`
-  height: 50px;
-  line-height: 50px;
-  width: max-content;
-  font-size: 24px;
-  font-weight: ${({ theme }) => theme.fontWeight.semibold};
-  color: #746b5f;
-  cursor: pointer;
-`;
 
 const PrevNextButtonWrapper = styled.div`
   display: flex;
@@ -273,17 +213,6 @@ const FirstKeyword = styled.div`
   line-height: 80px;
   border-radius: 15px;
   text-align: center;
-`;
-
-const Keyword = styled.pre`
-  color: ${({ theme }) => theme.colors.DARK_LAVA};
-  display: block;
-  width: max-content;
-  padding: 15px;
-  margin-left: 15px;
-  border-radius: 10px;
-  background-color: ${({ theme }) => theme.colors.ANTIQUE_WHITE};
-  line-height: 20px;
 `;
 
 const ResultArea = styled.div`

@@ -49,15 +49,16 @@ function Lobby() {
   //   const evtSource = new EventSource(`${process.env.REACT_APP_API_URL}/api/sse/rooms`);
 
   //   evtSource.onopen = () => {
-  //     console.log('open');
   //     // 연결됐을때 방 정보 받아오기
   //     evtSource.addEventListener('connect', (event) => {
+  //       console.log('open');
   //       const data = JSON.parse(event.data);
   //       console.log(data);
   //       setRooms(data);
   //     });
   //     // 방 정보가 변할 때 방 정보 받아오기
   //     evtSource.addEventListener('changeRoom', (event) => {
+  //       console.log('change');
   //       const data = JSON.parse(event.data);
   //       console.log(data);
   //       setRooms(data);
