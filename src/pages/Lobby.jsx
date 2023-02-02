@@ -130,7 +130,7 @@ function Lobby() {
             </FlatButton>
           </SideTop>
           <SideBottom>
-            <Button>게임 방법</Button>
+            <Button onClick={() => openModal({ type: 'howToPlay' })}>게임 방법</Button>
             <Button onClick={linkToPractice}>연습장</Button>
           </SideBottom>
         </Side>
