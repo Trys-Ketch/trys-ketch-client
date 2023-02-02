@@ -69,7 +69,7 @@ const BtnArea = styled.div`
   }
 `;
 
-function Modal({ width = '400px', children, title, btnText, onConfirm }) {
+function Modal({ width = '400px', children, title, btnText, onConfirm, hasBtn = true }) {
   const { closeModal } = useModal();
 
   const handleClose = () => {
@@ -91,9 +91,11 @@ function Modal({ width = '400px', children, title, btnText, onConfirm }) {
         <ContentsWrap>
           <Title>{title}</Title>
           <Content onKeyPress={handleKeyPress}>{children}</Content>
-          <BtnArea>
-            <FlatButton onClick={onConfirm}>{btnText}</FlatButton>
-          </BtnArea>
+          {hasBtn && (
+            <BtnArea>
+              <FlatButton onClick={onConfirm}>{btnText}</FlatButton>
+            </BtnArea>
+          )}
         </ContentsWrap>
       </ModalWrap>
     </Overlay>

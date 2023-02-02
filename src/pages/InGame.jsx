@@ -263,6 +263,7 @@ function InGame() {
               isKeywordState
               isGuessingState={false}
               isDrawingState={false}
+              isPracticeState={false}
               submitNum={submitNum}
               maxSubmitNum={maxSubmitNum}
               round={round}
@@ -279,6 +280,7 @@ function InGame() {
               isKeywordState={false}
               isGuessingState={false}
               isDrawingState
+              isPracticeState={false}
               submitNum={submitNum}
               maxSubmitNum={maxSubmitNum}
               round={round}
@@ -296,6 +298,7 @@ function InGame() {
               isKeywordState={false}
               isGuessingState
               isDrawingState={false}
+              isPracticeState={false}
               submitNum={submitNum}
               maxSubmitNum={maxSubmitNum}
               round={round}
