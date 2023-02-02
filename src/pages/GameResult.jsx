@@ -292,20 +292,10 @@ const ResultArea = styled.div`
   width: 62.2%;
   height: 100%;
   display: block;
-  overflow: scroll;
   overflow-x: hidden;
   background-color: ${({ theme }) => theme.colors.FLORAL_WHITE};
   border-radius: 10px;
-  &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.4);
-  }
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.DIM_GRAY};
-    border-radius: 6px;
-  }
+  ${({ theme }) => theme.common.scroll};
 `;
 
 export default GameResult;
