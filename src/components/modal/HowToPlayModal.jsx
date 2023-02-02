@@ -1,10 +1,13 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import Modal from '../common/Modal';
-import useModal from '../../hooks/useModal';
 import arrow from '../../assets/icons/right-arrow.svg';
+import exp1 from '../../assets/images/explain1.png';
+import exp2 from '../../assets/images/explain2.png';
+import exp3 from '../../assets/images/explain3.png';
+import exp4 from '../../assets/images/explain4.png';
 
-const imgArray = ['/img/설명1.png', '/img/설명2.png', '/img/설명3.png', '/img/설명4.png'];
+const imgArray = [exp1, exp2, exp3, exp4];
 
 function HowToPlayModal() {
   const [nowImg, setNowImg] = useState(0);
