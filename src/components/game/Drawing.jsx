@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import styled from 'styled-components';
 import Container from '../layout/Container';
 import Paint from '../painting/Paint';
-// import useTimer from '../../hooks/useTimer';
+import useTimer from '../../hooks/useTimer';
 import CircleTimer from './CircleTimer';
 import SubmittedPlayer from './SubmittedPlayer';
 import Tooltip from '../common/Tooltip';
@@ -31,12 +31,12 @@ function Drawing({
 }) {
   const pathRef = useRef(null);
 
-  // useTimer(pathRef, CENTER, CIRCLE_RADIUS, STROKE_WIDTH, timeLimit, gameState);
+  useTimer(pathRef, CENTER, CIRCLE_RADIUS, STROKE_WIDTH, timeLimit, gameState);
 
   return (
     <Container style={{ paddingLeft: '0px', height: '680px', width: '1200px' }}>
       <LeftDiv>
-        {/* <Tooltip message="타이머/라운드">
+        <Tooltip message="타이머/라운드">
           <CircleTimer
             strokeWidth={STROKE_WIDTH}
             circleRadius={CIRCLE_RADIUS}
@@ -44,7 +44,7 @@ function Drawing({
             pathRef={pathRef}
             round={round}
           />
-        </Tooltip> */}
+        </Tooltip>
         <Tooltip message="제출/총인원">
           <SubmittedPlayer submitNum={submitNum} maxSubmitNum={maxSubmitNum} />
         </Tooltip>
@@ -67,7 +67,6 @@ function Drawing({
 }
 
 const LeftDiv = styled.div`
-  /* position: relative; */
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
