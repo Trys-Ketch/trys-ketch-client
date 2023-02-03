@@ -105,20 +105,11 @@ function Lobby() {
               <EmptyRoomList />
             )}
           </RoomContainer>
-          <RoomRefreshButton onClick={() => getRooms(page)}>
-            <img src={refresh} alt="refresh" />
-          </RoomRefreshButton>
         </Main>
       </Container>
     </>
   );
 }
-
-const RoomRefreshButton = styled(RefreshButton)`
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-`;
 
 const Main = styled.div`
   display: flex;
