@@ -1,7 +1,8 @@
 import React from 'react';
+import Drawing from '../components/game/Drawing';
 
 function Practice() {
-  return <div>Practice</div>;
+  return <Drawing isDrawingState isPracticeState />;
 }
 
 export default Practice;

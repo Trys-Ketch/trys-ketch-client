@@ -10,7 +10,15 @@ let timerID;
 // 2초 간격으로 세번
 const ALARM_TIME = 6 * 1000;
 
-function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit, gameState) {
+function useTimer(
+  pathRef,
+  center,
+  circleRadius,
+  strokeWidth,
+  timeLimit,
+  gameState,
+  isPracticeState,
+) {
   const [degree, setDegree] = useState(1);
   const dispatch = useDispatch();
 
@@ -58,7 +66,6 @@ function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit, gameSta
   }
 
   function getTimerRadius() {
-    console.log(timeLimit);
     timerID = setInterval(() => {
       const nowTime = new Date().getTime();
       setDegree(1 - (nowTime - startTime) / timeLimit);
@@ -83,23 +90,27 @@ function useTimer(pathRef, center, circleRadius, strokeWidth, timeLimit, gameSta
   // }
 
   useEffect(() => {
-    pathRef.current.setAttribute(
-      'd',
-      describeArc(
-        center - strokeWidth,
-        center - strokeWidth,
-        circleRadius - strokeWidth * 2,
-        0,
-        360 * degree,
-      ),
-    );
+    if (!isPracticeState) {
+      pathRef.current.setAttribute(
+        'd',
+        describeArc(
+          center - strokeWidth,
+          center - strokeWidth,
+          circleRadius - strokeWidth * 2,
+          0,
+          360 * degree,
+        ),
+      );
+    }
   }, [degree]);
 
   useEffect(() => {
-    startTime = new Date().getTime();
-    getTimerRadius();
+    if (!isPracticeState) {
+      startTime = new Date().getTime();
+      getTimerRadius();
+    }
     return () => {
-      clearInterval(timerID);
+      if (timerID) clearInterval(timerID);
     };
   }, [gameState, timeLimit]);
 

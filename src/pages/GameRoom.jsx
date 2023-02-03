@@ -27,9 +27,11 @@ import { setLocalMute, setMuteUsers } from '../app/slices/muteSlice';
 import MuteUserList from '../components/mute/MuteUserList';
 import useModal from '../hooks/useModal';
 import Difficulty from '../components/room/Difficulty';
+import useMuteUser from '../hooks/useMuteUser';
+import useGameRoomStomp from '../hooks/useGameRoomStomp';
 
 let token;
-const subArray = [];
+let subArray = [];
 
 function GameRoom() {
   const navigate = useNavigate();
@@ -54,6 +56,8 @@ function GameRoom() {
   const localIsMuted = useSelector((state) => state.mute.localMute);
 
   const { openModal } = useModal();
+  useMuteUser(attendees, muteUser);
+  useGameRoomStomp(subArray, token, id, socketID, setIsIngame, setDifficulty, setTimeLimit);
 
   const getRoomDetail = () => {
     roomAPI
@@ -170,6 +174,7 @@ function GameRoom() {
   }, [attendees]);
 
   useEffect(() => {
+    subArray = [];
     token = getCookie(member === 'guest' ? 'guest' : 'access_token');
   }, []);
 

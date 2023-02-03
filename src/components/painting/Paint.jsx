@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { nanoid } from 'nanoid';
+import { saveAs } from 'file-saver';
 import floodFill from '../../utils/floodFill';
 import Button from '../common/Button';
 import eraser from '../../assets/icons/eraser-icon.svg';
@@ -24,9 +25,10 @@ let currentColor = 'black';
 function Paint({
   isKeywordState,
   isGuessingState,
-  isDrawingState = true,
+  isDrawingState,
+  isPracticeState,
   toggleReady,
-  keyword = '이거 발견하면 ㄹㅇ 천재 ㅇㅈ',
+  keyword = '연습장',
   setKeyword,
   isSubmitted,
   submitImg,
@@ -323,6 +325,32 @@ function Paint({
     }
   }, [isDrawingState]);
 
+  function canvasToBlob() {
+    return new Promise((resolve) => {
+      canvasRef.current.toBlob(resolve);
+    });
+  }
+
+  function saveImage() {
+    canvasToBlob().then((blob) => {
+      saveAs(blob, 'trys-ketch-practice.png');
+    });
+  }
+
+  useEffect(() => {
+    function keyPress(e) {
+      const evtobj = window.event ? window.event : e;
+      if (evtobj.keyCode === 90 && evtobj.ctrlKey) {
+        undo();
+      }
+    }
+    if (isDrawingState) document.addEventListener('keydown', keyPress, false);
+    else document.removeEventListener('keydown', keyPress, false);
+    return () => {
+      document.removeEventListener('keydown', keyPress, false);
+    };
+  }, [isDrawingState, ctx]);
+
   return (
     <Wrapper>
       <CanvasArea>
@@ -420,6 +448,7 @@ function Paint({
                     onClick={() => {
                       setThickness(thickness[i] * 2);
                       setNowThickness(() => i);
+                      if (eventState === 'fill') setDrawing();
                     }}
                   >
                     <ThicknessCircle key={v} style={{ width: `${v * 2}px`, height: `${v * 2}px` }}>
@@ -510,7 +539,7 @@ function Paint({
             </Tooltip>
           </UndoRedoWrapper>
         )}
-        {isDrawingState && (
+        {isDrawingState && !isPracticeState && (
           <Button
             style={{
               height: '11%',
@@ -523,7 +552,10 @@ function Paint({
             }}
           >
             <div
-              style={{ fontFamily: 'TTTogether', fontSize: `${({ theme }) => theme.fontSizes.xl}` }}
+              style={{
+                fontFamily: 'TTTogether',
+                fontSize: `${({ theme }) => theme.fontSizes.xl}`,
+              }}
             >
               {isSubmitted ? '취소' : '제출'}
             </div>
@@ -544,9 +576,33 @@ function Paint({
             }}
           >
             <div
-              style={{ fontFamily: 'TTTogether', fontSize: `${({ theme }) => theme.fontSizes.xl}` }}
+              style={{
+                fontFamily: 'TTTogether',
+                fontSize: `${({ theme }) => theme.fontSizes.xl}`,
+              }}
             >
               {isSubmitted ? '취소' : '제출'}
+            </div>
+          </Button>
+        )}
+        {isPracticeState && (
+          <Button
+            style={{
+              height: '11%',
+              width: '100%',
+            }}
+            onClick={() => {
+              saveImage();
+              toast.success('저장되었습니다.');
+            }}
+          >
+            <div
+              style={{
+                fontFamily: 'TTTogether',
+                fontSize: `${({ theme }) => theme.fontSizes.xl}`,
+              }}
+            >
+              저장
             </div>
           </Button>
         )}
