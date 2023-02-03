@@ -1,13 +1,16 @@
 import { useEffect } from 'react';
 import SockJS from 'sockjs-client';
 import * as Stomp from '@stomp/stompjs';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { closeStomp, setStomp } from '../app/slices/ingameSlice';
+import { getCookie } from '../utils/cookie';
 
-function useGameRoomStomp(subArray, token, id, socketID, setIsIngame, setDifficulty, setTimeLimit) {
+function useGameRoomStomp(subArray, id, socketID, setIsIngame, setDifficulty, setTimeLimit) {
   const dispatch = useDispatch();
+  const member = useSelector((state) => state.login.member);
 
   useEffect(() => {
+    const token = getCookie(member === 'guest' ? 'guest' : 'access_token');
     const client = new Stomp.Client({
       debug: (str) => {},
       splitLargeFrames: true,
