@@ -29,9 +29,11 @@ import MuteUserList from '../components/mute/MuteUserList';
 import useModal from '../hooks/useModal';
 import Modal from '../components/common/Modal';
 import Difficulty from '../components/room/Difficulty';
+import useMuteUser from '../hooks/useMuteUser';
+import useGameRoomStomp from '../hooks/useGameRoomStomp';
 
 let token;
-const subArray = [];
+let subArray = [];
 
 function GameRoom() {
   const navigate = useNavigate();
@@ -56,6 +58,8 @@ function GameRoom() {
   const localIsMuted = useSelector((state) => state.mute.localMute);
 
   const { openModal } = useModal();
+  useMuteUser(attendees, muteUser);
+  useGameRoomStomp(subArray, token, id, socketID, setIsIngame, setDifficulty, setTimeLimit);
 
   const getRoomDetail = () => {
     roomAPI
@@ -172,94 +176,9 @@ function GameRoom() {
   }, [attendees]);
 
   useEffect(() => {
+    subArray = [];
     token = getCookie(member === 'guest' ? 'guest' : 'access_token');
   }, []);
-
-  useEffect(() => {
-    const client = new Stomp.Client({
-      debug: (str) => {},
-      splitLargeFrames: true,
-      webSocketFactory: () => new SockJS(`${process.env.REACT_APP_API_URL}/ws`),
-    });
-
-    client.onStompError = (frame) => {
-      console.error('Stomp Error!: ', frame.headers.message);
-      console.error('Additional details: ', frame.body);
-    };
-
-    client.onDisconnect = (frame) => {
-      dispatch(closeStomp());
-    };
-    dispatch(setStomp(client));
-
-    const p = new Promise((resolve, reject) => {
-      client.onConnect = (frame) => {
-        subArray.push(
-          client.subscribe(`/topic/game/start/${id}`, (message) => {
-            const data = JSON.parse(message.body);
-            setIsIngame(data.isIngame);
-          }),
-        );
-        subArray.push(
-          client.subscribe(`/topic/game/difficulty/${id}`, (message) => {
-            const data = JSON.parse(message.body);
-            setDifficulty(data.difficulty);
-          }),
-        );
-        subArray.push(
-          client.subscribe(`/topic/game/time-limit/${id}`, (message) => {
-            const data = JSON.parse(message.body);
-            setTimeLimit(data.timeLimit);
-          }),
-        );
-        subArray.push(
-          client.subscribe(`/queue/game/gameroom-data/${socketID}`, (message) => {
-            const data = JSON.parse(message.body);
-            setDifficulty(data.difficulty);
-            setTimeLimit(data.timeLimit);
-          }),
-        );
-
-        client.publish({
-          destination: '/app/game/gameroom-data',
-          body: JSON.stringify({ roomId: id, token, webSessionId: socketID }),
-        });
-
-        resolve();
-      };
-    }).then(() => {
-      dispatch(setStomp(client));
-    });
-
-    return () => {
-      for (let i = 0; i < subArray.length; i += 1) subArray[i].unsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (attendees.length > muteUser.length) {
-      const newMuteUser = [];
-      for (let i = muteUser.length; i < attendees.length; i += 1) {
-        newMuteUser.push({
-          nickname: attendees[i].nickname,
-          socketID: attendees[i].socketId,
-          isMuted: false,
-        });
-      }
-      dispatch(setMuteUsers([...muteUser, ...newMuteUser]));
-    } else {
-      const newMuteUsers = [];
-      for (let i = 0; i < attendees.length; i += 1) {
-        for (let j = 0; j < muteUser.length; j += 1) {
-          if (attendees[i].socketId === muteUser[j].socketID) {
-            newMuteUsers.push(muteUser[j]);
-            break;
-          }
-        }
-      }
-      dispatch(setMuteUsers([...newMuteUsers]));
-    }
-  }, [attendees]);
 
   useEffect(() => {
     openModal({ type: 'description' });

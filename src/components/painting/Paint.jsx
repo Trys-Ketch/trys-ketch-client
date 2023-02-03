@@ -448,6 +448,7 @@ function Paint({
                     onClick={() => {
                       setThickness(thickness[i] * 2);
                       setNowThickness(() => i);
+                      if (eventState === 'fill') setDrawing();
                     }}
                   >
                     <ThicknessCircle key={v} style={{ width: `${v * 2}px`, height: `${v * 2}px` }}>

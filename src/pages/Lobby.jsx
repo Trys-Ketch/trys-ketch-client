@@ -17,6 +17,7 @@ import RefreshButton from '../components/button/RefreshButton';
 import refresh from '../assets/icons/refresh-icon.svg';
 import GAEventTrack from '../ga/GAEventTrack';
 import GAEventTypes from '../ga/GAEventTypes';
+import useEventSource from '../hooks/useEventSource';
 
 function Lobby() {
   // const evtSource = new EventSource(`${process.env.REACT_APP_API_URL}/api/sse/rooms`);
@@ -28,6 +29,8 @@ function Lobby() {
   const [lastPage, setLastPage] = useState(1);
 
   const ROOM_PER_PAGE = 5;
+
+  useEventSource(`${process.env.REACT_APP_API_URL}/api/sse/rooms`, setRooms);
 
   const getRooms = (currentPage) => {
     roomAPI
@@ -44,53 +47,6 @@ function Lobby() {
   useEffect(() => {
     getRooms(page);
   }, [page]);
-
-  // useEffect(() => {
-  //   const evtSource = new EventSource(`${process.env.REACT_APP_API_URL}/api/sse/rooms`);
-
-  //   evtSource.onopen = () => {
-  //     console.log('open');
-  //     // 연결됐을때 방 정보 받아오기
-  //     evtSource.addEventListener('connect', (event) => {
-  //       const data = JSON.parse(event.data);
-  //       console.log(data);
-  //       setRooms(data);
-  //     });
-  //     // 방 정보가 변할 때 방 정보 받아오기
-  //     evtSource.addEventListener('changeRoom', (event) => {
-  //       const data = JSON.parse(event.data);
-  //       console.log(data);
-  //       setRooms(data);
-  //     });
-  //   };
-  //   evtSource.onmessage = (event) => {
-  //     console.log(event);
-  //   };
-
-  //   // evtSource.onmessage = (event) => {
-  //   //   const data = JSON.parse(event.data);
-  //   //   console.log(data);
-
-  //   //   switch (data.type) {
-  //   //     case 'ingame/attendee': {
-  //   //       setAttendees(data.attendee);
-  //   //       break;
-  //   //     }
-  //   //     case 'ingame/be_kicked': {
-  //   //       navigate('/', { replace: true });
-  //   //       toast.info('강퇴되었습니다');
-  //   //       break;
-  //   //     }
-  //   //     default: {
-  //   //       break;
-  //   //     }
-  //   //   }
-  //   // };
-
-  //   return () => {
-  //     evtSource.close();
-  //   };
-  // }, []);
 
   const handleOpenCreateRoom = () => {
     openModal({ type: 'createRoom' });
