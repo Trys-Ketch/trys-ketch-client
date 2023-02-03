@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import useIntersect from '../../hooks/useIntersect';
+import EmptyMyImage from './EmptyMyImage';
 
 function MyImage({ isFetching, hasNextPage, fetchNextImage, images }) {
   const ref = useIntersect(async (entry, observer) => {
@@ -10,9 +11,17 @@ function MyImage({ isFetching, hasNextPage, fetchNextImage, images }) {
     }
   });
 
+  if (images.length === 0) {
+    return (
+      <>
+        <EmptyMyImage />
+        <Target ref={ref} />
+      </>
+    );
+  }
   return (
     <ImageWrapper>
-      {images?.map((img, _) => (
+      {images?.map((img) => (
         <Canvas key={img.imgId}>
           <img src={img.imgPath} alt={img.imgId} loading="lazy" />
         </Canvas>
