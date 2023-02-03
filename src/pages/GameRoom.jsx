@@ -17,7 +17,6 @@ import dec from '../assets/icons/time-decrease-icon.svg';
 import QuitButton from '../components/button/QuitButton';
 import RoomTitle from '../components/room/RoomTitle';
 import ChatBox from '../components/chat/ChatBox';
-import Explain from '../components/room/Explain';
 import roomAPI from '../api/room';
 import { toast } from '../components/toast/ToastProvider';
 import { getCookie } from '../utils/cookie';
@@ -27,7 +26,6 @@ import GAEventTrack from '../ga/GAEventTrack';
 import { setLocalMute, setMuteUsers } from '../app/slices/muteSlice';
 import MuteUserList from '../components/mute/MuteUserList';
 import useModal from '../hooks/useModal';
-import Modal from '../components/common/Modal';
 import Difficulty from '../components/room/Difficulty';
 
 let token;
@@ -260,10 +258,6 @@ function GameRoom() {
       dispatch(setMuteUsers([...newMuteUsers]));
     }
   }, [attendees]);
-
-  useEffect(() => {
-    openModal({ type: 'description' });
-  }, []);
 
   function sendDifficulty(difficulty) {
     ingameStompClient.publish({
