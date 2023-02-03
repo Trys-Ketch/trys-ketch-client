@@ -5,16 +5,12 @@ function useEventSource(url, setRooms) {
     const evtSource = new EventSource(url);
 
     const connectEvent = (event) => {
-      console.log('open');
       const data = JSON.parse(event.data);
-      console.log(data);
       setRooms(data);
     };
 
     const changeEvent = (event) => {
-      console.log('change');
       const data = JSON.parse(event.data);
-      console.log(data);
       setRooms(data);
     };
 
@@ -25,11 +21,9 @@ function useEventSource(url, setRooms) {
       evtSource.addEventListener('changeRoom', changeEvent);
     };
     evtSource.onmessage = (event) => {
-      console.log(event);
+      // console.log(event);
     };
     evtSource.onerror = (e) => {
-      console.log('error:', e);
-      console.log('error:', evtSource);
       evtSource.removeEventListener('connect', connectEvent);
       evtSource.removeEventListener('changeRoom', changeEvent);
     };
@@ -37,9 +31,7 @@ function useEventSource(url, setRooms) {
     return () => {
       evtSource.removeEventListener('connect', connectEvent);
       evtSource.removeEventListener('changeRoom', changeEvent);
-      console.log('Event Source is closed');
       evtSource.close();
-      console.log(evtSource);
     };
   }, []);
 }

@@ -15,22 +15,22 @@ import Tab from '../components/common/Tab';
 import MyBadge from '../components/mypage/MyBadge';
 import MyImage from '../components/mypage/MyImage';
 import myAPI from '../api/my';
+import MyImageLock from '../components/mypage/MyImageLock';
+import MyBadgeLock from '../components/mypage/MyBadgeLock';
 
 function MyPage() {
   const navigate = useNavigate();
   const { member } = useSelector((state) => state.login);
   // 뱃지
-  const [myBadges, setMyBadges] = useState({
-    // playtime: [],
-    // trial: [],
-    // visit: [],
-  });
+  const [myBadges, setMyBadges] = useState({});
 
   // 좋아요한 이미지
   const [myImages, setMyImages] = useState([]);
   const [page, setPage] = useState(0);
   const [isFetching, setFetching] = useState(false);
   const [hasNextPage, setNextPage] = useState(true);
+
+  let menus;
 
   const getBadge = () => {
     myAPI.getBadge().then((res) => {
@@ -64,20 +64,27 @@ function MyPage() {
     navigate('/login');
   };
 
-  const menus = [
-    { menu: '나의 뱃지', content: <MyBadge badges={myBadges} fetchBadge={getBadge} /> },
-    {
-      menu: '좋아요한 이미지',
-      content: (
-        <MyImage
-          isFetching={isFetching}
-          hasNextPage={hasNextPage}
-          fetchNextImage={getLikedNextImages}
-          images={myImages}
-        />
-      ),
-    },
-  ];
+  if (member === 'guest') {
+    menus = [
+      { menu: '나의 뱃지', content: <MyBadgeLock /> },
+      { menu: '좋아요한 이미지', content: <MyImageLock /> },
+    ];
+  } else {
+    menus = [
+      { menu: '나의 뱃지', content: <MyBadge badges={myBadges} fetchBadge={getBadge} /> },
+      {
+        menu: '좋아요한 이미지',
+        content: (
+          <MyImage
+            isFetching={isFetching}
+            hasNextPage={hasNextPage}
+            fetchNextImage={getLikedNextImages}
+            images={myImages}
+          />
+        ),
+      },
+    ];
+  }
 
   return (
     <>

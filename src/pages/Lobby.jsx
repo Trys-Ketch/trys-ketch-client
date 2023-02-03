@@ -13,14 +13,11 @@ import useModal from '../hooks/useModal';
 import MyProfile from '../components/user/MyProfile';
 import roomAPI from '../api/room';
 import { toast } from '../components/toast/ToastProvider';
-import RefreshButton from '../components/button/RefreshButton';
-import refresh from '../assets/icons/refresh-icon.svg';
 import GAEventTrack from '../ga/GAEventTrack';
 import GAEventTypes from '../ga/GAEventTypes';
 import useEventSource from '../hooks/useEventSource';
 
 function Lobby() {
-  // const evtSource = new EventSource(`${process.env.REACT_APP_API_URL}/api/sse/rooms`);
   const navigate = useNavigate();
   const { openModal } = useModal();
   const [rooms, setRooms] = useState([]);
@@ -62,7 +59,7 @@ function Lobby() {
   };
 
   const linkToPractice = () => {
-    // navigate('/practice');
+    navigate('/practice');
   };
 
   useEffect(() => {
