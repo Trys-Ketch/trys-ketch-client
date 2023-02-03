@@ -16,12 +16,14 @@ import GAEventTrack from '../ga/GAEventTrack';
 import GAEventTypes from '../ga/GAEventTypes';
 import FloatBox from '../components/layout/FloatBox';
 import SettingButton from '../components/button/SettingButton';
+import useModal from '../hooks/useModal';
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { sns } = useParams();
   const [searchParams] = useSearchParams();
+  const { openModal } = useModal();
 
   const code = searchParams.get('code');
   const state = searchParams.get('state');
@@ -30,12 +32,15 @@ function Login() {
     (res) => {
       if (res.data.statusCode === 200) {
         dispatch(setLogin(sns));
+        if (res.data.data) {
+          openModal({ type: 'achievement', props: { badges: res.data.data } });
+        }
         setCookie(res.headers.authorization);
         toast.success(res.data.message);
         navigate('/');
       }
     },
-    [dispatch, navigate, sns],
+    [dispatch, navigate, openModal, sns],
   );
 
   const kakaoLogin = useCallback(() => {

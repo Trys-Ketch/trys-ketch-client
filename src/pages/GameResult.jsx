@@ -19,6 +19,7 @@ import { toast } from '../components/toast/ToastProvider';
 import arrow from '../assets/icons/right-arrow.svg';
 import KeywordResult from '../components/gameResult/KeywordResult';
 import ImageResult from '../components/gameResult/ImageResult';
+import useModal from '../hooks/useModal';
 
 let token;
 const subArray = [];
@@ -26,7 +27,7 @@ let resultArray;
 let userList;
 
 function GameResult() {
-  const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
+  const [cookies] = useCookies(['access_token', 'guest']);
   const { member } = useSelector((state) => state.login);
   const ingameStompClient = useSelector((state) => state.ingame.stomp);
   const socketID = useSelector((state) => state.ingame.id);
@@ -38,6 +39,7 @@ function GameResult() {
   const [isGameEnd, setIsGameEnd] = useState(false);
   const [isLast, setIsLast] = useState(false);
   const [nowKeywordIndex, setNowKeywordIndex] = useState(0);
+  const { openModal } = useModal();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -85,6 +87,14 @@ function GameResult() {
           dispatch(closeStomp());
           navigate(`/room/${id}`, { replace: true });
           toast.error('인원이 모자라 진행이 어렵습니다.');
+        }
+      }),
+    );
+    subArray.push(
+      ingameStompClient.subscribe(`/queue/game/achievement/${socketID}`, (message) => {
+        const data = JSON.parse(message.body);
+        if (data.achievement !== []) {
+          openModal({ type: 'achievement', props: { badges: data.achievement } });
         }
       }),
     );
