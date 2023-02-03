@@ -57,7 +57,7 @@ function GameRoom() {
 
   const { openModal } = useModal();
   useMuteUser(attendees, muteUser);
-  useGameRoomStomp(subArray, token, id, socketID, setIsIngame, setDifficulty, setTimeLimit);
+  useGameRoomStomp(subArray, id, socketID, setIsIngame, setDifficulty, setTimeLimit);
 
   const getRoomDetail = () => {
     roomAPI
