@@ -285,10 +285,12 @@ function Paint({
 
   useEffect(() => {
     if (forceSubmit && isDrawingState && !isSubmitted) {
+      console.log('force submit');
       const canvas = canvasRef.current;
       toggleReady(canvas, false);
       dispatch(setForceSubmit(false));
     } else if (forceSubmit && (isKeywordState || isGuessingState) && !isSubmitted) {
+      console.log('force submit');
       toggleReady(false);
       dispatch(setForceSubmit(false));
     }
