@@ -168,7 +168,7 @@ function GameResult() {
           width: '1200px',
         }}
       >
-        {!isLoading && <ResultUserList userList={userList} />}
+        {!isLoading ? <ResultUserList userList={userList} /> : <ResultUserList userList={[]} />}
         <ResultArea>
           {!isLoading && <FirstKeyword>{resultArray[nowKeywordIndex][0].keyword}</FirstKeyword>}
           <KeywordImageResult
