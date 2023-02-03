@@ -73,6 +73,19 @@ const common = {
     left: 50%;
     transform: translate(-50%, -50%);
   `,
+  scroll: `
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.4);
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #746b5f;
+      border-radius: 6px;
+    }
+  `,
 };
 
 const theme = {

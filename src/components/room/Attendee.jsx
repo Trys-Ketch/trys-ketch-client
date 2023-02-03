@@ -21,7 +21,6 @@ function Attendee({ user }) {
 
   const openKickModal = () => {
     openModal({ type: 'kick', props: { onKick: kick } });
-    // ({ type: 'kick' });
   };
 
   return (
@@ -63,16 +62,6 @@ const Nickname = styled.span`
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
   line-height: 1.5rem;
 `;
-
-// const UserActive = styled.div`
-//   display: flex;
-//   width: 80%;
-//   position: absolute;
-//   bottom: 10px;
-//   left: 50%;
-//   transform: translate(-50%, 0);
-//   align-items: center;
-// `;
 
 const UserMore = styled.button`
   position: absolute;

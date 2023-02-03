@@ -6,9 +6,15 @@ const imageToggleLike = async (imageId) => {
   return response;
 };
 
-// 좋아요한 이미지 조회
-const getLikedImages = async () => {
-  const response = await instance.get(`/api/mypage/image-like`);
+// 뱃지 조회
+const getBadge = async () => {
+  const response = await instance.get(`/api/mypage/badge`);
+  return response;
+};
+
+// 좋아요한 이미지 페이지 조회
+const getLikedImages = async (page) => {
+  const response = await instance.get(`/api/mypage/image-like?page=${page}`);
   return response;
 };
 
@@ -20,6 +26,7 @@ const changeProfile = async (nickname, imgUrl) => {
 
 const myAPI = {
   imageToggleLike,
+  getBadge,
   getLikedImages,
   changeProfile,
 };

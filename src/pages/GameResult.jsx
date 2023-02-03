@@ -15,6 +15,7 @@ import MicButton from '../components/button/MicButton';
 import MuteUserList from '../components/mute/MuteUserList';
 import { setLocalMute } from '../app/slices/muteSlice';
 import { toast } from '../components/toast/ToastProvider';
+import useModal from '../hooks/useModal';
 import PrevNextButton from '../components/gameResult/PrevNextButton';
 import KeywordImageResult from '../components/gameResult/KeywordImageResult';
 
@@ -24,7 +25,7 @@ let resultArray;
 let userList;
 
 function GameResult() {
-  const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
+  const [cookies] = useCookies(['access_token', 'guest']);
   const { member } = useSelector((state) => state.login);
   const ingameStompClient = useSelector((state) => state.ingame.stomp);
   const socketID = useSelector((state) => state.ingame.id);
@@ -36,6 +37,7 @@ function GameResult() {
   const [isGameEnd, setIsGameEnd] = useState(false);
   const [isLast, setIsLast] = useState(false);
   const [nowKeywordIndex, setNowKeywordIndex] = useState(0);
+  const { openModal } = useModal();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -92,6 +94,14 @@ function GameResult() {
           dispatch(closeStomp());
           navigate(`/room/${id}`, { replace: true });
           toast.error('인원이 모자라 진행이 어렵습니다.');
+        }
+      }),
+    );
+    subArray.push(
+      ingameStompClient.subscribe(`/queue/game/achievement/${socketID}`, (message) => {
+        const data = JSON.parse(message.body);
+        if (data.achievement !== []) {
+          openModal({ type: 'achievement', props: { badges: data.achievement } });
         }
       }),
     );
@@ -221,20 +231,10 @@ const ResultArea = styled.div`
   width: 62.2%;
   height: 100%;
   display: block;
-  overflow: scroll;
   overflow-x: hidden;
   background-color: ${({ theme }) => theme.colors.FLORAL_WHITE};
   border-radius: 10px;
-  &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.4);
-  }
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.DIM_GRAY};
-    border-radius: 6px;
-  }
+  ${({ theme }) => theme.common.scroll};
 `;
 
 export default GameResult;

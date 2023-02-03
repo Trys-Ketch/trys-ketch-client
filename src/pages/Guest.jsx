@@ -14,6 +14,9 @@ import RefreshButton from '../components/button/RefreshButton';
 import { toast } from '../components/toast/ToastProvider';
 import GAEventTrack from '../ga/GAEventTrack';
 import GAEventTypes from '../ga/GAEventTypes';
+import arrow from '../assets/icons/right-arrow.svg';
+import FloatBox from '../components/layout/FloatBox';
+import SettingButton from '../components/button/SettingButton';
 
 function Guest() {
   const [name, setName] = useState('');
@@ -50,6 +53,10 @@ function Guest() {
       .catch(() => toast.error('에러가 발생했습니다.'));
   };
 
+  const goToBack = () => {
+    navigate('/login');
+  };
+
   const getRandomNickname = () => {
     GAEventTrack(
       GAEventTypes.Category.userProfile,
@@ -81,27 +88,47 @@ function Guest() {
   }, []);
 
   return (
-    <Panel>
-      <ProfileBox>
-        <Avatar src={image} width="128px" height="128px" />
-        <ProfileRefreshBtn onClick={getRandomImage} />
-      </ProfileBox>
-      <InputBox>
-        <TextInput
-          maxLength="12"
-          width="500px"
-          value={name}
-          onChange={handleInput}
-          placeholder="닉네임을 입력해주세요"
-        />
-        <NameRefreshBtn onClick={getRandomNickname} />
-      </InputBox>
-      <Button width="350px" onClick={handleSubmit}>
-        완료
-      </Button>
-    </Panel>
+    <>
+      <FloatBox top={<SettingButton size="xlarge" />} />
+      <Panel>
+        <BackButton onClick={goToBack}>
+          <img src={arrow} alt="back" />
+        </BackButton>
+        <ProfileBox>
+          <Avatar src={image} width="128px" height="128px" />
+          <ProfileRefreshBtn onClick={getRandomImage} />
+        </ProfileBox>
+        <InputBox>
+          <TextInput
+            maxLength="12"
+            width="500px"
+            value={name}
+            onChange={handleInput}
+            placeholder="닉네임을 입력해주세요"
+          />
+          <NameRefreshBtn onClick={getRandomNickname} />
+        </InputBox>
+        <Button width="350px" onClick={handleSubmit}>
+          완료
+        </Button>
+      </Panel>
+    </>
   );
 }
+
+const BackButton = styled.div`
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  padding: 15px 10px;
+  cursor: pointer;
+
+  & img {
+    width: 30px;
+    height: 30px;
+    transform: rotate(180deg);
+  }
+`;
 
 const ProfileBox = styled.div`
   position: relative;
