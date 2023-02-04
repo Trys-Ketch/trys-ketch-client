@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import { closeStomp } from '../app/slices/ingameSlice';
+import { closeStomp, setForceSubmit } from '../app/slices/ingameSlice';
 import Container from '../components/layout/Container';
 import { store } from '../app/configStore';
 import ResultUserList from '../components/gameResult/ResultUserList';
@@ -149,6 +149,7 @@ function GameResult() {
 
   useEffect(() => {
     if (isGameEnd) {
+      dispatch(setForceSubmit(false));
       ingameStompClient.deactivate();
       dispatch(closeStomp());
       navigate(`/room/${id}`, { replace: true });
