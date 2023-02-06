@@ -5,7 +5,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { store } from '../app/configStore';
 import MicButton from '../components/button/MicButton';
 import SettingButton from '../components/button/SettingButton';
-import Drawing from '../components/game/Drawing';
 import FloatBox from '../components/layout/FloatBox';
 import MuteUserList from '../components/mute/MuteUserList';
 import { toast } from '../components/toast/ToastProvider';
@@ -13,6 +12,8 @@ import GAEventTrack from '../ga/GAEventTrack';
 import GAEventTypes from '../ga/GAEventTypes';
 import { setLocalMute } from '../app/slices/muteSlice';
 import { closeStomp } from '../app/slices/ingameSlice';
+import GameBoard from '../components/game/GameBoard';
+import nonsubmit from '../assets/images/non_submit.png';
 
 let token;
 const subArray = [];
@@ -61,20 +62,21 @@ function InGame() {
       }),
     );
     subArray.push(
-      // 모든 플레이어가 키워드 제출을 완료했을 때 round를 증가시키고 drawing컴포넌트를 보여줍니다.
+      // 모든 플레이어가 키워드 제출을 완료했을 때 gameState를 drawing으로 바꿉니다.
       ingameStompClient.subscribe(`/topic/game/submit-word/${id}`, (message) => {
         const data = JSON.parse(message.body);
         setCompleteKeywordSubmit(data.completeSubmit);
       }),
     );
     subArray.push(
+      // 모든 플레이어가 그림 제출을 완료했을 때 gameState를 guessing으로 바꿉니다.
       ingameStompClient.subscribe(`/topic/game/submit-image/${id}`, (message) => {
         const data = JSON.parse(message.body);
         setCompleteImageSubmit(data.completeSubmit);
       }),
     );
     subArray.push(
-      // game state가 drawing이 됐을 때 다른 플레이어가 작성한 키워드를 받아옵니다.
+      // game state가 drawing이 됐을 때 다른 플레이어가 작성한 키워드를 받아오고 round를 증가시킵니다.
       ingameStompClient.subscribe(`/queue/game/before-word/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
         if (data.keyword === 'null') setKeyword('미제출');
@@ -84,11 +86,11 @@ function InGame() {
       }),
     );
     subArray.push(
-      // game state가 guessing이 됐을 때 다른 플레이어가 그린 이미지를 받아옵니다.
+      // game state가 guessing이 됐을 때 다른 플레이어가 그린 이미지를 받아오고 round를 증가시킵니다.
       ingameStompClient.subscribe(`/queue/game/before-image/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
         setKeyword('');
-        if (data.image === 'null') setImage('/img/non_submit.png');
+        if (data.image === 'null') setImage(nonsubmit);
         else setImage(data.image);
         keywordIndex.current = data.keywordIndex;
         setRound((prev) => prev + 1);
@@ -129,10 +131,10 @@ function InGame() {
       }),
     );
 
-    // ingame페이지에 처음 들어왔을 때 서버에 랜덤 키워드를 요청합니다.
+    // ingame페이지에 처음 들어왔을 때 게임 진행에 필요한 정보를 서버에 요청합니다.
     ingameStompClient.publish({
       destination: '/app/game/ingame-data',
-      body: JSON.stringify({ roomId: id * 1, token }),
+      body: JSON.stringify({ roomId: id * 1, token, webSessionId: socketID }),
     });
 
     return () => {
@@ -259,7 +261,7 @@ function InGame() {
       {
         {
           keyword: (
-            <Drawing
+            <GameBoard
               isKeywordState
               isGuessingState={false}
               isDrawingState={false}
@@ -276,7 +278,7 @@ function InGame() {
             />
           ),
           drawing: (
-            <Drawing
+            <GameBoard
               isKeywordState={false}
               isGuessingState={false}
               isDrawingState
@@ -294,7 +296,7 @@ function InGame() {
             />
           ),
           guessing: (
-            <Drawing
+            <GameBoard
               isKeywordState={false}
               isGuessingState
               isDrawingState={false}

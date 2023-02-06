@@ -3,7 +3,6 @@ import styled, { css } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { nanoid } from 'nanoid';
 import { saveAs } from 'file-saver';
-import floodFill from '../../utils/floodFill';
 import Button from '../common/Button';
 import eraser from '../../assets/icons/eraser-icon.svg';
 import pencil from '../../assets/icons/pencil-icon.svg';
@@ -13,11 +12,21 @@ import IconButton from '../common/IconButton';
 import { setForceSubmit } from '../../app/slices/ingameSlice';
 import TextInput from '../common/TextInput';
 import { toast } from '../toast/ToastProvider';
-import GAEventTrack from '../../ga/GAEventTrack';
-import GAEventTypes from '../../ga/GAEventTypes';
 import undoIcon from '../../assets/icons/undo-icon.svg';
 import redoIcon from '../../assets/icons/redo-icon.svg';
 import Tooltip from '../common/Tooltip';
+import useCtx from '../../hooks/useCtx';
+import {
+  startDrawing,
+  finishDrawing,
+  drawCircle,
+  drawing,
+  setThickness,
+  setColor,
+  setEraser,
+  setDrawing,
+  fill,
+} from '../../utils/paintUtils';
 
 let historyPointer = 0;
 let currentColor = 'black';
@@ -71,160 +80,20 @@ function Paint({
   const forceSubmit = useSelector((state) => state.ingame.forceSubmit);
   const history = useRef([]).current;
 
-  const startDrawing = () => {
-    setIsDrawing(true);
-  };
-
-  const finishDrawing = () => {
-    setIsDrawing(false);
-  };
-
-  /**
-   * 선을 그리는 함수입니다.
-   * @param {event} param0
-   */
-  const drawing = ({ nativeEvent }) => {
-    const { offsetX, offsetY } = nativeEvent;
-
-    if (ctx) {
-      if (!isDrawing) {
-        ctx.beginPath();
-        ctx.moveTo(offsetX, offsetY);
-      } else {
-        ctx.lineTo(offsetX, offsetY);
-        ctx.stroke();
-      }
-    }
-  };
-
-  /**
-   * 원을 그리는 함수입니다.
-   * canvas에 클릭을 하고 마우스를 움직이지 않으면 아무것도 그려지지 않아 undo와 redo를 했을 때 동작하지 않는 것 처럼 보입니다.
-   * 이를 해결해기 위해 onclick시 펜의 굵기와 같은 반지름으로 원을 그려지게 하였습니다.
-   * @param {event} nativeEvent 이벤트 객체
-   */
-  const drawCircle = ({ nativeEvent }) => {
-    const { offsetX, offsetY } = nativeEvent;
-
-    if (ctx) {
-      ctx.beginPath();
-      ctx.arc(offsetX, offsetY, ctx.lineWidth / 64, 0, 2 * Math.PI);
-      ctx.stroke();
-      ctx.fillStyle = ctx.strokeStyle;
-      ctx.fill();
-    }
-  };
-
-  /**
-   * hex코드를 받아 rgb값으로 변환해주는 함수입니다.
-   * @param {string} hex #XXXXXX형태의 hex코드입니다.
-   * @returns {Array} 정수 값의 rgb가 담긴 배열
-   */
-  const hexToRgb = (hex) =>
-    hex
-      .replace(/^#?([A-F\d])([A-F\d])([A-F\d])$/i, (m, r, g, b) => `#${r}${r}${g}${g}${b}${b}`)
-      .substring(1)
-      .match(/.{2}/g)
-      .map((x) => parseInt(x, 16));
-
-  /**
-   * rgb코드를 받아 hex코드를 반환하는 함수입니다.
-   * @param {short} r red값
-   * @param {short} g green값
-   * @param {short} b blue값
-   * @returns {String} #XXXXXX형태의 hex코드
-   */
-  const rgbToHex = (r, g, b) =>
-    `#${[r, g, b]
-      .map((x) => {
-        const hex = x.toString(16);
-        return hex.length === 1 ? `0${hex}` : hex;
-      })
-      .join('')}`;
-
-  /**
-   * 선의 굵기를 지정하는 함수입니다.
-   * @param {int} pixel
-   */
-  function setThickness(pixel) {
-    const context = canvasRef.current.getContext('2d');
-    context.globalCompositeOperation = 'source-over';
-    context.lineWidth = pixel;
-    setCtx(context);
-    GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.Thickness);
-  }
-
-  /**
-   * 선의 색상을 지정하는 함수입니다.
-   * hex코드 또는 rgb(x, x, x)의 형태의 파라미터를 받습니다.
-   * @param {string} c
-   */
-  function setColor(c) {
-    currentColor = c;
-    const context = canvasRef.current.getContext('2d');
-    context.globalCompositeOperation = 'source-over';
-    context.strokeStyle = c;
-    setCtx(context);
-    GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.color, c);
-  }
-
-  /**
-   * 선의 투명도를 설정하는 함수입니다.
-   * 0과 1 사이의 실수를 파라미터로 받습니다.
-   * @param {double} op
-   */
-  function setOpacity(op) {
-    const context = canvasRef.current.getContext('2d');
-    context.globalCompositeOperation = 'source-over';
-    context.strokeStyle += op;
-    const rgb = context.strokeStyle.replace(/[^%,.\d]/g, '').split(',');
-    rgb.pop();
-    const hex = rgbToHex(rgb[0] * 1, rgb[1] * 1, rgb[2] * 1);
-    context.strokeStyle = hex + op;
-    setCtx(context);
-  }
-
-  /**
-   * 그림을 지울 수 있게 하는 함수입니다.
-   * 단순히 color를 하얀색으로 만드는 것 과는 조금 다릅니다.
-   */
-  function setEraser() {
-    const context = canvasRef.current.getContext('2d');
-    context.globalCompositeOperation = 'destination-out';
-    context.strokeStyle = '#ffffff';
-    setEventState('eraseing');
-    setCtx(context);
-    GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.erase);
-  }
-
-  /**
-   * event state를 drawing으로 바꿔 그림을 그릴 수 있게 하는 함수입니다.
-   */
-  function setDrawing() {
-    const context = canvasRef.current.getContext('2d');
-    context.globalCompositeOperation = 'source-over';
-    context.strokeStyle = currentColor;
-    setEventState('drawing');
-    setCtx(context);
-    GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.pencil);
-  }
-
-  /**
-   * 해당 영역을 주어진 색으로 가득 채우는 함수입니다.
-   * @param {event} param0
-   */
-  function fill({ nativeEvent }) {
-    const context = canvasRef.current.getContext('2d');
-    context.globalCompositeOperation = 'source-over';
-    setCtx(context);
-    const { offsetX, offsetY } = nativeEvent;
-
-    const hex = ctx.strokeStyle.substring(1);
-    const R = hex.substring(0, 2);
-    const G = hex.substring(2, 4);
-    const B = hex.substring(4, 6);
-    floodFill(ctx, offsetX, offsetY, `0xff${B}${G}${R}` * 1);
-  }
+  useCtx(
+    canvasRef,
+    setCtx,
+    isDrawingState,
+    thickness,
+    currentColor,
+    history,
+    historyPointer,
+    setEventState,
+    setDisplayThicknessBtn,
+    setNowThickness,
+    setSelectedColorIndex,
+    color,
+  );
 
   /**
    * 그림판을 이전의 상태로 되돌리는 함수입니다.
@@ -257,7 +126,7 @@ function Paint({
 
   /**
    * 왼쪽에 스프링을 꽂는 구멍을 그려주는 함수입니다.
-   * @returns {HTMLElement}
+   * @returns {HTMLElement[]}
    */
   function drawSpring() {
     const result = [];
@@ -285,47 +154,13 @@ function Paint({
 
   useEffect(() => {
     if (forceSubmit && isDrawingState && !isSubmitted) {
-      console.log('force submit');
       const canvas = canvasRef.current;
       toggleReady(canvas, false);
-      dispatch(setForceSubmit(false));
     } else if (forceSubmit && (isKeywordState || isGuessingState) && !isSubmitted) {
-      console.log('force submit');
       toggleReady(false);
-      dispatch(setForceSubmit(false));
     }
+    dispatch(setForceSubmit(false));
   }, [forceSubmit]);
-
-  useEffect(() => {
-    if (isDrawingState) {
-      const canvas = canvasRef.current;
-      canvas.style.width = '100%';
-      canvas.style.height = '100%';
-
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-
-      const context = canvas.getContext('2d');
-      context.strokeStyle = 'black';
-      context.lineCap = 'round';
-      context.lineJoin = 'round';
-      context.lineWidth = thickness[2] * 2;
-      context.globalCompositeOperation = 'source-over';
-
-      setCtx(() => context);
-
-      currentColor = 'black';
-
-      historyPointer = 0;
-      history.splice(0);
-
-      setEventState('drawing');
-      setDisplayThicknessBtn(false);
-      setNowThickness(2);
-
-      setSelectedColorIndex(color.length - 1);
-    }
-  }, [isDrawingState]);
 
   function canvasToBlob() {
     return new Promise((resolve) => {
@@ -383,32 +218,32 @@ function Paint({
               isSubmitted={isSubmitted}
               ref={canvasRef}
               onClick={(event) => {
-                if (eventState === 'drawing' || eventState === 'eraseing') drawCircle(event);
+                if (eventState === 'drawing' || eventState === 'eraseing') drawCircle(ctx, event);
               }}
               onMouseDown={(event) => {
                 history.push(ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height));
                 historyPointer += 1;
                 history.splice(historyPointer);
                 if (eventState === 'drawing' || eventState === 'eraseing') {
-                  startDrawing();
+                  startDrawing(setIsDrawing);
                 }
                 if (eventState === 'fill') {
-                  fill(event);
+                  fill(canvasRef, setCtx, ctx, event);
                 }
               }}
               onMouseUp={() => {
                 if (eventState === 'drawing' || eventState === 'eraseing') {
-                  finishDrawing();
+                  finishDrawing(setIsDrawing);
                 }
               }}
               onMouseMove={(event) => {
                 if (eventState === 'drawing' || eventState === 'eraseing') {
-                  drawing(event);
+                  drawing(ctx, isDrawing, event);
                 }
               }}
               onMouseLeave={() => {
                 if (eventState === 'drawing' || eventState === 'eraseing') {
-                  finishDrawing();
+                  finishDrawing(setIsDrawing);
                 }
               }}
             />
@@ -448,15 +283,16 @@ function Paint({
                       height: `${v * 3}px`,
                     }}
                     onClick={() => {
-                      setThickness(thickness[i] * 2);
+                      setThickness(thickness[i] * 2, canvasRef, setCtx);
                       setNowThickness(() => i);
-                      if (eventState === 'fill') setDrawing();
+                      if (eventState === 'fill')
+                        setDrawing(canvasRef, currentColor, setEventState, setCtx);
                     }}
                   >
                     <ThicknessCircle key={v} style={{ width: `${v * 2}px`, height: `${v * 2}px` }}>
                       {nowThickness === i && (
                         <InnerThicknessCircle
-                          style={{ width: `${v * 2 - 5}px`, height: `${v * 2 - 5}px` }}
+                          style={{ width: `${v * 2 - 6}px`, height: `${v * 2 - 6}px` }}
                         />
                       )}
                     </ThicknessCircle>
@@ -471,7 +307,7 @@ function Paint({
               <IconButton
                 selected={eventState === 'drawing'}
                 onClick={() => {
-                  setDrawing();
+                  setDrawing(canvasRef, currentColor, setEventState, setCtx);
                 }}
                 icon={pencil}
                 size="large"
@@ -480,7 +316,7 @@ function Paint({
             <Tooltip message="지우개">
               <IconButton
                 selected={eventState === 'eraseing'}
-                onClick={() => setEraser()}
+                onClick={() => setEraser(canvasRef, setEventState, setCtx)}
                 icon={eraser}
                 size="large"
               />
@@ -513,7 +349,8 @@ function Paint({
                   key={v}
                   style={{ backgroundColor: v }}
                   onClick={() => {
-                    setColor(v);
+                    setColor(v, canvasRef, setCtx);
+                    currentColor = v;
                     setSelectedColorIndex(i);
                   }}
                 />
@@ -618,16 +455,6 @@ const UndoRedoWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const InputWrapper = styled.div`
-  width: max-content;
-  height: max-content;
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0);
-  bottom: 15%;
-  font-family: 'TTTogether';
-`;
-
 const KeywordBackground = styled.div`
   position: relative;
   background-color: white;
@@ -677,15 +504,6 @@ const ColorBtn = styled.button`
       : css`
           border: none;
         `}
-`;
-
-const SelectedColorBtn = styled.div`
-  padding: 10px;
-  width: 17px;
-  height: 17px;
-  border-radius: 50%;
-  box-sizing: content-box;
-  border: 2px solid ${({ theme }) => theme.colors.DARK_LAVA};
 `;
 
 const ThicknessBtnWrapper = styled.div`
