@@ -6,7 +6,6 @@ const initialState = {
   socket: null,
   isHost: false,
   forceSubmit: false,
-  reconnect: () => {},
 };
 
 const ingameSlice = createSlice({
