@@ -46,7 +46,7 @@ export default function floodFill(ctx, x, y, fillColor) {
       }
 
       const nPO = nextPointY * w + nextPointX; // nextPointOffset
-      
+
       const hex = imgData[nPO] === 0 ? 0xffffffff : imgData[nPO];
 
       // imgData의 값은 0xffffffff와 같은 16진수입니다.

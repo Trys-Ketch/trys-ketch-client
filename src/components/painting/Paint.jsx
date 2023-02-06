@@ -85,15 +85,20 @@ function Paint({
     setCtx,
     isDrawingState,
     thickness,
-    currentColor,
     history,
-    historyPointer,
     setEventState,
     setDisplayThicknessBtn,
     setNowThickness,
     setSelectedColorIndex,
     color,
   );
+
+  useEffect(() => {
+    if (isDrawingState) {
+      currentColor = 'black';
+      historyPointer = 0;
+    }
+  }, [isDrawingState]);
 
   /**
    * 그림판을 이전의 상태로 되돌리는 함수입니다.

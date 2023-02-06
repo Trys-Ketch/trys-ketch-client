@@ -16,7 +16,6 @@ const finishDrawing = (setIsDrawing) => {
  */
 const drawing = (ctx, isDrawing, { nativeEvent }) => {
   const { offsetX, offsetY } = nativeEvent;
-
   if (ctx) {
     if (!isDrawing) {
       ctx.beginPath();
@@ -121,7 +120,7 @@ function setOpacity(op, canvasRef, setCtx) {
 function setEraser(canvasRef, setEventState, setCtx) {
   const context = canvasRef.current.getContext('2d');
   context.globalCompositeOperation = 'destination-out';
-  context.strokeStyle = '#ffffff';
+  context.strokeStyle = 0;
   setEventState('eraseing');
   setCtx(context);
   GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.erase);
