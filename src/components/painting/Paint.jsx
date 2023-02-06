@@ -28,9 +28,6 @@ import {
   fill,
 } from '../../utils/paintUtils';
 
-let historyPointer = 0;
-let currentColor = 'black';
-
 function Paint({
   isKeywordState,
   isGuessingState,
@@ -75,6 +72,8 @@ function Paint({
   const [displayThicknessBtn, setDisplayThicknessBtn] = useState(false);
   const [nowThickness, setNowThickness] = useState(2);
   const [selectedColorIndex, setSelectedColorIndex] = useState(color.length - 1);
+  const currentColor = useRef('black');
+  const historyPointer = useRef(0);
 
   const dispatch = useDispatch();
   const forceSubmit = useSelector((state) => state.ingame.forceSubmit);
@@ -91,24 +90,19 @@ function Paint({
     setNowThickness,
     setSelectedColorIndex,
     color,
+    currentColor,
+    historyPointer,
   );
-
-  useEffect(() => {
-    if (isDrawingState) {
-      currentColor = 'black';
-      historyPointer = 0;
-    }
-  }, [isDrawingState]);
 
   /**
    * 그림판을 이전의 상태로 되돌리는 함수입니다.
    */
   function undo() {
-    if (historyPointer === 0) return;
-    if (historyPointer === history.length)
+    if (historyPointer.current === 0) return;
+    if (historyPointer.current === history.length)
       history.push(ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height));
-    historyPointer -= 1;
-    const img = history[historyPointer];
+    historyPointer.current -= 1;
+    const img = history[historyPointer.current];
     ctx.putImageData(img, 0, 0);
   }
 
@@ -116,9 +110,9 @@ function Paint({
    * undo한 그림판을 다시 되돌리는 함수입니다.
    */
   function redo() {
-    if (historyPointer >= history.length - 1) return;
-    historyPointer += 1;
-    const img = history[historyPointer];
+    if (historyPointer.current >= history.length - 1) return;
+    historyPointer.current += 1;
+    const img = history[historyPointer.current];
     ctx.putImageData(img, 0, 0);
   }
 
@@ -227,8 +221,8 @@ function Paint({
               }}
               onMouseDown={(event) => {
                 history.push(ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height));
-                historyPointer += 1;
-                history.splice(historyPointer);
+                historyPointer.current += 1;
+                history.splice(historyPointer.current);
                 if (eventState === 'drawing' || eventState === 'eraseing') {
                   startDrawing(setIsDrawing);
                 }
@@ -291,7 +285,7 @@ function Paint({
                       setThickness(thickness[i] * 2, canvasRef, setCtx);
                       setNowThickness(() => i);
                       if (eventState === 'fill')
-                        setDrawing(canvasRef, currentColor, setEventState, setCtx);
+                        setDrawing(canvasRef, currentColor.current, setEventState, setCtx);
                     }}
                   >
                     <ThicknessCircle key={v} style={{ width: `${v * 2}px`, height: `${v * 2}px` }}>
@@ -312,7 +306,7 @@ function Paint({
               <IconButton
                 selected={eventState === 'drawing'}
                 onClick={() => {
-                  setDrawing(canvasRef, currentColor, setEventState, setCtx);
+                  setDrawing(canvasRef, currentColor.current, setEventState, setCtx);
                 }}
                 icon={pencil}
                 size="large"
@@ -355,7 +349,7 @@ function Paint({
                   style={{ backgroundColor: v }}
                   onClick={() => {
                     setColor(v, canvasRef, setCtx);
-                    currentColor = v;
+                    currentColor.current = v;
                     setSelectedColorIndex(i);
                   }}
                 />

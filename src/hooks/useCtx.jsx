@@ -11,6 +11,8 @@ function useCtx(
   setNowThickness,
   setSelectedColorIndex,
   color,
+  currentColor,
+  historyPointer,
 ) {
   useEffect(() => {
     if (isDrawingState) {
@@ -31,6 +33,8 @@ function useCtx(
       setCtx(() => context);
 
       history.splice(0);
+      currentColor.current = 'black';
+      historyPointer.current = 0;
 
       setEventState('drawing');
       setDisplayThicknessBtn(false);
