@@ -239,14 +239,14 @@ function GameRoom() {
               {milsecToMinute(timeLimit)}
               <IncDecButtonWrapper>
                 <IncDecButton
-                  disabled={!myState?.isHost}
+                  disabled={!myState?.isHost || timeLimit === 150000}
                   onClick={() => increaseTime()}
                   style={{ marginBottom: '2px' }}
                 >
                   <img src={inc} alt="increase" />
                 </IncDecButton>
                 <IncDecButton
-                  disabled={!myState?.isHost}
+                  disabled={!myState?.isHost || timeLimit === 60000}
                   onClick={() => decreaseTime()}
                   style={{ marginTop: '2px' }}
                 >
