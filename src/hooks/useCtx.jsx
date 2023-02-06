@@ -5,9 +5,7 @@ function useCtx(
   setCtx,
   isDrawingState,
   thickness,
-  currentColor,
   history,
-  historyPointer,
   setEventState,
   setDisplayThicknessBtn,
   setNowThickness,
@@ -32,9 +30,6 @@ function useCtx(
 
       setCtx(() => context);
 
-      currentColor = 'black';
-
-      historyPointer = 0;
       history.splice(0);
 
       setEventState('drawing');

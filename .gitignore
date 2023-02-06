@@ -11,6 +11,9 @@
 # production
 /build
 
+# certification
+/.cert
+
 # misc
 .DS_Store
 ubuntu@*
