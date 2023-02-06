@@ -24,37 +24,34 @@ function GameBoard({
   gameState,
 }) {
   return (
-    <>
-      <FloatBox bottom={<QuitButton size="xlarge" />} />
-      <Container style={{ paddingLeft: '0px', height: '680px', width: '1200px' }}>
-        <LeftDiv
-          isPracticeState={isPracticeState}
-          round={round}
-          submitNum={submitNum}
-          maxSubmitNum={maxSubmitNum}
-          timeLimit={timeLimit}
-          gameState={gameState}
-        />
-        <Paint
-          isKeywordState={isKeywordState}
-          isGuessingState={isGuessingState}
-          isDrawingState={isDrawingState}
-          isPracticeState={isPracticeState}
-          submitNum={submitNum}
-          maxSubmitNum={maxSubmitNum}
-          round={round}
-          timeLimit={timeLimit}
-          completeImageSubmit={completeImageSubmit}
-          isSubmitted={isSubmitted}
-          keyword={keyword}
-          setKeyword={setKeyword}
-          toggleReady={toggleReady}
-          submitImg={submitImg}
-          image={image}
-          gameState={gameState}
-        />
-      </Container>
-    </>
+    <Container style={{ paddingLeft: '0px', height: '680px', width: '1200px' }}>
+      <LeftDiv
+        isPracticeState={isPracticeState}
+        round={round}
+        submitNum={submitNum}
+        maxSubmitNum={maxSubmitNum}
+        timeLimit={timeLimit}
+        gameState={gameState}
+      />
+      <Paint
+        isKeywordState={isKeywordState}
+        isGuessingState={isGuessingState}
+        isDrawingState={isDrawingState}
+        isPracticeState={isPracticeState}
+        submitNum={submitNum}
+        maxSubmitNum={maxSubmitNum}
+        round={round}
+        timeLimit={timeLimit}
+        completeImageSubmit={completeImageSubmit}
+        isSubmitted={isSubmitted}
+        keyword={keyword}
+        setKeyword={setKeyword}
+        toggleReady={toggleReady}
+        submitImg={submitImg}
+        image={image}
+        gameState={gameState}
+      />
+    </Container>
   );
 }
 
