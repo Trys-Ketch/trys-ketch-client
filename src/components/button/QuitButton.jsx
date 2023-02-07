@@ -10,7 +10,7 @@ function QuitButton({ size }) {
     openModal({ type: 'quitRoom' });
   };
 
-  return <IconButton size={size} icon={quit} text="방나가기" onClick={handleOpenModal} />;
+  return <IconButton size={size} icon={quit} text="나가기" onClick={handleOpenModal} />;
 }
 
 export default QuitButton;
