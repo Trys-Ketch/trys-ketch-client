@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import dayjs from 'dayjs';
 import { AnimatePresence, motion } from 'framer-motion';
+import dayjs from 'dayjs';
 import downloadImage from '../../utils/downloadImage';
 import download from '../../assets/icons/download-icon-white.svg';
 
