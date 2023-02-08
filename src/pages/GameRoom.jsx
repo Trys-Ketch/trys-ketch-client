@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,10 +23,11 @@ import GAEventTypes from '../ga/GAEventTypes';
 import GAEventTrack from '../ga/GAEventTrack';
 import { setLocalMute, setMuteUsers } from '../app/slices/muteSlice';
 import MuteUserList from '../components/mute/MuteUserList';
-import useModal from '../hooks/useModal';
 import Difficulty from '../components/room/Difficulty';
 import useMuteUser from '../hooks/useMuteUser';
 import useGameRoomStomp from '../hooks/useGameRoomStomp';
+import turnOnSound from '../utils/turnOnSound';
+import readySound from '../assets/sounds/ready_sound.wav';
 
 let token;
 let subArray = [];
@@ -44,6 +45,7 @@ function GameRoom() {
   const [attendees, setAttendees] = useState([]);
   const [difficulty, setDifficulty] = useState('');
   const [timeLimit, setTimeLimit] = useState(60000);
+  const readySoundRef = useRef(null);
 
   const ingameStompClient = useSelector((state) => state.ingame.stomp);
   const member = useSelector((state) => state.login.member);
@@ -52,8 +54,8 @@ function GameRoom() {
   const socket = useSelector((state) => state.ingame.socket);
   const muteUser = useSelector((state) => state.mute.users);
   const localIsMuted = useSelector((state) => state.mute.localMute);
+  const volume = useSelector((state) => state.sound.volume);
 
-  const { openModal } = useModal();
   useMuteUser(attendees, muteUser);
   useGameRoomStomp(subArray, id, socketID, setIsIngame, setDifficulty, setTimeLimit);
 
@@ -69,7 +71,7 @@ function GameRoom() {
         if (err.response) {
           toast.error(err.response.data.message);
         } else {
-          toast.error('에러가 났습니다');
+          toast.error('에러가 발생했습니다');
         }
         navigate('/', { replace: true });
       });
@@ -77,6 +79,7 @@ function GameRoom() {
 
   const toggleReady = () => {
     socket.send(JSON.stringify({ type: 'ingame/toggle_ready', room: id }));
+    readySoundRef.current.play();
   };
 
   const start = () => {
@@ -119,6 +122,10 @@ function GameRoom() {
   useEffect(() => {
     getRoomDetail();
   }, []);
+
+  useEffect(() => {
+    readySoundRef.current = turnOnSound(readySound, {}, volume);
+  }, [volume]);
 
   useEffect(() => {
     const gameRoomEventHandler = (event) => {

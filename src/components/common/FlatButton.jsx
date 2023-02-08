@@ -49,7 +49,7 @@ const ButtonBlock = styled.button`
     `}
 
   &:disabled {
-    cursor: not-allowed;
+    opacity: 50%;
   }
 `;
 

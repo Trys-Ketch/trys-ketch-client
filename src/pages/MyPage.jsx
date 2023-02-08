@@ -17,6 +17,7 @@ import MyImage from '../components/mypage/MyImage';
 import myAPI from '../api/my';
 import MyImageLock from '../components/mypage/MyImageLock';
 import MyBadgeLock from '../components/mypage/MyBadgeLock';
+import ZoomInCanvas from '../components/mypage/ZoomInCanvas';
 
 function MyPage() {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ function MyPage() {
 
   // 좋아요한 이미지
   const [myImages, setMyImages] = useState([]);
+  const [selected, setSelected] = useState(null);
   const [page, setPage] = useState(0);
   const [isFetching, setFetching] = useState(false);
   const [hasNextPage, setNextPage] = useState(true);
@@ -64,6 +66,10 @@ function MyPage() {
     navigate('/login');
   };
 
+  const handleUnselect = () => {
+    setSelected(null);
+  };
+
   if (member === 'guest') {
     menus = [
       { menu: '나의 뱃지', content: <MyBadgeLock /> },
@@ -80,6 +86,7 @@ function MyPage() {
             hasNextPage={hasNextPage}
             fetchNextImage={getLikedNextImages}
             images={myImages}
+            setSelected={setSelected}
           />
         ),
       },
@@ -103,6 +110,7 @@ function MyPage() {
           <Tab menu={menus} />
         </MyArea>
       </Container>
+      {selected && <ZoomInCanvas selected={selected} onClose={handleUnselect} />}
     </>
   );
 }

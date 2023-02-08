@@ -11,6 +11,9 @@ import types from '../../utils/types';
 import { toast } from '../toast/ToastProvider';
 import GAEventTrack from '../../ga/GAEventTrack';
 import GAEventTypes from '../../ga/GAEventTypes';
+import enterSound from '../../assets/sounds/enter_sound.wav';
+import chatSound from '../../assets/sounds/chat_sound.wav';
+import turnOnSound from '../../utils/turnOnSound';
 
 function ChatBox() {
   const client = useRef(null);
@@ -18,6 +21,9 @@ function ChatBox() {
   const { id } = useParams();
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]);
+  const volume = useSelector((state) => state.sound.volume);
+  const chatSoundRef = useRef(null);
+  const enterSoundRef = useRef(null);
 
   const CHAT_SERVER_URL = `/topic/chat/room/${id}`;
 
@@ -25,9 +31,19 @@ function ChatBox() {
     setInput(e.target.value.substr(0, 150));
   };
 
+  const playSoundEffect = (type) => {
+    if (type === types.chat.chat) {
+      chatSoundRef.current.play();
+    } else if (type === types.chat.enter) {
+      enterSoundRef.current.play();
+    }
+  };
+
   const subscribe = () => {
     client.current.subscribe(CHAT_SERVER_URL, ({ body }) => {
-      setMessages((message) => [...message, JSON.parse(body)]);
+      const data = JSON.parse(body);
+      playSoundEffect(data.type);
+      setMessages((message) => [...message, data]);
     });
   };
 
@@ -88,6 +104,11 @@ function ChatBox() {
     connect();
     return () => disconnect();
   }, []);
+
+  useEffect(() => {
+    chatSoundRef.current = turnOnSound(chatSound, {}, volume);
+    enterSoundRef.current = turnOnSound(enterSound, {}, volume);
+  }, [volume]);
 
   return (
     <StChatBox>

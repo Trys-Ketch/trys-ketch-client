@@ -13,8 +13,8 @@ function QuitRoomModal() {
   };
 
   return (
-    <Modal title="방 나가기" btnText="나가기" onConfirm={handleQuit}>
-      방을 나가시겠습니까?
+    <Modal title="나가기" btnText="나가기" onConfirm={handleQuit}>
+      나가시겠습니까?
     </Modal>
   );
 }

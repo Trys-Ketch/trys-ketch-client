@@ -23,6 +23,7 @@ const TabMenu = styled.ul`
     width: calc(100% / 2);
     padding: 10px 10px 20px 10px;
     border-bottom: 1px solid;
+    cursor: pointer;
     /* transition: 0.5s; */
   }
 

@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+import characters from '../../assets/images/sad-trysketch.svg';
 
 function EmptyRoomList() {
   return (
     <Empty>
+      <img src={characters} alt="characters" />
       <Typography>지금은 방이 없어요.</Typography>
       <Typography>방을 만들고 친구를 초대해보세요!</Typography>
     </Empty>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import cancel from '../../assets/icons/cancel-icon.svg';
 import FlatButton from './FlatButton';
@@ -70,10 +70,17 @@ const BtnArea = styled.div`
 `;
 
 function Modal({ width = '400px', children, title, btnText, onConfirm, hasBtn = true }) {
+  const overlayRef = useRef(null);
   const { closeModal } = useModal();
 
   const handleClose = () => {
     closeModal();
+  };
+
+  const handleClickOverlay = (e) => {
+    if (overlayRef.current === e.target) {
+      closeModal();
+    }
   };
 
   const handleKeyPress = (event) => {
@@ -83,7 +90,7 @@ function Modal({ width = '400px', children, title, btnText, onConfirm, hasBtn = 
   };
 
   return (
-    <Overlay>
+    <Overlay ref={overlayRef} onClick={handleClickOverlay}>
       <ModalWrap width={width}>
         <CloseButton onClick={handleClose}>
           <img src={cancel} alt="X" />
