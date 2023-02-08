@@ -1,12 +1,16 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useState } from 'react';
+import styled, { css } from 'styled-components';
+import useObserveSpeaking from '../../hooks/useObserveSpeaking';
 import MuteButton from './MuteButton';
 
 function MuteUser({ user }) {
-  // const users = useSelector((state) => state.mute.users);
+  const { pc } = user;
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  useObserveSpeaking(pc, setIsSpeaking);
+
   return (
     <UserWrapper>
-      <User>{`${user.nickname}`}</User>
+      <User isSpeaking={isSpeaking}>{`${user.nickname}`}</User>
       <MuteButton socketID={user.socketID} isMuted={user.isMuted} />
     </UserWrapper>
   );
@@ -24,6 +28,13 @@ const User = styled.div`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+
+  ${(props) =>
+    props.isSpeaking &&
+    css`
+      color: ${({ theme }) => theme.colors.DEEP_BLUE};
+      font-weight: ${({ theme }) => theme.fontWeight.semibold};
+    `}
 `;
 
 export default MuteUser;

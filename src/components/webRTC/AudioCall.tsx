@@ -98,6 +98,7 @@ function AudioCall() {
         {
           id: socketID,
           stream: e.streams[0],
+          pc,
         },
       ]);
       // dispatch(setMuteUsers([...muteUsers, { id: socketID, isMuted: false }]));
@@ -338,17 +339,18 @@ function AudioCall() {
   }, []);
 
   useEffect(() => {
-    const newMuteUser: any = [];
+    const newMuteUsers: any = [];
     for (let i = 0; i < muteUser.length; i += 1) {
       for (let k = 0; k < users.length; k += 1) {
         if (muteUser[i].socketID === users[k].id) {
-          newMuteUser.push(muteUser[i]);
+          const newMuteUser = { ...muteUser[i], pc: users[k].pc };
+          newMuteUsers.push(newMuteUser);
           break;
         }
       }
     }
 
-    dispatch(setConnectedMuteUser(newMuteUser));
+    dispatch(setConnectedMuteUser(newMuteUsers));
   }, [users, muteUser]);
 
   useEffect(() => {
