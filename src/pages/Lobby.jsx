@@ -11,8 +11,6 @@ import SettingButton from '../components/button/SettingButton';
 import FloatBox from '../components/layout/FloatBox';
 import useModal from '../hooks/useModal';
 import MyProfile from '../components/user/MyProfile';
-import roomAPI from '../api/room';
-import { toast } from '../components/toast/ToastProvider';
 import GAEventTrack from '../ga/GAEventTrack';
 import GAEventTypes from '../ga/GAEventTypes';
 import useEventSource from '../hooks/useEventSource';
@@ -20,30 +18,12 @@ import useEventSource from '../hooks/useEventSource';
 function Lobby() {
   const navigate = useNavigate();
   const { openModal } = useModal();
-  const [rooms, setRooms] = useState([]);
+  const { data: rooms } = useEventSource(`${process.env.REACT_APP_API_URL}/api/sse/rooms`);
   const [page, setPage] = useState(0);
   const [roomsByPage, setRoomsByPage] = useState([]);
   const [lastPage, setLastPage] = useState(1);
 
   const ROOM_PER_PAGE = 5;
-
-  useEventSource(`${process.env.REACT_APP_API_URL}/api/sse/rooms`, setRooms);
-
-  const getRooms = (currentPage) => {
-    roomAPI
-      .getRoomList(currentPage)
-      .then((res) => {
-        setLastPage(res.data.LastPage);
-        setRooms(res.data.Rooms);
-      })
-      .catch((err) => {
-        toast.error(err.response.data.message);
-      });
-  };
-
-  useEffect(() => {
-    getRooms(page);
-  }, [page]);
 
   const handleOpenCreateRoom = () => {
     openModal({ type: 'createRoom' });
@@ -64,7 +44,7 @@ function Lobby() {
 
   useEffect(() => {
     setLastPage(Math.ceil(rooms.length / ROOM_PER_PAGE));
-  }, [rooms]);
+  }, [page, rooms]);
 
   useEffect(() => {
     const _roomsByPage = rooms.slice(page * ROOM_PER_PAGE, (page + 1) * ROOM_PER_PAGE);
