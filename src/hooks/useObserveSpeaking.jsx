@@ -8,7 +8,6 @@ function useObserveSpeaking(pc, setIsSpeaking) {
   useEffect(() => {
     if (pc) {
       interval.current = setInterval(() => {
-        console.log(pc.getReceivers());
         const receiver = pc.getReceivers().find((r) => {
           return r.track.kind === 'audio';
         });
