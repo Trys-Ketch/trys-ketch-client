@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
-import { saveAs } from 'file-saver';
 import Download from '../../assets/icons/download-icon.svg';
 import EmptyLike from '../../assets/icons/empty-like-icon.svg';
 import Like from '../../assets/icons/like-icon.svg';
 import { toast } from '../toast/ToastProvider';
 import myAPI from '../../api/my';
 import nonSubmit from '../../assets/images/non_submit.png';
+import downloadImage from '../../utils/downloadImage';
 
 function ImageResult({ member, nickname, imgId, img, userImg }) {
   const [like, setLike] = useState(false);
@@ -34,10 +33,8 @@ function ImageResult({ member, nickname, imgId, img, userImg }) {
     }
   };
 
-  const downloadImage = async () => {
-    axios.get(img, { responseType: 'blob' }).then(async (res) => {
-      saveAs(res.data, `trys-ketch-${nickname}.png`);
-    });
+  const handleDownload = () => {
+    downloadImage(img);
   };
 
   return (
@@ -45,7 +42,7 @@ function ImageResult({ member, nickname, imgId, img, userImg }) {
       <ImageNickname>{nickname}</ImageNickname>
       <ImageContainer>
         <ImageWrapper>
-          <DownloadButton onClick={() => downloadImage()}>
+          <DownloadButton onClick={handleDownload}>
             <img src={Download} alt="download" />
           </DownloadButton>
           <LikeButton onClick={handleLike}>
