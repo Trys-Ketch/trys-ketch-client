@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import loadable from '@loadable/component';
 import { nanoid } from 'nanoid';
+import { AnimatePresence } from 'framer-motion';
 
 const MODAL_COMPONENTS = {
   createRoom: loadable(() => import('./CreateRoomModal')),
@@ -12,7 +13,7 @@ const MODAL_COMPONENTS = {
   editProfile: loadable(() => import('./EditProfileModal')),
   gameMode: loadable(() => import('./GameModeModal')),
   achievement: loadable(() => import('./AchievementModal')),
-  howToPlay: loadable(() => import('./HowToPlayModal')),
+  guide: loadable(() => import('./GuideModal')),
 };
 
 function ModalContainer() {
@@ -23,7 +24,7 @@ function ModalContainer() {
     return <ModalComponent key={nanoid()} id={type} {...props} />;
   });
 
-  return <div className="modals">{renderModal}</div>;
+  return <AnimatePresence className="modals">{renderModal}</AnimatePresence>;
 }
 
 export default ModalContainer;

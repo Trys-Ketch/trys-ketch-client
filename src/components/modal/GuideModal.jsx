@@ -9,7 +9,7 @@ import exp4 from '../../assets/images/explain4.png';
 
 const imgArray = [exp1, exp2, exp3, exp4];
 
-function HowToPlayModal() {
+function GuideModal() {
   const [nowImg, setNowImg] = useState(0);
   return (
     <Modal width="1200px" title="게임 설명" hasBtn={false}>
@@ -68,4 +68,4 @@ const Img = styled.img`
   margin: 0 auto;
 `;
 
-export default HowToPlayModal;
+export default GuideModal;

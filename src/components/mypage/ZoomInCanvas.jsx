@@ -5,6 +5,27 @@ import dayjs from 'dayjs';
 import downloadImage from '../../utils/downloadImage';
 import download from '../../assets/icons/download-icon-white.svg';
 
+const dropIn = {
+  hidden: {
+    y: '-100vh',
+    opacity: 0,
+  },
+  visible: {
+    y: '0',
+    opacity: 1,
+    transition: {
+      duration: 0.1,
+      type: 'spring',
+      damping: 25,
+      stiffness: 500,
+    },
+  },
+  exit: {
+    y: '100vh',
+    opacity: 0,
+  },
+};
+
 function ZoomInCanvas({ selected, onClose }) {
   const [isHover, setIsHover] = useState(false);
   const overlayRef = useRef(null);
@@ -22,11 +43,24 @@ function ZoomInCanvas({ selected, onClose }) {
   };
 
   return (
-    <ImageModalLayout layoutId={selected.imgId} ref={overlayRef} onClick={handleClickOverlay}>
-      <Canvas onMouseEnter={() => setIsHover(true)} onMouseLeave={() => setIsHover(false)}>
+    <ImageModalLayout
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      ref={overlayRef}
+      onClick={handleClickOverlay}
+    >
+      <Canvas
+        variants={dropIn}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        onMouseEnter={() => setIsHover(true)}
+        onMouseLeave={() => setIsHover(false)}
+      >
         <img src={selected.imgPath} alt="selected" />
-        {isHover && (
-          <AnimatePresence>
+        <AnimatePresence>
+          {isHover && (
             <HoverBox initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <Row>
                 <DownloadButton onClick={handleDownload}>
@@ -37,8 +71,8 @@ function ZoomInCanvas({ selected, onClose }) {
                 </ImageInfo>
               </Row>
             </HoverBox>
-          </AnimatePresence>
-        )}
+          )}
+        </AnimatePresence>
       </Canvas>
     </ImageModalLayout>
   );
@@ -50,12 +84,13 @@ const DownloadButton = styled.button`
   }
 `;
 
-const ImageModalLayout = styled.div`
+const ImageModalLayout = styled(motion.div)`
   position: absolute;
   width: 100%;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.67);
   ${({ theme }) => theme.common.flexCenter};
+  overflow: hidden;
 `;
 
 const Row = styled.div`
@@ -91,7 +126,8 @@ const ImageInfo = styled.div`
   font-size: ${({ theme }) => theme.fontSizes.lg};
 `;
 
-const Canvas = styled.div`
+const Canvas = styled(motion.div)`
+  ${({ theme }) => theme.common.flexCenter};
   position: relative;
   background-color: ${({ theme }) => theme.colors.WHITE};
   width: 65%;
@@ -102,6 +138,7 @@ const Canvas = styled.div`
     width: 100%;
     height: 100%;
     object-fit: contain;
+    border-radius: 10px;
   }
 `;
 
