@@ -55,7 +55,12 @@ const Row = styled.div`
   width: 100%;
 `;
 
-const SoundButton = styled.button``;
+const SoundButton = styled.button`
+  & img {
+    width: 42px;
+    height: 38px;
+  }
+`;
 
 const Typography = styled.h3`
   font-family: 'TTTogether';
