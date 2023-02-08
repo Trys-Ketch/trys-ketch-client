@@ -13,7 +13,7 @@ const MODAL_COMPONENTS = {
   editProfile: loadable(() => import('./EditProfileModal')),
   gameMode: loadable(() => import('./GameModeModal')),
   achievement: loadable(() => import('./AchievementModal')),
-  howToPlay: loadable(() => import('./HowToPlayModal')),
+  guide: loadable(() => import('./GuideModal')),
 };
 
 function ModalContainer() {
