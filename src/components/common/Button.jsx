@@ -53,7 +53,6 @@ const ButtonBlock = styled.button`
     `}
 
   &:disabled {
-    cursor: not-allowed;
     background: ${({ theme }) => theme.colors.SHAMROK};
     border-bottom: 5px solid ${({ theme }) => theme.colors.RUSSIAN_GREEN};
     color: #ffffff80;

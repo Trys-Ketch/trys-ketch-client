@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+import characters from '../../assets/images/sad-trysketch.svg';
 
 function EmptyMyImage() {
   return (
     <Empty>
+      <img src={characters} alt="characters" />
       <Typography>좋아요한 그림이 없어요.</Typography>
       <Typography>마음에 드는 그림을 간직해보세요</Typography>
     </Empty>
