@@ -47,8 +47,10 @@ const ImageWrapper = styled.div`
 `;
 
 const Canvas = styled.div`
+  ${({ theme }) => theme.common.flexCenter};
   background-color: ${({ theme }) => theme.colors.WHITE};
   box-shadow: 0px 3.5px 3.5px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
 
   img {
     width: 100%;

@@ -127,6 +127,7 @@ const ImageInfo = styled.div`
 `;
 
 const Canvas = styled(motion.div)`
+  ${({ theme }) => theme.common.flexCenter};
   position: relative;
   background-color: ${({ theme }) => theme.colors.WHITE};
   width: 65%;
@@ -137,6 +138,7 @@ const Canvas = styled(motion.div)`
     width: 100%;
     height: 100%;
     object-fit: contain;
+    border-radius: 10px;
   }
 `;
 
