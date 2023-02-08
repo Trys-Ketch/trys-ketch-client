@@ -3,15 +3,13 @@ import styled from 'styled-components';
 import useIntersect from '../../hooks/useIntersect';
 import EmptyMyImage from './EmptyMyImage';
 
-function MyImage({ isFetching, hasNextPage, fetchNextImage, images }) {
+function MyImage({ isFetching, hasNextPage, fetchNextImage, images, setSelected }) {
   const ref = useIntersect(async (entry, observer) => {
     observer.unobserve(entry.target);
     if (hasNextPage && !isFetching) {
       fetchNextImage();
     }
   });
-
-  console.log(images);
 
   if (images.length === 0) {
     return (
@@ -24,7 +22,7 @@ function MyImage({ isFetching, hasNextPage, fetchNextImage, images }) {
   return (
     <ImageWrapper>
       {images?.map((img) => (
-        <Canvas key={img.imgId}>
+        <Canvas key={img.imgId} layoutId={img.imgId} onClick={() => setSelected(img)}>
           <img src={img.imgPath} alt={img.imgId} loading="lazy" />
         </Canvas>
       ))}
