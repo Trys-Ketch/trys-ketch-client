@@ -21,6 +21,7 @@ function Layout() {
 const StLayout = styled.div`
   width: 100%;
   height: 100vh;
+  overflow: hidden;
   background-image: url(${background});
   background-repeat: no-repeat;
   background-size: cover;

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { AnimatePresence } from 'framer-motion';
 import Container from '../components/layout/Container';
 import MyProfile from '../components/user/MyProfile';
 import FloatBox from '../components/layout/FloatBox';
@@ -110,7 +111,9 @@ function MyPage() {
           <Tab menu={menus} />
         </MyArea>
       </Container>
-      {selected && <ZoomInCanvas selected={selected} onClose={handleUnselect} />}
+      <AnimatePresence mode="wait" onExitComplete={() => null}>
+        {selected && <ZoomInCanvas selected={selected} onClose={handleUnselect} />}
+      </AnimatePresence>
     </>
   );
 }
