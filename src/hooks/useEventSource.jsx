@@ -1,17 +1,19 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-function useEventSource(url, setRooms) {
+function useEventSource(url) {
+  const [data, setData] = useState([]);
+
   useEffect(() => {
     const evtSource = new EventSource(url);
 
     const connectEvent = (event) => {
       const data = JSON.parse(event.data);
-      setRooms(data);
+      setData(data);
     };
 
     const changeEvent = (event) => {
       const data = JSON.parse(event.data);
-      setRooms(data);
+      setData(data);
     };
 
     evtSource.onopen = () => {
@@ -33,7 +35,9 @@ function useEventSource(url, setRooms) {
       evtSource.removeEventListener('changeRoom', changeEvent);
       evtSource.close();
     };
-  }, []);
+  }, [url]);
+
+  return { data };
 }
 
 export default useEventSource;
