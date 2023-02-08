@@ -50,15 +50,15 @@ const StRoom = styled.button`
   background-color: ${({ theme }) => theme.colors.FLORAL_WHITE};
   padding: 10px 10px 10px 15px;
   font-weight: ${({ theme }) => theme.fontWeight.bold};
-  // color: #746B5F, opacity : 0.5
   border-radius: 10px;
+  // color: #746B5F, opacity : 0.5
   border-bottom: 5px solid rgba(116, 107, 95, 0.5);
   cursor: pointer;
   transition: 0.3s ease;
 
   &:disabled {
-    /* opacity: 0.5; */
     filter: brightness(80%);
+    cursor: default;
   }
 
   &:hover:not([disabled]) {
