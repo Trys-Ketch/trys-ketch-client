@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import bgm from '../../assets/sound/main-bgm.mp3';
+import bgm from '../../assets/sounds/main-bgm.mp3';
 import turnOnSound from '../../utils/turnOnSound';
 
 function BGM() {
