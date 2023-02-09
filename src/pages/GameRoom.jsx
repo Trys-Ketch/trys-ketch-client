@@ -21,13 +21,11 @@ import { getCookie } from '../utils/cookie';
 import useDidMountEffect from '../hooks/useDidMountEffect';
 import GAEventTypes from '../ga/GAEventTypes';
 import GAEventTrack from '../ga/GAEventTrack';
-import { setLocalMute, setMuteUsers } from '../app/slices/muteSlice';
+import { setLocalMute } from '../app/slices/muteSlice';
 import MuteUserList from '../components/mute/MuteUserList';
 import Difficulty from '../components/room/Difficulty';
 import useMuteUser from '../hooks/useMuteUser';
 import useGameRoomStomp from '../hooks/useGameRoomStomp';
-import readySound from '../assets/sounds/ready_sound.wav';
-import useSound from '../hooks/useSound';
 
 let token;
 let subArray = [];
@@ -54,7 +52,6 @@ function GameRoom() {
   const muteUser = useSelector((state) => state.mute.users);
   const localIsMuted = useSelector((state) => state.mute.localMute);
 
-  const readySoundRef = useSound(readySound);
   useMuteUser(attendees, muteUser);
   useGameRoomStomp(subArray, id, socketID, setIsIngame, setDifficulty, setTimeLimit);
 
@@ -78,7 +75,6 @@ function GameRoom() {
 
   const toggleReady = () => {
     socket.send(JSON.stringify({ type: 'ingame/toggle_ready', room: id }));
-    readySoundRef.current.play();
   };
 
   const start = () => {
