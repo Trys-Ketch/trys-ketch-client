@@ -1,19 +1,26 @@
 import React from 'react';
 import styled from 'styled-components';
 import Round from './Round';
+import useTimer from '../../hooks/useTimer';
 
-function CircleTimer({ strokeWidth, circleRadius, center, pathRef, round }) {
+const CIRCLE_RADIUS = 40;
+const CENTER = 40;
+const STROKE_WIDTH = 3;
+
+function CircleTimer({ timeLimit, gameState, round }) {
+  const pathRef = useTimer(CENTER, CIRCLE_RADIUS, STROKE_WIDTH, timeLimit, gameState);
+
   return (
     <TimerBorder
       style={{
-        border: `${strokeWidth}px solid #4e473f`,
-        height: `${circleRadius * 2}px`,
-        width: `${circleRadius * 2}px`,
+        border: `${STROKE_WIDTH}px solid #4e473f`,
+        height: `${CIRCLE_RADIUS * 2}px`,
+        width: `${CIRCLE_RADIUS * 2}px`,
       }}
     >
       <Timer>
         <path ref={pathRef} fill="#4e473f" />
-        <circle cx={center - strokeWidth} cy={center - strokeWidth} r="18px" fill="#c9dbaa" />
+        <circle cx={CENTER - STROKE_WIDTH} cy={CENTER - STROKE_WIDTH} r="18px" fill="#c9dbaa" />
       </Timer>
       <Round round={round} />
     </TimerBorder>

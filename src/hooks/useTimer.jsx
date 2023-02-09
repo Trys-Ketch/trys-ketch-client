@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setForceSubmit } from '../app/slices/ingameSlice';
-// import alarm from '../assets/sound/alarm.wav';
-// import turnOnSound from '../utils/turnOnSound';
+import alarm from '../assets/sounds/alarm_sound.wav';
+import useSound from './useSound';
 
 let startTime;
 let timerID;
@@ -10,22 +10,18 @@ let timerID;
 // 2초 간격으로 세번
 const ALARM_TIME = 6 * 1000;
 
-function useTimer(
-  pathRef,
-  center,
-  circleRadius,
-  strokeWidth,
-  timeLimit,
-  gameState,
-  isPracticeState,
-) {
+function useTimer(center, circleRadius, strokeWidth, timeLimit, gameState) {
+  const pathRef = useRef(null);
   const [degree, setDegree] = useState(1);
   const dispatch = useDispatch();
 
-  // const sound = turnOnSound(alarm);
+  const alarmRef = useSound(alarm);
 
-  // let alarmOn;
-  // let alarmOff;
+  function alarmSoundOn() {
+    setTimeout(() => {
+      alarmRef.current.play();
+    }, timeLimit - ALARM_TIME);
+  }
 
   function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
     const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
@@ -77,51 +73,35 @@ function useTimer(
     }, 50);
   }
 
-  // function alarmSoundOn() {
-  //   setTimeout(() => {
-  //     sound.play();
-  //   }, timeLimit - ALARM_TIME);
-  // }
-
-  // function alarmSoundOff() {
-  //   setTimeout(() => {
-  //     sound.stop();
-  //   }, timeLimit);
-  // }
-
   useEffect(() => {
-    if (!isPracticeState) {
-      pathRef.current.setAttribute(
-        'd',
-        describeArc(
-          center - strokeWidth,
-          center - strokeWidth,
-          circleRadius - strokeWidth * 2,
-          0,
-          360 * degree,
-        ),
-      );
-    }
+    pathRef.current.setAttribute(
+      'd',
+      describeArc(
+        center - strokeWidth,
+        center - strokeWidth,
+        circleRadius - strokeWidth * 2,
+        0,
+        360 * degree,
+      ),
+    );
   }, [degree]);
 
   useEffect(() => {
-    if (!isPracticeState) {
-      startTime = new Date().getTime();
-      getTimerRadius();
-    }
+    startTime = new Date().getTime();
+    getTimerRadius();
     return () => {
       if (timerID) clearInterval(timerID);
     };
   }, [gameState, timeLimit]);
 
-  // useEffect(() => {
-  //   alarmSoundOn();
-  //   alarmSoundOff();
-  //   return () => {
-  //     clearTimeout(alarmSoundOn);
-  //     clearTimeout(alarmSoundOff);
-  //   };
-  // }, [gameState]);
+  useEffect(() => {
+    alarmSoundOn();
+    return () => {
+      clearTimeout(alarmSoundOn);
+    };
+  }, [gameState]);
+
+  return pathRef;
 }
 
 export default useTimer;

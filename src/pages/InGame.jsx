@@ -14,7 +14,6 @@ import { setLocalMute } from '../app/slices/muteSlice';
 import { closeStomp } from '../app/slices/ingameSlice';
 import GameBoard from '../components/game/GameBoard';
 import nonsubmit from '../assets/images/non_submit.png';
-import QuitButton from '../components/button/QuitButton';
 
 let token;
 const subArray = [];
