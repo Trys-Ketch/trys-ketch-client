@@ -64,7 +64,7 @@ function Guest() {
       GAEventTypes.Label.guest,
     );
     userAPI.getRandomNickname().then((res) => {
-      setName(res.data.message);
+      setName(res.data.data);
     });
   };
 
@@ -75,7 +75,7 @@ function Guest() {
       GAEventTypes.Label.guest,
     );
     userAPI.getRandomImage().then((res) => {
-      setImage(res.data.message);
+      setImage(res.data.data);
     });
   };
 
