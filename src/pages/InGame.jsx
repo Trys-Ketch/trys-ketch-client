@@ -258,7 +258,6 @@ function InGame() {
             <MuteUserList socketID={socketID} />
           </>
         }
-        bottom={<QuitButton size="xlarge" />}
       />
       {
         {

@@ -50,6 +50,7 @@ const ButtonBlock = styled.button`
 
   &:disabled {
     opacity: 50%;
+    cursor: default;
   }
 `;
 

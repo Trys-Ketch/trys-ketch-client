@@ -56,6 +56,7 @@ const ButtonBlock = styled.button`
     background: ${({ theme }) => theme.colors.SHAMROK};
     border-bottom: 5px solid ${({ theme }) => theme.colors.RUSSIAN_GREEN};
     color: #ffffff80;
+    cursor: default;
   }
 `;
 
