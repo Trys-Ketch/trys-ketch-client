@@ -1,8 +1,6 @@
 import React from 'react';
 import Container from '../layout/Container';
 import Paint from '../painting/Paint';
-import FloatBox from '../layout/FloatBox';
-import QuitButton from '../button/QuitButton';
 import LeftDiv from '../gameboard/LeftDiv.';
 
 function GameBoard({

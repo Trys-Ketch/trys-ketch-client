@@ -1,5 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import useSound from '../../hooks/useSound';
+import clickSound from '../../assets/sounds/click_pop_sound.wav';
 
 const ButtonWrapper = styled.div`
   ${({ theme }) => theme.common.flexCenterColumn};
@@ -132,6 +134,8 @@ const Typography = styled.span`
 
 function IconButton({ icon, text, size = 'medium', selected, ...rest }) {
   const htmlProps = rest;
+  const soundRef = useSound(clickSound);
+
   return (
     <ButtonWrapper>
       <ButtonBlock
@@ -141,6 +145,7 @@ function IconButton({ icon, text, size = 'medium', selected, ...rest }) {
         onClick={(e) => {
           if (htmlProps.onClick) {
             htmlProps.onClick(e);
+            soundRef.current.play();
           }
           e.target.blur();
         }}

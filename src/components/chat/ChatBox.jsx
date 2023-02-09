@@ -13,7 +13,7 @@ import GAEventTrack from '../../ga/GAEventTrack';
 import GAEventTypes from '../../ga/GAEventTypes';
 import enterSound from '../../assets/sounds/enter_sound.wav';
 import chatSound from '../../assets/sounds/chat_sound.wav';
-import turnOnSound from '../../utils/turnOnSound';
+import useSound from '../../hooks/useSound';
 
 function ChatBox() {
   const client = useRef(null);
@@ -22,8 +22,8 @@ function ChatBox() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]);
   const volume = useSelector((state) => state.sound.volume);
-  const chatSoundRef = useRef(null);
-  const enterSoundRef = useRef(null);
+  const chatSoundRef = useSound(chatSound);
+  const enterSoundRef = useSound(enterSound);
 
   const CHAT_SERVER_URL = `/topic/chat/room/${id}`;
 
@@ -104,11 +104,6 @@ function ChatBox() {
     connect();
     return () => disconnect();
   }, []);
-
-  useEffect(() => {
-    chatSoundRef.current = turnOnSound(chatSound, {}, volume);
-    enterSoundRef.current = turnOnSound(enterSound, {}, volume);
-  }, [volume]);
 
   return (
     <StChatBox>
