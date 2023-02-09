@@ -18,7 +18,7 @@ function useTimer(center, circleRadius, strokeWidth, timeLimit, gameState) {
   const alarmRef = useSound(alarm);
 
   function alarmSoundOn() {
-    setTimeout(() => {
+    return setTimeout(() => {
       alarmRef.current.play();
     }, timeLimit - ALARM_TIME);
   }
@@ -95,9 +95,9 @@ function useTimer(center, circleRadius, strokeWidth, timeLimit, gameState) {
   }, [gameState, timeLimit]);
 
   useEffect(() => {
-    alarmSoundOn();
+    const alarmTimeoutID = alarmSoundOn();
     return () => {
-      clearTimeout(alarmSoundOn);
+      clearTimeout(alarmTimeoutID);
     };
   }, [gameState]);
 
