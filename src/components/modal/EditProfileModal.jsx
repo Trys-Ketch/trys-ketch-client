@@ -33,7 +33,7 @@ function EditProfileModal() {
       'member',
     );
     userAPI.getRandomImage().then((res) => {
-      setImage(res.data.message);
+      setImage(res.data.data);
     });
   };
 
