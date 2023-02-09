@@ -26,8 +26,8 @@ import MuteUserList from '../components/mute/MuteUserList';
 import Difficulty from '../components/room/Difficulty';
 import useMuteUser from '../hooks/useMuteUser';
 import useGameRoomStomp from '../hooks/useGameRoomStomp';
-import turnOnSound from '../utils/turnOnSound';
 import readySound from '../assets/sounds/ready_sound.wav';
+import useSound from '../hooks/useSound';
 
 let token;
 let subArray = [];
@@ -45,7 +45,6 @@ function GameRoom() {
   const [attendees, setAttendees] = useState([]);
   const [difficulty, setDifficulty] = useState('');
   const [timeLimit, setTimeLimit] = useState(60000);
-  const readySoundRef = useRef(null);
 
   const ingameStompClient = useSelector((state) => state.ingame.stomp);
   const member = useSelector((state) => state.login.member);
@@ -54,8 +53,8 @@ function GameRoom() {
   const socket = useSelector((state) => state.ingame.socket);
   const muteUser = useSelector((state) => state.mute.users);
   const localIsMuted = useSelector((state) => state.mute.localMute);
-  const volume = useSelector((state) => state.sound.volume);
 
+  const readySoundRef = useSound(readySound);
   useMuteUser(attendees, muteUser);
   useGameRoomStomp(subArray, id, socketID, setIsIngame, setDifficulty, setTimeLimit);
 
@@ -122,10 +121,6 @@ function GameRoom() {
   useEffect(() => {
     getRoomDetail();
   }, []);
-
-  useEffect(() => {
-    readySoundRef.current = turnOnSound(readySound, {}, volume);
-  }, [volume]);
 
   useEffect(() => {
     const gameRoomEventHandler = (event) => {

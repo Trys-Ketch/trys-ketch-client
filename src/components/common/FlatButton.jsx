@@ -1,5 +1,7 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
+import clickSound from '../../assets/sounds/click_pop_sound.wav';
+import useSound from '../../hooks/useSound';
 
 const ButtonBlock = styled.button`
   width: ${(props) => props.width};
@@ -56,6 +58,8 @@ const ButtonBlock = styled.button`
 
 function FlatButton({ children, ref, bgcolor, color, size = 'medium', width = 'auto', ...rest }) {
   const htmlProps = rest;
+  const soundRef = useSound(clickSound);
+
   return (
     <ButtonBlock
       bgcolor={bgcolor}
@@ -66,6 +70,7 @@ function FlatButton({ children, ref, bgcolor, color, size = 'medium', width = 'a
       onClick={(e) => {
         if (htmlProps.onClick) {
           htmlProps.onClick(e);
+          soundRef.current.play();
         }
         e.target.blur();
       }}

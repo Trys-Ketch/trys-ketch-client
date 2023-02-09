@@ -1,5 +1,7 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
+import useSound from '../../hooks/useSound';
+import clickSound from '../../assets/sounds/click_pop_sound.wav';
 
 const ButtonBlock = styled.button`
   width: ${(props) => props.width};
@@ -70,6 +72,8 @@ function Button({
   width = 'auto',
   ...rest
 }) {
+  const soundRef = useSound(clickSound);
+
   const htmlProps = rest;
   return (
     <ButtonBlock
@@ -82,6 +86,7 @@ function Button({
       onClick={(e) => {
         if (htmlProps.onClick) {
           htmlProps.onClick(e);
+          soundRef.current.play();
         }
         e.target.blur();
       }}
