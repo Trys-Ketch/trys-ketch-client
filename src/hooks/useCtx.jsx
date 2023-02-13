@@ -1,7 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 function useCtx(
-  canvasRef,
   setCtx,
   isDrawingState,
   thickness,
@@ -14,6 +13,8 @@ function useCtx(
   currentColor,
   historyPointer,
 ) {
+  const canvasRef = useRef(null);
+
   useEffect(() => {
     if (isDrawingState) {
       const canvas = canvasRef.current;
@@ -43,6 +44,8 @@ function useCtx(
       setSelectedColorIndex(color.length - 1);
     }
   }, [isDrawingState]);
+
+  return canvasRef;
 }
 
 export default useCtx;

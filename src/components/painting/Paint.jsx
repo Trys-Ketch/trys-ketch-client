@@ -64,11 +64,9 @@ function Paint({
   const opacity = ['1A', '33', '4D', '66', '80', '99', 'B3', 'CC', 'E6', 'FF']; // hex코드용 opacity
   // const opacity = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]; // rgba용 opacity
 
-  const canvasRef = useRef(null);
-
-  const [ctx, setCtx] = useState(null);
   const [isDrawing, setIsDrawing] = useState();
   const [eventState, setEventState] = useState('drawing');
+  const [ctx, setCtx] = useState(null);
   const [displayThicknessBtn, setDisplayThicknessBtn] = useState(false);
   const [nowThickness, setNowThickness] = useState(2);
   const [selectedColorIndex, setSelectedColorIndex] = useState(color.length - 1);
@@ -79,8 +77,7 @@ function Paint({
   const forceSubmit = useSelector((state) => state.ingame.forceSubmit);
   const history = useRef([]).current;
 
-  useCtx(
-    canvasRef,
+  const canvasRef = useCtx(
     setCtx,
     isDrawingState,
     thickness,

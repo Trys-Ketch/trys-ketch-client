@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setMuteUsers } from '../app/slices/muteSlice';
 
-function useMuteUser(attendees, muteUser) {
+function useMuteUser(attendees) {
   const dispatch = useDispatch();
+  const muteUser = useSelector((state) => state.mute.users);
+
   useEffect(() => {
     if (attendees.length > muteUser.length) {
       const newMuteUser = [];
