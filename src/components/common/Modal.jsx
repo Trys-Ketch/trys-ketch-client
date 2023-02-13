@@ -4,29 +4,7 @@ import { motion } from 'framer-motion';
 import cancel from '../../assets/icons/cancel-icon.svg';
 import FlatButton from './FlatButton';
 import useModal from '../../hooks/useModal';
-
-const scaleUp = {
-  hidden: {
-    opacity: 0,
-    scale: 0.75,
-  },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: {
-      ease: 'easeOut',
-      duration: 0.15,
-    },
-  },
-  exit: {
-    opacity: 0,
-    scale: 0.75,
-    transition: {
-      ease: 'easeIn',
-      duration: 0.15,
-    },
-  },
-};
+import { appear, scaleUp } from '../../helper/motions';
 
 const Overlay = styled.div`
   display: flex;
@@ -117,13 +95,14 @@ function Modal({ width = '400px', children, title, btnText, onConfirm, hasBtn = 
 
   return (
     <Overlay
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 0 }}
-      exit={{ opacity: 0 }}
+      variants={appear}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
       ref={overlayRef}
       onClick={handleClickOverlay}
     >
-      <ModalWrap initial="hidden" animate="visible" exit="exit" variants={scaleUp} width={width}>
+      <ModalWrap variants={scaleUp} initial="hidden" animate="visible" exit="exit" width={width}>
         <CloseButton onClick={handleClose}>
           <img src={cancel} alt="X" />
         </CloseButton>

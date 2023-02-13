@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import React, { useEffect, memo } from 'react';
 import styled from 'styled-components';
+import { fadeInScale } from '../../helper/motions';
 
 const toastDuration = 3000;
 
@@ -17,12 +18,12 @@ function ToastBar({ id, type, icon, message, onRemove }) {
 
   return (
     <StToast
-      className={type}
+      variants={fadeInScale}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
       onClick={() => onRemove(id)}
-      positiontransition="true"
-      initial={{ opacity: 0, y: 30, scale: 0.3 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}
+      className={type}
     >
       <img src={icon} alt={type} />
       <Message>{message}</Message>

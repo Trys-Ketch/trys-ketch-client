@@ -4,27 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import dayjs from 'dayjs';
 import downloadImage from '../../utils/downloadImage';
 import download from '../../assets/icons/download-icon-white.svg';
-
-const dropIn = {
-  hidden: {
-    y: '-100vh',
-    opacity: 0,
-  },
-  visible: {
-    y: '0',
-    opacity: 1,
-    transition: {
-      duration: 0.1,
-      type: 'spring',
-      damping: 25,
-      stiffness: 500,
-    },
-  },
-  exit: {
-    y: '100vh',
-    opacity: 0,
-  },
-};
+import { appear, dropIn } from '../../helper/motions';
 
 function ZoomInCanvas({ selected, onClose }) {
   const [isHover, setIsHover] = useState(false);
@@ -44,9 +24,10 @@ function ZoomInCanvas({ selected, onClose }) {
 
   return (
     <ImageModalLayout
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      variants={appear}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
       ref={overlayRef}
       onClick={handleClickOverlay}
     >
@@ -61,7 +42,7 @@ function ZoomInCanvas({ selected, onClose }) {
         <img src={selected.imgPath} alt="selected" />
         <AnimatePresence>
           {isHover && (
-            <HoverBox initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <HoverBox variants={appear} initial="hidden" animate="visible" exit="exit">
               <Row>
                 <DownloadButton onClick={handleDownload}>
                   <img src={download} alt="download" />
