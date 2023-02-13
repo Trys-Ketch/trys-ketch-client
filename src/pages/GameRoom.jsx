@@ -10,8 +10,6 @@ import FloatBox from '../components/layout/FloatBox';
 import SettingButton from '../components/button/SettingButton';
 import MicButton from '../components/button/MicButton';
 import copy from '../assets/icons/copy-icon.svg';
-import inc from '../assets/icons/time-increase-icon.svg';
-import dec from '../assets/icons/time-decrease-icon.svg';
 import QuitButton from '../components/button/QuitButton';
 import RoomTitle from '../components/room/RoomTitle';
 import ChatBox from '../components/chat/ChatBox';
@@ -19,15 +17,14 @@ import roomAPI from '../api/room';
 import { toast } from '../components/toast/ToastProvider';
 import { getCookie } from '../utils/cookie';
 import useDidMountEffect from '../hooks/useDidMountEffect';
-import GAEventTypes from '../ga/GAEventTypes';
-import GAEventTrack from '../ga/GAEventTrack';
-import { setLocalMute, setMuteUsers } from '../app/slices/muteSlice';
+import { setLocalMute } from '../app/slices/muteSlice';
 import MuteUserList from '../components/mute/MuteUserList';
 import Difficulty from '../components/room/Difficulty';
 import useMuteUser from '../hooks/useMuteUser';
 import useGameRoomStomp from '../hooks/useGameRoomStomp';
-import readySound from '../assets/sounds/ready_sound.wav';
-import useSound from '../hooks/useSound';
+import { sendDifficulty } from '../utils/gameRoomStompUtils';
+import ReadyStartButton from '../components/room/ReadyStartButton';
+import SetTime from '../components/room/SetTime';
 
 let token;
 let subArray = [];
@@ -40,23 +37,18 @@ function GameRoom() {
   const [inviteCode, setInviteCode] = useState('');
   const [myState, setMyState] = useState({});
   const [allReady, setAllReady] = useState(false);
-  const [isIngame, setIsIngame] = useState(false);
   // [ { userId: 2, nickname: "닉네임", imgUrl: "avatar.png", isHost: true, isReady: true, socketId: "akef4dof"}, ... ]
   const [attendees, setAttendees] = useState([]);
-  const [difficulty, setDifficulty] = useState('');
-  const [timeLimit, setTimeLimit] = useState(60000);
 
   const ingameStompClient = useSelector((state) => state.ingame.stomp);
   const member = useSelector((state) => state.login.member);
   const userId = useSelector((state) => state.user.userId);
   const socketID = useSelector((state) => state.ingame.id);
   const socket = useSelector((state) => state.ingame.socket);
-  const muteUser = useSelector((state) => state.mute.users);
   const localIsMuted = useSelector((state) => state.mute.localMute);
 
-  const readySoundRef = useSound(readySound);
-  useMuteUser(attendees, muteUser);
-  useGameRoomStomp(subArray, id, socketID, setIsIngame, setDifficulty, setTimeLimit);
+  useMuteUser(attendees);
+  const { difficulty, timeLimit, isIngame } = useGameRoomStomp(subArray, id, socketID);
 
   const getRoomDetail = () => {
     roomAPI
@@ -74,19 +66,6 @@ function GameRoom() {
         }
         navigate('/', { replace: true });
       });
-  };
-
-  const toggleReady = () => {
-    socket.send(JSON.stringify({ type: 'ingame/toggle_ready', room: id }));
-    readySoundRef.current.play();
-  };
-
-  const start = () => {
-    ingameStompClient.publish({
-      destination: '/app/game/start',
-      body: JSON.stringify({ roomId: id, token }),
-    });
-    GAEventTrack(GAEventTypes.Category.game, GAEventTypes.Action.game.startGame);
   };
 
   const handleCodeCopy = () => {
@@ -178,35 +157,6 @@ function GameRoom() {
     token = getCookie(member === 'guest' ? 'guest' : 'access_token');
   }, []);
 
-  function sendDifficulty(difficulty) {
-    ingameStompClient.publish({
-      destination: '/app/game/difficulty',
-      body: JSON.stringify({ roomId: id, token, difficulty }),
-    });
-  }
-
-  function increaseTime() {
-    ingameStompClient.publish({
-      destination: '/app/game/increase-time',
-      body: JSON.stringify({ roomId: id, token }),
-    });
-  }
-
-  function decreaseTime() {
-    ingameStompClient.publish({
-      destination: '/app/game/decrease-time',
-      body: JSON.stringify({ roomId: id, token }),
-    });
-  }
-
-  function milsecToMinute(milsec) {
-    const sec = milsec / 1000;
-    const returnMinute = `${Math.floor(sec / 60)}`;
-    const returnSec = `${sec % 60}`.length === 1 ? `0${sec % 60}` : `${sec % 60}`;
-
-    return `${returnMinute}:${returnSec}`;
-  }
-
   return (
     <>
       <FloatBox
@@ -233,58 +183,26 @@ function GameRoom() {
           <Difficulty
             disabled={!myState?.isHost}
             difficulty={difficulty}
-            sendDifficulty={(dif) => sendDifficulty(dif)}
+            sendDifficulty={(dif) => sendDifficulty(dif, ingameStompClient, id, token)}
           />
-          <SetTime>
-            <Subtitle>제한 시간</Subtitle>
-            <Time>
-              {milsecToMinute(timeLimit)}
-              <IncDecButtonWrapper>
-                <IncDecButton
-                  disabled={!myState?.isHost || timeLimit === 150000}
-                  onClick={() => increaseTime()}
-                  style={{ marginBottom: '2px' }}
-                >
-                  <img src={inc} alt="increase" />
-                </IncDecButton>
-                <IncDecButton
-                  disabled={!myState?.isHost || timeLimit === 60000}
-                  onClick={() => decreaseTime()}
-                  style={{ marginTop: '2px' }}
-                >
-                  <img src={dec} alt="decrease" />
-                </IncDecButton>
-              </IncDecButtonWrapper>
-            </Time>
-          </SetTime>
+          <SetTime
+            timeLimit={timeLimit}
+            myState={myState}
+            ingameStompClient={ingameStompClient}
+            id={id}
+            token={token}
+          />
           <Button onClick={handleCodeCopy} width="100%">
             초대코드 복사
             <img src={copy} width="18px" height="18px" alt="copy" style={{ marginLeft: '10px' }} />
           </Button>
-          {myState?.isHost ? (
-            <Button
-              txtcolor={({ theme }) => theme.colors.WHITE}
-              bgcolor={({ theme }) => theme.colors.YELLOW_GREEN}
-              shadow={({ theme }) => theme.colors.PAKISTAN_GREEN}
-              onClick={() => start()}
-              width="100%"
-              size="large"
-              disabled={!allReady}
-            >
-              게임 시작
-            </Button>
-          ) : (
-            <Button
-              txtcolor={({ theme }) => theme.colors.WHITE}
-              bgcolor={({ theme }) => theme.colors.DEEP_BLUE}
-              shadow={({ theme }) => theme.colors.SAPPHIRE}
-              width="100%"
-              size="large"
-              onClick={toggleReady}
-            >
-              {myState?.isReady ? '취소' : '준비 완료'}
-            </Button>
-          )}
+          <ReadyStartButton
+            myState={myState}
+            ingameStompClient={ingameStompClient}
+            id={id}
+            token={token}
+            allReady={allReady}
+          />
         </Side>
       </Container>
     </>
@@ -310,60 +228,6 @@ const Side = styled.aside`
   & > *:not(:first-child) {
     margin-top: 10px;
   }
-`;
-
-const Box = styled.div`
-  width: 100%;
-  border-radius: 10px;
-  background-color: ${({ theme }) => theme.colors.FLORAL_WHITE};
-  padding: 10px;
-`;
-
-const IncDecButton = styled.button`
-  border: none;
-  width: max-content;
-  height: max-content;
-  cursor: pointer;
-
-  &:disabled {
-    cursor: default;
-  }
-`;
-
-const IncDecButtonWrapper = styled.div`
-  margin-left: 10px;
-  width: max-content;
-  height: max-content;
-  display: flex;
-  flex-direction: column;
-`;
-
-const SetTime = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 25%;
-`;
-
-const Subtitle = styled.h3`
-  width: 100%;
-  text-align: center;
-  margin-top: 10px;
-  font-family: 'TTTogether';
-  font-size: ${({ theme }) => theme.fontSizes.xxl};
-  color: ${({ theme }) => theme.colors.DARK_LAVA};
-`;
-
-const Time = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  color: ${({ theme }) => theme.colors.DIM_GRAY};
-  font-weight: ${({ theme }) => theme.fontWeight.bold};
-  font-size: 42px;
 `;
 
 export default GameRoom;
