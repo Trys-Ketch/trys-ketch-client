@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -7,17 +7,15 @@ import MicButton from '../components/button/MicButton';
 import SettingButton from '../components/button/SettingButton';
 import FloatBox from '../components/layout/FloatBox';
 import MuteUserList from '../components/mute/MuteUserList';
-import { toast } from '../components/toast/ToastProvider';
 import GAEventTrack from '../ga/GAEventTrack';
 import GAEventTypes from '../ga/GAEventTypes';
 import { setLocalMute } from '../app/slices/muteSlice';
-import { closeStomp } from '../app/slices/ingameSlice';
 import GameBoard from '../components/game/GameBoard';
 import nonsubmit from '../assets/images/non_submit.png';
 import { GAME_STATE, SOCKET_PUB_DEST, SOCKET_SUB_DEST, TIME_LIMIT } from '../helper/constants';
+import useIngameStomp from '../hooks/useIngameStomp';
 
 let token;
-const subArray = [];
 
 function InGame() {
   const ingameStompClient = useSelector((state) => state.ingame.stomp);
@@ -33,17 +31,23 @@ function InGame() {
   const [gameState, setGameState] = useState(GAME_STATE.KEYWORD);
   const [completeKeywordSubmit, setCompleteKeywordSubmit] = useState(false);
   const [completeImageSubmit, setCompleteImageSubmit] = useState(false);
-  const [result, setResult] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submitNum, setSubmitNum] = useState(0);
-  const [maxSubmitNum, setMaxSubmitNum] = useState(0);
-  const [timeLimit, setTimeLimit] = useState(TIME_LIMIT.INIT_LIMIT);
-
-  const keywordIndex = useRef();
-  const [round, setRound] = useState(1);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const { keywordIndex, round, maxSubmitNum, timeLimit, result } = useIngameStomp(
+    ingameStompClient,
+    socketID,
+    id,
+    setKeyword,
+    setCompleteKeywordSubmit,
+    setCompleteImageSubmit,
+    setImage,
+    setIsSubmitted,
+    setSubmitNum,
+  );
 
   useEffect(() => {
     const { member } = store.getState().login;
