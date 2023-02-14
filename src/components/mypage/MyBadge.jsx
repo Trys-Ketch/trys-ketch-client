@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-
-const NOTACHIEVE = {
-  visit: ['TSK_V_B_NN', 'TSK_V_S_NN', 'TSK_V_G_NN'],
-  trial: ['TSK_T_B_NN', 'TSK_T_S_NN', 'TSK_T_G_NN'],
-  playtime: ['TSK_P_B_NN', 'TSK_P_S_NN', 'TSK_P_G_NN'],
-};
+import { NOTACHIEVE } from '../../helper/constants';
 
 function MyBadge({ badges, fetchBadge }) {
   const [totalBadges, setTotalBadges] = useState(NOTACHIEVE);

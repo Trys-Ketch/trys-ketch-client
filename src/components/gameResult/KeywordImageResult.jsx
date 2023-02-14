@@ -1,6 +1,5 @@
 import { nanoid } from 'nanoid';
 import React from 'react';
-import styled from 'styled-components';
 import ImageResult from './ImageResult';
 import KeywordResult from './KeywordResult';
 

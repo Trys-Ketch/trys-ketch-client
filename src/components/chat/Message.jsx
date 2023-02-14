@@ -2,13 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import Avatar from '../common/Avatar';
-import types from '../../utils/types';
+import { CHAT_MSG } from '../../helper/constants';
 
 function Message({ message }) {
   const { userId } = useSelector((state) => state.user);
 
   switch (message.type) {
-    case types.chat.enter:
+    case CHAT_MSG.ENTER:
       return (
         <Notice className="enter">
           <Body>
@@ -16,7 +16,7 @@ function Message({ message }) {
           </Body>
         </Notice>
       );
-    case types.chat.leave:
+    case CHAT_MSG.LEAVE:
       return (
         <Notice className="leave">
           <Body>
@@ -24,7 +24,7 @@ function Message({ message }) {
           </Body>
         </Notice>
       );
-    case types.chat.chat:
+    case CHAT_MSG.CHAT:
       if (message.userId === userId) {
         return (
           <MyChat>

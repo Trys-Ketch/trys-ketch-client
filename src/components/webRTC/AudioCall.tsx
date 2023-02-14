@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,6 +11,7 @@ import { store } from '../../app/configStore';
 import usePreventRefresh from '../../hooks/usePreventRefresh';
 import { clearMute, setConnectedMuteUser, setMuteUsers } from '../../app/slices/muteSlice';
 import { toast } from '../toast/ToastProvider';
+import { MEDIA_STATE, RTC_SOCKET_MSG, SOCKET_MSG } from '../../helper/constants';
 
 let pcs: any;
 let hasPcs: any;
@@ -72,7 +74,7 @@ function AudioCall() {
         socket.send(
           JSON.stringify({
             token,
-            type: 'rtc/candidate',
+            type: RTC_SOCKET_MSG.CANDIDATE,
             candidate: e.candidate,
             receiver: socketID,
           }),
@@ -133,10 +135,10 @@ function AudioCall() {
       .then((stream) => {
         if (audioRef.current) audioRef.current.srcObject = stream;
         localStream = stream;
-        getUserMediaState = 'fulfilled';
+        getUserMediaState = MEDIA_STATE.FULFILLED;
       })
       .catch((error) => {
-        getUserMediaState = 'rejected';
+        getUserMediaState = MEDIA_STATE.REJECTED;
         toast.error('음성 채팅 연결 에러');
         toast.error('다른 유저들이 플레이어님의 말을 들을 수 없어요!');
       });
@@ -145,7 +147,7 @@ function AudioCall() {
   useEffect(() => {
     pcs = {};
     hasPcs = {};
-    getUserMediaState = 'pending';
+    getUserMediaState = MEDIA_STATE.PENDING;
     stop = false;
     // 시그널링 서버와 소켓 연결
     socketRef.current = new SockJS(`${process.env.REACT_APP_API_URL}/signal`);
@@ -162,7 +164,7 @@ function AudioCall() {
 
     // 소켓이 연결되었을 때 실행
     socketRef.current.onopen = async () => {
-      socketRef.current?.send(JSON.stringify({ type: 'ingame/join_room', room: id, token }));
+      socketRef.current?.send(JSON.stringify({ type: SOCKET_MSG.JOIN, room: id, token }));
     };
 
     dispatch(setSocket(socketRef.current));
@@ -172,15 +174,14 @@ function AudioCall() {
       const data = JSON.parse(event.data);
       switch (data.type) {
         // 1. all_users로 서버에서 같은 방에 존재하는 나를 제외한 모든 user를 받아옵니다.
-        case 'rtc/all_users': {
+        case RTC_SOCKET_MSG.ALL_USERS: {
           const { allUsers, sender } = data;
           dispatch(setID(sender));
           // 나를 제외했으므로 방에 나밖에 없으면 length는 0
           const len = allUsers.length;
           for (let i = 0; i < len; i += 1) {
-            while (getUserMediaState === 'pending') {
+            while (getUserMediaState === MEDIA_STATE.PENDING) {
               if (stop) return;
-              // eslint-disable-next-line
               await sleep(300);
             }
             // if (getUserMediaState === 'rejected') return;
@@ -191,7 +192,6 @@ function AudioCall() {
 
             while (!hasPcs[allUsers[i].id]) {
               if (stop) return;
-              // eslint-disable-next-line
               await sleep(100);
             }
             // allUsers에서 사용하는 peer connection, i번째 유저의 peer connection입니다.
@@ -208,7 +208,7 @@ function AudioCall() {
                   // signaling server에 i번째 유저에게 offer를 요청합니다.
                   socketRef.current?.send(
                     JSON.stringify({
-                      type: 'rtc/offer',
+                      type: RTC_SOCKET_MSG.OFFER,
                       sdp,
                       receiver: allUsers[i].id,
                     }),
@@ -220,13 +220,11 @@ function AudioCall() {
           break;
         }
         // 2. 상대방이 offer를 받으면
-        case 'rtc/offer': {
-          while (getUserMediaState === 'pending') {
+        case RTC_SOCKET_MSG.OFFER: {
+          while (getUserMediaState === MEDIA_STATE.PENDING) {
             if (stop) return;
-            // eslint-disable-next-line
             await sleep(300);
           }
-          // if (getUserMediaState === 'rejected') return;
 
           hasPcs = { ...hasPcs, [data.sender]: false };
           // offer를 요청한 상대방과의 peer connection을 생성합니다.
@@ -234,7 +232,6 @@ function AudioCall() {
 
           while (!hasPcs[data.sender]) {
             if (stop) return;
-            // eslint-disable-next-line
             await sleep(100);
           }
 
@@ -253,7 +250,7 @@ function AudioCall() {
                   socketRef.current?.send(
                     JSON.stringify({
                       token,
-                      type: 'rtc/answer',
+                      type: RTC_SOCKET_MSG.ANSWER,
                       sdp,
                       // answerSendID: newSocket.id,
                       receiver: data.sender,
@@ -265,7 +262,7 @@ function AudioCall() {
           }
           break;
         }
-        case 'rtc/answer': {
+        case RTC_SOCKET_MSG.ANSWER: {
           // answer에서 사용하는 peer connection, answer를 보낸 상대방과의 peer connection 입니다.
           const answerPc: RTCPeerConnection = pcs[data.sender];
           // answerPc가 존재하면
@@ -275,10 +272,9 @@ function AudioCall() {
           }
           break;
         }
-        case 'rtc/candidate': {
+        case RTC_SOCKET_MSG.CANDIDATE: {
           while (!hasPcs[data.sender]) {
             if (stop) return;
-            // eslint-disable-next-line
             await sleep(100);
           }
 
@@ -292,7 +288,7 @@ function AudioCall() {
           break;
         }
         // 유저가 연결을 종료하면
-        case 'rtc/user_exit': {
+        case RTC_SOCKET_MSG.EXIT: {
           if (hasPcs[data.sender]) {
             // 해당 유저와의 peer connection을 종료하고
             pcs[data.sender].close();
@@ -315,7 +311,7 @@ function AudioCall() {
     };
 
     return () => {
-      getUserMediaState = 'pending';
+      getUserMediaState = MEDIA_STATE.PENDING;
       if (!stop) stop = true;
       if (localStream) {
         const localMediaTrack = localStream.getTracks();
