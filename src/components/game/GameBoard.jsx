@@ -47,7 +47,6 @@ function GameBoard({
         toggleReady={toggleReady}
         submitImg={submitImg}
         image={image}
-        gameState={gameState}
       />
     </Container>
   );

@@ -110,7 +110,7 @@ const StUserCard = styled.div`
   }
   & img.host {
     position: absolute;
-    top: 11px;
+    top: 16px;
     left: 13px;
     transform: rotate(320deg);
   }

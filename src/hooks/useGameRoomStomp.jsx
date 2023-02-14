@@ -4,12 +4,13 @@ import * as Stomp from '@stomp/stompjs';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeStomp, setStomp } from '../app/slices/ingameSlice';
 import { getCookie } from '../utils/cookie';
+import { SOCKET_PUB_DEST, SOCKET_SUB_DEST, TIME_LIMIT } from '../helper/constants';
 
 function useGameRoomStomp(subArray, id, socketID) {
   const dispatch = useDispatch();
   const member = useSelector((state) => state.login.member);
   const [difficulty, setDifficulty] = useState('');
-  const [timeLimit, setTimeLimit] = useState(60000);
+  const [timeLimit, setTimeLimit] = useState(TIME_LIMIT.INIT_LIMIT);
   const [isIngame, setIsIngame] = useState(false);
 
   useEffect(() => {
@@ -33,25 +34,25 @@ function useGameRoomStomp(subArray, id, socketID) {
     const p = new Promise((resolve, reject) => {
       client.onConnect = (frame) => {
         subArray.push(
-          client.subscribe(`/topic/game/start/${id}`, (message) => {
+          client.subscribe(`${SOCKET_SUB_DEST.START_GAME}/${id}`, (message) => {
             const data = JSON.parse(message.body);
             setIsIngame(data.isIngame);
           }),
         );
         subArray.push(
-          client.subscribe(`/topic/game/difficulty/${id}`, (message) => {
+          client.subscribe(`${SOCKET_SUB_DEST.DIFFICULTY}/${id}`, (message) => {
             const data = JSON.parse(message.body);
             setDifficulty(data.difficulty);
           }),
         );
         subArray.push(
-          client.subscribe(`/topic/game/time-limit/${id}`, (message) => {
+          client.subscribe(`${SOCKET_SUB_DEST.TIME_LIMIT}/${id}`, (message) => {
             const data = JSON.parse(message.body);
             setTimeLimit(data.timeLimit);
           }),
         );
         subArray.push(
-          client.subscribe(`/queue/game/gameroom-data/${socketID}`, (message) => {
+          client.subscribe(`${SOCKET_SUB_DEST.SET_GAME}/${socketID}`, (message) => {
             const data = JSON.parse(message.body);
             setDifficulty(data.difficulty);
             setTimeLimit(data.timeLimit);
@@ -59,7 +60,7 @@ function useGameRoomStomp(subArray, id, socketID) {
         );
 
         client.publish({
-          destination: '/app/game/gameroom-data',
+          destination: SOCKET_PUB_DEST.SET_GAME,
           body: JSON.stringify({ roomId: id, token, webSessionId: socketID }),
         });
 

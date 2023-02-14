@@ -2,10 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import Round from './Round';
 import useTimer from '../../hooks/useTimer';
+import { TIMER_CONST } from '../../helper/constants';
 
-const CIRCLE_RADIUS = 40;
-const CENTER = 40;
-const STROKE_WIDTH = 3;
+const { CIRCLE_RADIUS, CENTER, STROKE_WIDTH } = TIMER_CONST;
 
 function CircleTimer({ timeLimit, gameState, round }) {
   const pathRef = useTimer(CENTER, CIRCLE_RADIUS, STROKE_WIDTH, timeLimit, gameState);

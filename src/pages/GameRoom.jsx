@@ -1,39 +1,36 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import AttendeeList from '../components/room/AttendeeList';
-import Button from '../components/common/Button';
-import { setIngameHost } from '../app/slices/ingameSlice';
 import Container from '../components/layout/Container';
 import FloatBox from '../components/layout/FloatBox';
+import Button from '../components/common/Button';
+import { setIngameHost } from '../app/slices/ingameSlice';
 import SettingButton from '../components/button/SettingButton';
 import MicButton from '../components/button/MicButton';
-import copy from '../assets/icons/copy-icon.svg';
 import QuitButton from '../components/button/QuitButton';
+import MuteUserList from '../components/mute/MuteUserList';
+import AttendeeList from '../components/room/AttendeeList';
+import Difficulty from '../components/room/Difficulty';
 import RoomTitle from '../components/room/RoomTitle';
 import ChatBox from '../components/chat/ChatBox';
-import roomAPI from '../api/room';
 import { toast } from '../components/toast/ToastProvider';
 import { getCookie } from '../utils/cookie';
-import useDidMountEffect from '../hooks/useDidMountEffect';
-
+import roomAPI from '../api/room';
 import { setLocalMute } from '../app/slices/muteSlice';
-import MuteUserList from '../components/mute/MuteUserList';
-import Difficulty from '../components/room/Difficulty';
 import useMuteUser from '../hooks/useMuteUser';
+import useDidMountEffect from '../hooks/useDidMountEffect';
 import useGameRoomStomp from '../hooks/useGameRoomStomp';
 import { sendDifficulty } from '../utils/gameRoomStompUtils';
 import ReadyStartButton from '../components/room/ReadyStartButton';
 import SetTime from '../components/room/SetTime';
+import copy from '../assets/icons/copy-icon.svg';
+import { SOCKET_MSG } from '../helper/constants';
 
 let token;
 let subArray = [];
 
 function GameRoom() {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { id } = useParams();
   const [roomTitle, setRoomTitle] = useState('');
   const [inviteCode, setInviteCode] = useState('');
   const [myState, setMyState] = useState({});
@@ -41,11 +38,13 @@ function GameRoom() {
   // [ { userId: 2, nickname: "닉네임", imgUrl: "avatar.png", isHost: true, isReady: true, socketId: "akef4dof"}, ... ]
   const [attendees, setAttendees] = useState([]);
 
-  const ingameStompClient = useSelector((state) => state.ingame.stomp);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { id } = useParams();
+
   const member = useSelector((state) => state.login.member);
   const userId = useSelector((state) => state.user.userId);
-  const socketID = useSelector((state) => state.ingame.id);
-  const socket = useSelector((state) => state.ingame.socket);
+  const { id: socketID, socket, stomp: ingameStompClient } = useSelector((state) => state.ingame);
   const localIsMuted = useSelector((state) => state.mute.localMute);
 
   useMuteUser(attendees);
@@ -106,11 +105,11 @@ function GameRoom() {
     const gameRoomEventHandler = (event) => {
       const data = JSON.parse(event.data);
       switch (data.type) {
-        case 'ingame/attendee': {
+        case SOCKET_MSG.ATTENDEE: {
           setAttendees(data.attendee);
           break;
         }
-        case 'ingame/be_kicked': {
+        case SOCKET_MSG.BE_KICKED: {
           navigate('/', { replace: true });
           toast.info('강퇴되었습니다');
           break;
@@ -132,7 +131,7 @@ function GameRoom() {
 
   useEffect(() => {
     if (socket && socket.readyState === 1) {
-      socket.send(JSON.stringify({ type: 'ingame/end_game', room: id }));
+      socket.send(JSON.stringify({ type: SOCKET_MSG.END_GAME, room: id }));
     }
   }, [socket]);
 
@@ -157,7 +156,6 @@ function GameRoom() {
     subArray = [];
     token = getCookie(member === 'guest' ? 'guest' : 'access_token');
   }, []);
-
   return (
     <>
       <FloatBox

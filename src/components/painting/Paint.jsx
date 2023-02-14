@@ -3,18 +3,18 @@ import styled, { css } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { nanoid } from 'nanoid';
 import { saveAs } from 'file-saver';
+import { setForceSubmit } from '../../app/slices/ingameSlice';
 import Button from '../common/Button';
+import IconButton from '../common/IconButton';
+import TextInput from '../common/TextInput';
+import Tooltip from '../common/Tooltip';
+import { toast } from '../toast/ToastProvider';
 import eraser from '../../assets/icons/eraser-icon.svg';
 import pencil from '../../assets/icons/pencil-icon.svg';
 import paint from '../../assets/icons/paint-icon.svg';
 import pencilThickness from '../../assets/icons/thickness-icon.svg';
-import IconButton from '../common/IconButton';
-import { setForceSubmit } from '../../app/slices/ingameSlice';
-import TextInput from '../common/TextInput';
-import { toast } from '../toast/ToastProvider';
 import undoIcon from '../../assets/icons/undo-icon.svg';
 import redoIcon from '../../assets/icons/redo-icon.svg';
-import Tooltip from '../common/Tooltip';
 import useCtx from '../../hooks/useCtx';
 import {
   startDrawing,
@@ -27,6 +27,7 @@ import {
   setDrawing,
   fill,
 } from '../../utils/paintUtils';
+import { GAME_STATE, PAINT_OPTION } from '../../helper/constants';
 
 function Paint({
   isKeywordState,
@@ -40,32 +41,10 @@ function Paint({
   submitImg,
   completeImageSubmit,
   image,
-  gameState,
 }) {
-  const thickness = [2, 3, 4, 6, 8, 10];
-  const color = [
-    '#8B4513',
-    // '#B9062F',
-    '#CD0000',
-    '#FF1493',
-    '#006400',
-    '#2E8B57',
-    '#FFB400',
-    '#fbceb1',
-    '#FF8200',
-    '#D2691E',
-    '#9932CC',
-    // '#800080',
-    '#0000FF',
-    '#00008C',
-    '#ffffff',
-    '#000000',
-  ];
-  const opacity = ['1A', '33', '4D', '66', '80', '99', 'B3', 'CC', 'E6', 'FF']; // hex코드용 opacity
-  // const opacity = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]; // rgba용 opacity
-
+  const { thickness, color } = PAINT_OPTION;
   const [isDrawing, setIsDrawing] = useState();
-  const [eventState, setEventState] = useState('drawing');
+  const [eventState, setEventState] = useState(GAME_STATE.DRAWING);
   const [ctx, setCtx] = useState(null);
   const [displayThicknessBtn, setDisplayThicknessBtn] = useState(false);
   const [nowThickness, setNowThickness] = useState(2);

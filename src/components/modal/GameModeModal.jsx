@@ -6,28 +6,39 @@ import useModal from '../../hooks/useModal';
 function GameModeModal() {
   const { closeModal } = useModal();
   return (
-    <Modal btnText="확인" onConfirm={closeModal}>
-      <BoldText>💧 EASY 모드</BoldText>
-      <DescriptionText>{`      단어 위주로 문제가 제시됩니다.`}</DescriptionText>
-      <BoldText>🔥 HARD 모드</BoldText>
-      <DescriptionText>{`      형용사가 들어간 문제가 제시됩니다.`}</DescriptionText>
+    <Modal onConfirm={closeModal} hasBtn={false}>
+      <DescriptionBox>
+        <Subtitle>💧 EASY 모드</Subtitle>
+        <Description className="mb">단어 위주로 문제가 제시됩니다.</Description>
+        <Subtitle>🔥 HARD 모드</Subtitle>
+        <Description>형용사가 들어간 문제가 제시됩니다.</Description>
+      </DescriptionBox>
     </Modal>
   );
 }
 
-const DescriptionText = styled.div`
-  white-space: pre-wrap;
+const DescriptionBox = styled.div`
   width: 100%;
-  font-size: 18px;
-  line-height: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 35px;
 `;
 
-const BoldText = styled.div`
-  white-space: pre-wrap;
-  width: 100%;
-  font-size: 18px;
-  font-weight: 600;
+const Description = styled.span`
+  font-size: ${({ theme }) => theme.fontSizes.lg};
   line-height: 1.5rem;
+  margin-left: 25px;
+
+  &.mb {
+    margin-bottom: 20px;
+  }
+`;
+
+const Subtitle = styled.h3`
+  font-size: ${({ theme }) => theme.fontSizes.xl};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  line-height: 2rem;
 `;
 
 export default GameModeModal;

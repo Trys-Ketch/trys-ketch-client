@@ -7,34 +7,37 @@ import { useSelector } from 'react-redux';
 import TextInput from '../common/TextInput';
 import FlatButton from '../common/FlatButton';
 import MessageList from './MessageList';
-import types from '../../utils/types';
 import { toast } from '../toast/ToastProvider';
 import GAEventTrack from '../../ga/GAEventTrack';
 import GAEventTypes from '../../ga/GAEventTypes';
 import enterSound from '../../assets/sounds/enter_sound.wav';
 import chatSound from '../../assets/sounds/chat_sound.wav';
 import useSound from '../../hooks/useSound';
+import { CHAT_MSG, SOCKET_SUB_DEST } from '../../helper/constants';
 
 function ChatBox() {
+  // hooks
   const client = useRef(null);
-  const { profileImage, userId, nickname } = useSelector((state) => state.user);
   const { id } = useParams();
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]);
-  const volume = useSelector((state) => state.sound.volume);
+  const { profileImage, userId, nickname } = useSelector((state) => state.user);
+
+  // sound
   const chatSoundRef = useSound(chatSound);
   const enterSoundRef = useSound(enterSound);
 
-  const CHAT_SERVER_URL = `/topic/chat/room/${id}`;
+  // const
+  const CHAT_SERVER_URL = `${SOCKET_SUB_DEST.CHAT}/${id}`;
 
   const handleInput = (e) => {
     setInput(e.target.value.substr(0, 150));
   };
 
   const playSoundEffect = (type) => {
-    if (type === types.chat.chat) {
+    if (type === CHAT_MSG.CHAT) {
       chatSoundRef.current.play();
-    } else if (type === types.chat.enter) {
+    } else if (type === CHAT_MSG.ENTER) {
       enterSoundRef.current.play();
     }
   };
@@ -60,7 +63,7 @@ function ChatBox() {
     client.current.publish({
       destination: CHAT_SERVER_URL,
       body: JSON.stringify({
-        type: types.chat.chat,
+        type: CHAT_MSG.CHAT,
         userId,
         profileImage,
         nickname,
@@ -82,7 +85,7 @@ function ChatBox() {
           client.current.publish({
             destination: CHAT_SERVER_URL,
             body: JSON.stringify({
-              type: types.chat.enter,
+              type: CHAT_MSG.ENTER,
               userId,
               profileImage,
               nickname,

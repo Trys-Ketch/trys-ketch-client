@@ -18,6 +18,7 @@ import { toast } from '../components/toast/ToastProvider';
 import useModal from '../hooks/useModal';
 import PrevNextButton from '../components/gameResult/PrevNextButton';
 import KeywordImageResult from '../components/gameResult/KeywordImageResult';
+import { SOCKET_PUB_DEST, SOCKET_SUB_DEST } from '../helper/constants';
 
 let token;
 let subArray = [];
@@ -56,7 +57,7 @@ function GameResult() {
 
     subArray.push(
       // 게임 결과 화면에서 필요한 정보를 받아옵니다.
-      ingameStompClient.subscribe(`/queue/game/result/${socketID}`, (message) => {
+      ingameStompClient.subscribe(`${SOCKET_SUB_DEST.RESULT}/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
         resultArray = data.result;
         userList = data.gamerList;
@@ -66,28 +67,28 @@ function GameResult() {
     );
     subArray.push(
       // 게임이 끝났으면 서버로부터 끝났다는 데이터를 받아옵니다.
-      ingameStompClient.subscribe(`/topic/game/end/${id}`, (message) => {
+      ingameStompClient.subscribe(`${SOCKET_SUB_DEST.END_GAME}/${id}`, (message) => {
         const data = JSON.parse(message.body);
         setIsGameEnd(data.end);
       }),
     );
     subArray.push(
       // 다음 키워드 인덱스를 가져옵니다.
-      ingameStompClient.subscribe(`/topic/game/next-keyword-index/${id}`, (message) => {
+      ingameStompClient.subscribe(`${SOCKET_SUB_DEST.NEXT_RESULT_PAGE}/${id}`, (message) => {
         const data = JSON.parse(message.body);
         setNowKeywordIndex(data.keywordIndex);
       }),
     );
     subArray.push(
       // 키워드 인덱스를 이전으로 되돌립니다.
-      ingameStompClient.subscribe(`/topic/game/prev-keyword-index/${id}`, (message) => {
+      ingameStompClient.subscribe(`${SOCKET_SUB_DEST.PREV_RESULT_PAGE}/${id}`, (message) => {
         const data = JSON.parse(message.body);
         setNowKeywordIndex(data.keywordIndex);
       }),
     );
     subArray.push(
       // 정해진 인원수보다 게임에 남은 인원이 적어지면 강제로 로비로 리다이렉트합니다.
-      ingameStompClient.subscribe(`/topic/game/shutdown/${id}`, (message) => {
+      ingameStompClient.subscribe(`${SOCKET_SUB_DEST.SHUTDOWN}/${id}`, (message) => {
         const data = JSON.parse(message.body);
         if (data.shutdown) {
           ingameStompClient.deactivate();
@@ -98,7 +99,8 @@ function GameResult() {
       }),
     );
     subArray.push(
-      ingameStompClient.subscribe(`/queue/game/achievement/${socketID}`, (message) => {
+      // 업적을 달성했다면 달성한 뱃지 정보를 받아 모달을 띄웁니다.
+      ingameStompClient.subscribe(`${SOCKET_SUB_DEST.ACHIEVE}/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
         if (data.achievement !== []) {
           openModal({ type: 'achievement', props: { badges: data.achievement } });
@@ -107,7 +109,7 @@ function GameResult() {
     );
 
     ingameStompClient.publish({
-      destination: '/app/game/result',
+      destination: SOCKET_PUB_DEST.RESULT,
       body: JSON.stringify({ roomId: id, webSessionId: socketID, token }),
     });
 
@@ -120,7 +122,7 @@ function GameResult() {
 
   function endGame() {
     ingameStompClient.publish({
-      destination: '/app/game/end',
+      destination: SOCKET_PUB_DEST.END_GAME,
       body: JSON.stringify({ roomId: id, token }),
     });
     GAEventTrack(GAEventTypes.Category.game, GAEventTypes.Action.game.backToRoom);
@@ -128,14 +130,14 @@ function GameResult() {
 
   function nextKeywordIndex() {
     ingameStompClient.publish({
-      destination: '/app/game/next-keyword-index',
+      destination: SOCKET_PUB_DEST.NEXT_RESULT_PAGE,
       body: JSON.stringify({ roomId: id, token }),
     });
   }
 
   function prevKeywordIndex() {
     ingameStompClient.publish({
-      destination: '/app/game/prev-keyword-index',
+      destination: SOCKET_PUB_DEST.PREV_RESULT_PAGE,
       body: JSON.stringify({ roomId: id, token }),
     });
   }

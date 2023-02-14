@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 import info from '../../assets/icons/info-icon.svg';
 import useModal from '../../hooks/useModal';
+import FlatButton from '../common/FlatButton';
 
 function Difficulty({ disabled, difficulty, sendDifficulty }) {
   const { openModal } = useModal();
@@ -16,8 +17,8 @@ function Difficulty({ disabled, difficulty, sendDifficulty }) {
           <img style={{ width: '23px', height: '23px' }} src={info} alt="info" />
         </InfoButton>
       </GameModeTextWrapper>
-
       <DifficultyButton
+        size="large"
         disabled={disabled}
         selected={difficulty === 'easy'}
         onClick={() => sendDifficulty('easy')}
@@ -25,13 +26,13 @@ function Difficulty({ disabled, difficulty, sendDifficulty }) {
         EASY
       </DifficultyButton>
       <DifficultyButton
+        size="large"
         disabled={disabled}
         selected={difficulty === 'hard'}
         onClick={() => sendDifficulty('hard')}
       >
         HARD
       </DifficultyButton>
-      {/* <Explain /> */}
     </DifficultyArea>
   );
 }
@@ -71,21 +72,10 @@ const InfoButton = styled.button`
   height: 23px;
 `;
 
-const DifficultyButton = styled.button`
+const DifficultyButton = styled(FlatButton)`
   width: 70%;
   height: 60px;
-  border: none;
-  border-radius: 10px;
-  background-color: ${({ theme }) => theme.colors.DIM_GRAY};
-  font-family: 'TTTogether';
-  color: ${({ theme }) => theme.colors.FLORAL_WHITE};
   margin-top: 10px;
-  font-size: ${({ theme }) => theme.fontSizes.xl};
-  cursor: pointer;
-
-  &:disabled {
-    cursor: default;
-  }
 
   ${(props) =>
     props.selected
@@ -94,9 +84,7 @@ const DifficultyButton = styled.button`
         `
       : css`
           opacity: 50%;
-        `}/* &:first-child {
-    margin-top: 50px;
-  } */
+        `}
 `;
 
 export default Difficulty;

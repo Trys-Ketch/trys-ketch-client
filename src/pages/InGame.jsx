@@ -14,6 +14,7 @@ import { setLocalMute } from '../app/slices/muteSlice';
 import { closeStomp } from '../app/slices/ingameSlice';
 import GameBoard from '../components/game/GameBoard';
 import nonsubmit from '../assets/images/non_submit.png';
+import { GAME_STATE, SOCKET_PUB_DEST, SOCKET_SUB_DEST, TIME_LIMIT } from '../helper/constants';
 
 let token;
 const subArray = [];
@@ -29,14 +30,14 @@ function InGame() {
 
   const [keyword, setKeyword] = useState('');
   const [image, setImage] = useState('');
-  const [gameState, setGameState] = useState('keyword');
+  const [gameState, setGameState] = useState(GAME_STATE.KEYWORD);
   const [completeKeywordSubmit, setCompleteKeywordSubmit] = useState(false);
   const [completeImageSubmit, setCompleteImageSubmit] = useState(false);
   const [result, setResult] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submitNum, setSubmitNum] = useState(0);
   const [maxSubmitNum, setMaxSubmitNum] = useState(0);
-  const [timeLimit, setTimeLimit] = useState(60000);
+  const [timeLimit, setTimeLimit] = useState(TIME_LIMIT.INIT_LIMIT);
 
   const keywordIndex = useRef();
   const [round, setRound] = useState(1);
@@ -54,7 +55,7 @@ function InGame() {
 
     subArray.push(
       // 서버에서 랜덤 키워드를 받아옵니다.
-      ingameStompClient.subscribe(`/queue/game/ingame-data/${socketID}`, (message) => {
+      ingameStompClient.subscribe(`${SOCKET_SUB_DEST.RANDOM_KEYWORD}/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
         setKeyword(data.keyword);
         keywordIndex.current = data.keywordIndex;
@@ -63,21 +64,21 @@ function InGame() {
     );
     subArray.push(
       // 모든 플레이어가 키워드 제출을 완료했을 때 gameState를 drawing으로 바꿉니다.
-      ingameStompClient.subscribe(`/topic/game/submit-word/${id}`, (message) => {
+      ingameStompClient.subscribe(`${SOCKET_SUB_DEST.SUBMIT_WORD}/${id}`, (message) => {
         const data = JSON.parse(message.body);
         setCompleteKeywordSubmit(data.completeSubmit);
       }),
     );
     subArray.push(
       // 모든 플레이어가 그림 제출을 완료했을 때 gameState를 guessing으로 바꿉니다.
-      ingameStompClient.subscribe(`/topic/game/submit-image/${id}`, (message) => {
+      ingameStompClient.subscribe(`${SOCKET_SUB_DEST.SUBMIT_IMAGE}/${id}`, (message) => {
         const data = JSON.parse(message.body);
         setCompleteImageSubmit(data.completeSubmit);
       }),
     );
     subArray.push(
       // game state가 drawing이 됐을 때 다른 플레이어가 작성한 키워드를 받아오고 round를 증가시킵니다.
-      ingameStompClient.subscribe(`/queue/game/before-word/${socketID}`, (message) => {
+      ingameStompClient.subscribe(`${SOCKET_SUB_DEST.BEFORE_KEYWORD}/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
         if (data.keyword === 'null') setKeyword('미제출');
         else setKeyword(data.keyword);
@@ -87,7 +88,7 @@ function InGame() {
     );
     subArray.push(
       // game state가 guessing이 됐을 때 다른 플레이어가 그린 이미지를 받아오고 round를 증가시킵니다.
-      ingameStompClient.subscribe(`/queue/game/before-image/${socketID}`, (message) => {
+      ingameStompClient.subscribe(`${SOCKET_SUB_DEST.BEFORE_IMAGE}/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
         setKeyword('');
         if (data.image === 'null') setImage(nonsubmit);
@@ -98,21 +99,21 @@ function InGame() {
     );
     subArray.push(
       // 게임이 끝났다는 정보를 서버로부터 받아옵니다.
-      ingameStompClient.subscribe(`/topic/game/before-result/${id}`, (message) => {
+      ingameStompClient.subscribe(`${SOCKET_SUB_DEST.BEFORE_RESULT}/${id}`, (message) => {
         const data = JSON.parse(message.body);
         setResult(data.isResult);
       }),
     );
     subArray.push(
       // submit이 되었는지를 서버로부터 받아옵니다.
-      ingameStompClient.subscribe(`/queue/game/is-submitted/${socketID}`, (message) => {
+      ingameStompClient.subscribe(`${SOCKET_SUB_DEST.IS_SUBMITTED}/${socketID}`, (message) => {
         const data = JSON.parse(message.body);
         setIsSubmitted(data.isSubmitted);
       }),
     );
     subArray.push(
       // 정해진 인원수보다 게임에 남은 인원이 적어지면 강제로 로비로 리다이렉트합니다.
-      ingameStompClient.subscribe(`/topic/game/shutdown/${id}`, (message) => {
+      ingameStompClient.subscribe(`${SOCKET_SUB_DEST.SHUTDOWN}/${id}`, (message) => {
         const data = JSON.parse(message.body);
         if (data.shutdown) {
           ingameStompClient.deactivate();
@@ -124,7 +125,7 @@ function InGame() {
     );
     subArray.push(
       // 몇 명이 제출했는지를 서버로부터 받아옵니다
-      ingameStompClient.subscribe(`/topic/game/true-count/${id}`, (message) => {
+      ingameStompClient.subscribe(`${SOCKET_SUB_DEST.SUBMIT_COUNT}/${id}`, (message) => {
         const data = JSON.parse(message.body);
         setSubmitNum(data.trueCount);
         setMaxSubmitNum(data.maxTrueCount);
@@ -133,7 +134,7 @@ function InGame() {
 
     // ingame페이지에 처음 들어왔을 때 게임 진행에 필요한 정보를 서버에 요청합니다.
     ingameStompClient.publish({
-      destination: '/app/game/ingame-data',
+      destination: SOCKET_PUB_DEST.INIT_GAME,
       body: JSON.stringify({ roomId: id * 1, token, webSessionId: socketID }),
     });
 
@@ -157,7 +158,7 @@ function InGame() {
    */
   function submitImg(canvas) {
     ingameStompClient.publish({
-      destination: '/app/game/submit-image',
+      destination: SOCKET_PUB_DEST.SUBMIT_IMAGE,
       body: JSON.stringify({
         image: canvas.toDataURL(),
         token,
@@ -175,7 +176,7 @@ function InGame() {
    */
   function submitKeyword() {
     ingameStompClient.publish({
-      destination: '/app/game/submit-word',
+      destination: SOCKET_PUB_DEST.SUBMIT_WORD,
       body: JSON.stringify({
         keyword,
         keywordIndex: keywordIndex.current,
@@ -190,7 +191,7 @@ function InGame() {
 
   function toggleDrawingReady(canvas, isSubmitted) {
     ingameStompClient.publish({
-      destination: '/app/game/toggle-ready',
+      destination: SOCKET_PUB_DEST.READY,
       body: JSON.stringify({
         round,
         token,
@@ -216,7 +217,7 @@ function InGame() {
       image: null,
     });
     ingameStompClient.publish({
-      destination: '/app/game/toggle-ready',
+      destination: SOCKET_PUB_DEST.READY,
       body: sendData,
     });
   }
@@ -224,7 +225,7 @@ function InGame() {
   // 모든 사람들이 키워드를 제출했다면 gameState를 drawing으로 바꿉니다.
   useEffect(() => {
     if (completeKeywordSubmit) {
-      setGameState('drawing');
+      setGameState(GAME_STATE.DRAWING);
       submitKeyword();
       setCompleteKeywordSubmit(false);
       setIsSubmitted(false);
@@ -236,7 +237,7 @@ function InGame() {
   // 모든 사람들이 그림을 제출했다면 gameState를 guessing으로 바꿉니다.
   useEffect(() => {
     if (completeImageSubmit) {
-      setGameState('guessing');
+      setGameState(GAME_STATE.GUESSING);
       setCompleteImageSubmit(false);
       setIsSubmitted(false);
       setSubmitNum(0);

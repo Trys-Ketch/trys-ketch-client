@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { increaseTime, decreaseTime } from '../../utils/gameRoomStompUtils';
 import inc from '../../assets/icons/time-increase-icon.svg';
 import dec from '../../assets/icons/time-decrease-icon.svg';
+import { TIME_LIMIT } from '../../helper/constants';
 
 function SetTime({ timeLimit, myState, ingameStompClient, id, token }) {
   function milsecToMinute(milsec) {
@@ -20,14 +21,14 @@ function SetTime({ timeLimit, myState, ingameStompClient, id, token }) {
         {milsecToMinute(timeLimit)}
         <IncDecButtonWrapper>
           <IncDecButton
-            disabled={!myState?.isHost || timeLimit === 150000}
+            disabled={!myState?.isHost || timeLimit === TIME_LIMIT.MAX_LIMIT}
             onClick={() => increaseTime(ingameStompClient, id, token)}
             style={{ marginBottom: '2px' }}
           >
             <img src={inc} alt="increase" />
           </IncDecButton>
           <IncDecButton
-            disabled={!myState?.isHost || timeLimit === 60000}
+            disabled={!myState?.isHost || timeLimit === TIME_LIMIT.MIN_LIMIT}
             onClick={() => decreaseTime(ingameStompClient, id, token)}
             style={{ marginTop: '2px' }}
           >
