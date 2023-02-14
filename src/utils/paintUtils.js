@@ -1,6 +1,7 @@
 import GAEventTrack from '../ga/GAEventTrack';
 import GAEventTypes from '../ga/GAEventTypes';
 import floodFill from './floodFill';
+import { EVENT_STATE } from '../helper/constants';
 
 const startDrawing = (setIsDrawing) => {
   setIsDrawing(true);
@@ -76,9 +77,9 @@ const rgbToHex = (r, g, b) =>
  * 선의 굵기를 지정하는 함수입니다.
  * @param {int} pixel
  */
-function setThickness(pixel, canvasRef, setCtx) {
+function setThickness(pixel, canvasRef, setCtx, eventState) {
   const context = canvasRef.current.getContext('2d');
-  context.globalCompositeOperation = 'source-over';
+  if (eventState !== EVENT_STATE.ERASEING) context.globalCompositeOperation = 'source-over';
   context.lineWidth = pixel;
   setCtx(context);
   GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.Thickness);
@@ -121,7 +122,7 @@ function setEraser(canvasRef, setEventState, setCtx) {
   const context = canvasRef.current.getContext('2d');
   context.globalCompositeOperation = 'destination-out';
   context.strokeStyle = 0;
-  setEventState('eraseing');
+  setEventState(EVENT_STATE.ERASEING);
   setCtx(context);
   GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.erase);
 }
@@ -133,7 +134,7 @@ function setDrawing(canvasRef, currentColor, setEventState, setCtx) {
   const context = canvasRef.current.getContext('2d');
   context.globalCompositeOperation = 'source-over';
   context.strokeStyle = currentColor;
-  setEventState('drawing');
+  setEventState(EVENT_STATE.DRAWING);
   setCtx(context);
   GAEventTrack(GAEventTypes.Category.paintTool, GAEventTypes.Action.paintTool.pencil);
 }
@@ -155,6 +156,28 @@ function fill(canvasRef, setCtx, ctx, { nativeEvent }) {
   floodFill(ctx, offsetX, offsetY, `0xff${B}${G}${R}` * 1);
 }
 
+/**
+ * 그림판을 이전의 상태로 되돌리는 함수입니다.
+ */
+function undo(historyPointer, history, ctx) {
+  if (historyPointer.current === 0) return;
+  if (historyPointer.current === history.length)
+    history.push(ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height));
+  historyPointer.current -= 1;
+  const img = history[historyPointer.current];
+  ctx.putImageData(img, 0, 0);
+}
+
+/**
+ * undo한 그림판을 다시 되돌리는 함수입니다.
+ */
+function redo(historyPointer, history, ctx) {
+  if (historyPointer.current >= history.length - 1) return;
+  historyPointer.current += 1;
+  const img = history[historyPointer.current];
+  ctx.putImageData(img, 0, 0);
+}
+
 export {
   startDrawing,
   finishDrawing,
@@ -168,4 +191,6 @@ export {
   setEraser,
   setDrawing,
   fill,
+  undo,
+  redo,
 };

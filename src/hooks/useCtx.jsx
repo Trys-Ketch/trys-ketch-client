@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { EVENT_STATE } from '../helper/constants';
 
 function useCtx(
   setCtx,
@@ -37,7 +38,7 @@ function useCtx(
       currentColor.current = 'black';
       historyPointer.current = 0;
 
-      setEventState('drawing');
+      setEventState(EVENT_STATE.DRAWING);
       setDisplayThicknessBtn(false);
       setNowThickness(2);
 

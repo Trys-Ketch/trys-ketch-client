@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { drawCircle, drawing, fill, finishDrawing, startDrawing } from '../../utils/paintUtils';
 import DrawSpring from './DrawSpring';
+import { EVENT_STATE } from '../../helper/constants';
 
 function CanvasWrapper({
   isDrawingState,
@@ -26,31 +27,32 @@ function CanvasWrapper({
           isSubmitted={isSubmitted}
           ref={canvasRef}
           onClick={(event) => {
-            if (eventState === 'drawing' || eventState === 'eraseing') drawCircle(ctx, event);
+            if (eventState === EVENT_STATE.DRAWING || eventState === EVENT_STATE.ERASEING)
+              drawCircle(ctx, event);
           }}
           onMouseDown={(event) => {
             history.push(ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height));
             historyPointer.current += 1;
             history.splice(historyPointer.current);
-            if (eventState === 'drawing' || eventState === 'eraseing') {
+            if (eventState === EVENT_STATE.DRAWING || eventState === EVENT_STATE.ERASEING) {
               startDrawing(setIsDrawing);
             }
-            if (eventState === 'fill') {
+            if (eventState === EVENT_STATE.FILL) {
               fill(canvasRef, setCtx, ctx, event);
             }
           }}
           onMouseUp={() => {
-            if (eventState === 'drawing' || eventState === 'eraseing') {
+            if (eventState === EVENT_STATE.DRAWING || eventState === EVENT_STATE.ERASEING) {
               finishDrawing(setIsDrawing);
             }
           }}
           onMouseMove={(event) => {
-            if (eventState === 'drawing' || eventState === 'eraseing') {
+            if (eventState === EVENT_STATE.DRAWING || eventState === EVENT_STATE.ERASEING) {
               drawing(ctx, isDrawing, event);
             }
           }}
           onMouseLeave={() => {
-            if (eventState === 'drawing' || eventState === 'eraseing') {
+            if (eventState === EVENT_STATE.DRAWING || eventState === EVENT_STATE.ERASEING) {
               finishDrawing(setIsDrawing);
             }
           }}
