@@ -50,7 +50,6 @@ function GameRoom() {
   // useParams로 이미 id가 초기화되어서 위의 구조분해할당으로 초기화가 불가능하네요..
   // 이렇게 사용해야 할 것 같습니다!
   const socketID = useSelector((state) => state.ingame.id);
-  console.log(socketID);
 
   const localIsMuted = useSelector((state) => state.mute.localMute);
 
