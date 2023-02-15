@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveAs } from 'file-saver';
+import { useCookies } from 'react-cookie';
 import { setForceSubmit } from '../../app/slices/ingameSlice';
 import Button from '../common/Button';
 import IconButton from '../common/IconButton';
@@ -18,6 +19,9 @@ import { setThickness, setColor, setEraser, setDrawing, undo, redo } from '../..
 import { EVENT_STATE, PAINT_OPTION } from '../../helper/constants';
 import KeywordArea from './KeywordArea';
 import CanvasWrapper from './CanvasWrapper';
+import { store } from '../../app/configStore';
+
+let token;
 
 function Paint({
   isKeywordState,
@@ -32,6 +36,7 @@ function Paint({
   completeImageSubmit,
   image,
 }) {
+  const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
   const { thickness, color } = PAINT_OPTION;
   const [eventState, setEventState] = useState(EVENT_STATE.DRAWING);
   const [ctx, setCtx] = useState(null);
@@ -58,6 +63,15 @@ function Paint({
     currentColor,
     historyPointer,
   );
+
+  useEffect(() => {
+    const { member } = store.getState().login;
+    if (member === 'guest') {
+      token = cookies.guest;
+    } else {
+      token = cookies.access_token;
+    }
+  }, []);
 
   /**
    * 선 굵기를 선택하는 모달을 보여지게/안보여지게 하는 함수입니다.

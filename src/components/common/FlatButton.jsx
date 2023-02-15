@@ -49,11 +49,6 @@ const ButtonBlock = styled.button`
       padding-right: 1.125rem;
       font-size: ${({ theme }) => theme.fontSizes.xxl};
     `}
-
-  &:disabled {
-    opacity: 50%;
-    cursor: default;
-  }
 `;
 
 function FlatButton({ children, ref, bgcolor, color, size = 'medium', width = 'auto', ...rest }) {

@@ -100,7 +100,7 @@ function Modal({ width = '400px', children, title, btnText, onConfirm, hasBtn = 
       animate="visible"
       exit="exit"
       ref={overlayRef}
-      onClick={handleClickOverlay}
+      onMouseDown={handleClickOverlay}
     >
       <ModalWrap variants={scaleUp} initial="hidden" animate="visible" exit="exit" width={width}>
         <CloseButton onClick={handleClose}>

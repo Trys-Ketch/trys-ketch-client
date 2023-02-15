@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useCookies } from 'react-cookie';
 import { EVENT_STATE } from '../helper/constants';
 
 function useCtx(
@@ -15,6 +16,7 @@ function useCtx(
   historyPointer,
 ) {
   const canvasRef = useRef(null);
+  const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
 
   useEffect(() => {
     if (isDrawingState) {

@@ -57,7 +57,11 @@ table {
 }
 
 * {
-    box-sizing: border-box;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+  box-sizing: border-box;
 }
 
 ol, ul {
@@ -67,14 +71,6 @@ ol, ul {
 a {
     color: inherit;
     text-decoration: inherit;
-}
-
-img {
-    -webkit-user-drag: none;
-    -khtml-user-drag: none;
-    -moz-user-drag: none;
-    -o-user-drag: none;
-    user-drag: none;
 }
 
 button {

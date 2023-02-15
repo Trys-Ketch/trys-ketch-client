@@ -54,6 +54,15 @@ function InGame() {
     if (result) navigate(`/result/${id}`, { replace: true });
   }, [result]);
 
+  useEffect(() => {
+    const { member } = store.getState().login;
+    if (member === 'guest') {
+      token = cookies.guest;
+    } else {
+      token = cookies.access_token;
+    }
+  }, []);
+
   /**
    * canvas 문서 객체를 받아와 서버에 그림을 제출합니다.
    * @param {HTMLCanvasElement} canvas 그림을 그린 canvas 문서객체입니다.
