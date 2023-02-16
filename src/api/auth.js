@@ -1,3 +1,4 @@
+import refresh from './core/refresh';
 import instance from './core/axios';
 
 /**
@@ -41,11 +42,21 @@ const guestLogin = async (nickname, imgUrl) => {
   return response;
 };
 
+/**
+ *
+ * @returns
+ */
+const askToken = async () => {
+  const response = await refresh.get('/api/users/issue/token');
+  return response;
+};
+
 const authAPI = {
   kakaoLogin,
   naverLogin,
   googleLogin,
   guestLogin,
+  askToken,
 };
 
 export default authAPI;

@@ -5,13 +5,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useCookies } from 'react-cookie';
 import * as SockJS from 'sockjs-client';
 import Audio from './Audio';
-import { setID, setReconnect } from '../../app/slices/ingameSlice';
+import { setID } from '../../app/slices/ingameSlice';
 import { closeSocket, setSocket } from '../../app/slices/ingameSlice';
 import { store } from '../../app/configStore';
 import usePreventRefresh from '../../hooks/usePreventRefresh';
-import { clearMute, setConnectedMuteUser, setMuteUsers } from '../../app/slices/muteSlice';
+import { clearMute, setConnectedMuteUser } from '../../app/slices/muteSlice';
 import { toast } from '../toast/ToastProvider';
 import { MEDIA_STATE, RTC_SOCKET_MSG, SOCKET_MSG } from '../../helper/constants';
+import authAPI from '../../api/auth';
 
 let pcs: any;
 let hasPcs: any;

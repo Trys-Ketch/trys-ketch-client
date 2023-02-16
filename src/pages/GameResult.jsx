@@ -19,6 +19,7 @@ import useModal from '../hooks/useModal';
 import PrevNextButton from '../components/gameResult/PrevNextButton';
 import KeywordImageResult from '../components/gameResult/KeywordImageResult';
 import { SOCKET_PUB_DEST, SOCKET_SUB_DEST } from '../helper/constants';
+import requestNewToken from '../utils/requestNewToken';
 
 let token;
 let subArray = [];
@@ -63,6 +64,7 @@ function GameResult() {
         userList = data.gamerList;
         setIsHost(data.isHost);
         setIsLoading(false);
+        requestNewToken();
       }),
     );
     subArray.push(

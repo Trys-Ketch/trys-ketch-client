@@ -3,8 +3,10 @@ import SockJS from 'sockjs-client';
 import * as Stomp from '@stomp/stompjs';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeStomp, setStomp } from '../app/slices/ingameSlice';
-import { getCookie } from '../utils/cookie';
+import { getCookie, setCookie } from '../utils/cookie';
 import { SOCKET_PUB_DEST, SOCKET_SUB_DEST, TIME_LIMIT } from '../helper/constants';
+import authAPI from '../api/auth';
+import requestNewToken from '../utils/requestNewToken';
 
 function useGameRoomStomp(subArray, id, socketID) {
   const dispatch = useDispatch();
@@ -14,6 +16,8 @@ function useGameRoomStomp(subArray, id, socketID) {
   const [isIngame, setIsIngame] = useState(false);
 
   useEffect(() => {
+    requestNewToken();
+
     const token = getCookie(member === 'guest' ? 'guest' : 'access_token');
     const client = new Stomp.Client({
       debug: (str) => {},
@@ -37,6 +41,7 @@ function useGameRoomStomp(subArray, id, socketID) {
           client.subscribe(`${SOCKET_SUB_DEST.START_GAME}/${id}`, (message) => {
             const data = JSON.parse(message.body);
             setIsIngame(data.isIngame);
+            requestNewToken();
           }),
         );
         subArray.push(
