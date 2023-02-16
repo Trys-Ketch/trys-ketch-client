@@ -46,7 +46,6 @@ instance.interceptors.response.use(
   },
   async (error) => {
     const { config } = error;
-    console.log(error.response.status);
 
     if (error.response.status === 401) {
       const retryOriginalRequest = new Promise((resolve) => {

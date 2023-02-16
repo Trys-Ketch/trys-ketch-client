@@ -20,8 +20,6 @@ export const setupRefreshResponseInterceptor = (navigate, closeModal) => {
       return response;
     },
     (error) => {
-      console.log(error.response.status);
-
       if (error.response.status === 403) {
         closeModal();
         navigate('/login');
