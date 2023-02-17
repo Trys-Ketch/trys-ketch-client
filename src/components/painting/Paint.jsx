@@ -20,6 +20,7 @@ import { EVENT_STATE, PAINT_OPTION } from '../../helper/constants';
 import KeywordArea from './KeywordArea';
 import CanvasWrapper from './CanvasWrapper';
 import { store } from '../../app/configStore';
+import useUndoEvent from '../../hooks/useUndoEvent';
 
 let token;
 
@@ -36,7 +37,6 @@ function Paint({
   completeImageSubmit,
   image,
 }) {
-  const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
   const { thickness, color } = PAINT_OPTION;
   const [eventState, setEventState] = useState(EVENT_STATE.DRAWING);
   const [ctx, setCtx] = useState(null);
@@ -63,15 +63,7 @@ function Paint({
     currentColor,
     historyPointer,
   );
-
-  useEffect(() => {
-    const { member } = store.getState().login;
-    if (member === 'guest') {
-      token = cookies.guest;
-    } else {
-      token = cookies.access_token;
-    }
-  }, []);
+  useUndoEvent(undo, historyPointer, history, ctx, isDrawingState);
 
   /**
    * 선 굵기를 선택하는 모달을 보여지게/안보여지게 하는 함수입니다.
@@ -108,21 +100,6 @@ function Paint({
       saveAs(blob, 'trys-ketch-practice.png');
     });
   }
-
-  useEffect(() => {
-    function keyPress(e) {
-      const evtobj = window.event ? window.event : e;
-      if (evtobj.keyCode === 90 && evtobj.ctrlKey) {
-        undo(historyPointer, history, ctx);
-      }
-    }
-    if (isDrawingState) {
-      document.addEventListener('keydown', keyPress, false);
-    } else document.removeEventListener('keydown', keyPress, false);
-    return () => {
-      document.removeEventListener('keydown', keyPress, false);
-    };
-  }, [isDrawingState, ctx]);
 
   return (
     <Wrapper>

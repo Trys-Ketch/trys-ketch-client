@@ -43,11 +43,16 @@ const guestLogin = async (nickname, imgUrl) => {
 };
 
 /**
- *
- * @returns
+ * refresh token으로 새로운 access token을 요청
+ * @returns {AxiosResponse} response
  */
 const askToken = async () => {
   const response = await refresh.get('/api/users/issue/token');
+  return response;
+};
+
+const delRefreshToken = async () => {
+  const response = await instance.get('api/users/logout');
   return response;
 };
 
@@ -57,6 +62,7 @@ const authAPI = {
   googleLogin,
   guestLogin,
   askToken,
+  delRefreshToken,
 };
 
 export default authAPI;
