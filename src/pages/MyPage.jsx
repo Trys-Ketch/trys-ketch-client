@@ -62,7 +62,6 @@ function MyPage() {
   };
 
   const handleLogout = () => {
-    console.log(member);
     if (member === 'guest') delCookie('guest');
     else {
       delCookie();

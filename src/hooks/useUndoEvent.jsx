@@ -3,7 +3,6 @@ import { useCallback, useEffect } from 'react';
 function useUndoEvent(undo, historyPointer, history, ctx, isDrawingState) {
   useEffect(() => {
     function keyDown(e) {
-      console.log('ctrl z');
       const evtobj = window.event ? window.event : e;
       if (evtobj.keyCode === 90 && evtobj.ctrlKey) {
         undo(historyPointer, history, ctx);
