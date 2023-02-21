@@ -78,6 +78,12 @@ const DifficultyButton = styled(FlatButton)`
   margin-top: 10px;
 
   ${(props) =>
+    props.disabled &&
+    css`
+      cursor: default;
+    `}
+
+  ${(props) =>
     props.selected
       ? css`
           opacity: 100%;

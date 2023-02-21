@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 import Container from '../layout/Container';
 import Paint from '../painting/Paint';
 import LeftDiv from '../gameboard/LeftDiv.';
@@ -22,7 +23,7 @@ function GameBoard({
   gameState,
 }) {
   return (
-    <Container style={{ paddingLeft: '0px', height: '680px', width: '1200px' }}>
+    <Board>
       <LeftDiv
         isPracticeState={isPracticeState}
         round={round}
@@ -48,8 +49,14 @@ function GameBoard({
         submitImg={submitImg}
         image={image}
       />
-    </Container>
+    </Board>
   );
 }
+
+const Board = styled(Container)`
+  padding-left: 0px;
+  height: 680px;
+  width: 1200px;
+`;
 
 export default GameBoard;

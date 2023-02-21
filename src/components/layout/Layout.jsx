@@ -5,9 +5,11 @@ import background from '../../assets/images/background.svg';
 import ModalContainer from '../modal/ModalContainer';
 import usePreventGoBack from '../../hooks/usePreventGoBack';
 import GARouteTracker from '../../ga/GARouteTracker';
+import useSetupRefreshResponseInterceptor from '../../hooks/useSetupRefreshResponseInterceptor';
 
 function Layout() {
   usePreventGoBack();
+  useSetupRefreshResponseInterceptor();
   GARouteTracker();
 
   return (

@@ -19,6 +19,7 @@ import myAPI from '../api/my';
 import MyImageLock from '../components/mypage/MyImageLock';
 import MyBadgeLock from '../components/mypage/MyBadgeLock';
 import ZoomInCanvas from '../components/mypage/ZoomInCanvas';
+import authAPI from '../api/auth';
 
 function MyPage() {
   const navigate = useNavigate();
@@ -61,8 +62,11 @@ function MyPage() {
   };
 
   const handleLogout = () => {
-    delCookie();
-    delCookie('guest');
+    if (member === 'guest') delCookie('guest');
+    else {
+      delCookie();
+      authAPI.delRefreshToken();
+    }
     toast.success('로그아웃되었습니다');
     navigate('/login');
   };

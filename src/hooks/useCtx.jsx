@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react';
+import { useCookies } from 'react-cookie';
+import { EVENT_STATE } from '../helper/constants';
 
 function useCtx(
   setCtx,
@@ -14,6 +16,7 @@ function useCtx(
   historyPointer,
 ) {
   const canvasRef = useRef(null);
+  const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'guest']);
 
   useEffect(() => {
     if (isDrawingState) {
@@ -37,7 +40,7 @@ function useCtx(
       currentColor.current = 'black';
       historyPointer.current = 0;
 
-      setEventState('drawing');
+      setEventState(EVENT_STATE.DRAWING);
       setDisplayThicknessBtn(false);
       setNowThickness(2);
 

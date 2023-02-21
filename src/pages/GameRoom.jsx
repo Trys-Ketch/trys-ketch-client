@@ -44,7 +44,13 @@ function GameRoom() {
 
   const member = useSelector((state) => state.login.member);
   const userId = useSelector((state) => state.user.userId);
-  const { id: socketID, socket, stomp: ingameStompClient } = useSelector((state) => state.ingame);
+  const { socket, stomp: ingameStompClient } = useSelector((state) => state.ingame);
+
+  // ingameslice의 id 프로퍼티로 socketID를 초기화해서 사용해야 되는데
+  // useParams로 이미 id가 초기화되어서 위의 구조분해할당으로 초기화가 불가능하네요..
+  // 이렇게 사용해야 할 것 같습니다!
+  const socketID = useSelector((state) => state.ingame.id);
+
   const localIsMuted = useSelector((state) => state.mute.localMute);
 
   useMuteUser(attendees);

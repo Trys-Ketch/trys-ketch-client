@@ -49,6 +49,12 @@ export const GAME_STATE = {
   GUESSING: 'guessing',
 };
 
+export const EVENT_STATE = {
+  DRAWING: 'drawing',
+  ERASEING: 'eraseing',
+  FILL: 'fill',
+};
+
 export const RTC_SOCKET_MSG = {
   CANDIDATE: 'rtc/candidate',
   ALL_USERS: 'rtc/all_users',

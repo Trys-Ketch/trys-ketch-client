@@ -1,6 +1,19 @@
 import axios from 'axios';
-import { getCookie } from '../../utils/cookie';
+import { getCookie, setCookie } from '../../utils/cookie';
 import { store } from '../../app/configStore';
+import refresh from './refresh';
+
+let isTokenRefreshing = false;
+let refreshSubscribers = [];
+
+const onTokenRefreshed = (accessToken) => {
+  refreshSubscribers.map((callback) => callback(accessToken));
+  refreshSubscribers = [];
+};
+
+const addRefreshSubscriber = (callback) => {
+  refreshSubscribers.push(callback);
+};
 
 // 인스턴스 생성
 const instance = axios.create({
@@ -27,11 +40,33 @@ instance.interceptors.request.use((config) => {
 
 // TODO - 로그인 만료 처리 interceptors
 // Unauthorized Error 처리
-// axios.interceptors.response.use((error) => {
-//   if (error.response.status === 401) {
-//     useToast('로그인이 만료되었습니다.', 'error');
-//     window.location.href('/login');
-//   }
-// });
+instance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    const { config } = error;
+
+    if (error.response.status === 401) {
+      const retryOriginalRequest = new Promise((resolve) => {
+        addRefreshSubscriber((accessToken) => {
+          config.headers.Authorization = accessToken;
+          resolve(axios(config));
+        });
+      });
+
+      if (!isTokenRefreshing) {
+        isTokenRefreshing = true;
+        const response = await refresh.get('/api/users/issue/token');
+        setCookie(response.headers.authorization);
+        config.headers.Authorization = response.headers.authorization;
+        isTokenRefreshing = false;
+        onTokenRefreshed(response.headers.authorization);
+      }
+
+      return retryOriginalRequest;
+    }
+  },
+);
 
 export default instance;

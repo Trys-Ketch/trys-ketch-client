@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { nanoid } from 'nanoid';
 import { saveAs } from 'file-saver';
+import { useCookies } from 'react-cookie';
 import { setForceSubmit } from '../../app/slices/ingameSlice';
 import Button from '../common/Button';
 import IconButton from '../common/IconButton';
-import TextInput from '../common/TextInput';
 import Tooltip from '../common/Tooltip';
 import { toast } from '../toast/ToastProvider';
 import eraser from '../../assets/icons/eraser-icon.svg';
@@ -16,18 +15,14 @@ import pencilThickness from '../../assets/icons/thickness-icon.svg';
 import undoIcon from '../../assets/icons/undo-icon.svg';
 import redoIcon from '../../assets/icons/redo-icon.svg';
 import useCtx from '../../hooks/useCtx';
-import {
-  startDrawing,
-  finishDrawing,
-  drawCircle,
-  drawing,
-  setThickness,
-  setColor,
-  setEraser,
-  setDrawing,
-  fill,
-} from '../../utils/paintUtils';
-import { GAME_STATE, PAINT_OPTION } from '../../helper/constants';
+import { setThickness, setColor, setEraser, setDrawing, undo, redo } from '../../utils/paintUtils';
+import { EVENT_STATE, PAINT_OPTION } from '../../helper/constants';
+import KeywordArea from './KeywordArea';
+import CanvasWrapper from './CanvasWrapper';
+import { store } from '../../app/configStore';
+import useUndoEvent from '../../hooks/useUndoEvent';
+
+let token;
 
 function Paint({
   isKeywordState,
@@ -43,8 +38,7 @@ function Paint({
   image,
 }) {
   const { thickness, color } = PAINT_OPTION;
-  const [isDrawing, setIsDrawing] = useState();
-  const [eventState, setEventState] = useState(GAME_STATE.DRAWING);
+  const [eventState, setEventState] = useState(EVENT_STATE.DRAWING);
   const [ctx, setCtx] = useState(null);
   const [displayThicknessBtn, setDisplayThicknessBtn] = useState(false);
   const [nowThickness, setNowThickness] = useState(2);
@@ -69,55 +63,13 @@ function Paint({
     currentColor,
     historyPointer,
   );
-
-  /**
-   * 그림판을 이전의 상태로 되돌리는 함수입니다.
-   */
-  function undo() {
-    if (historyPointer.current === 0) return;
-    if (historyPointer.current === history.length)
-      history.push(ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height));
-    historyPointer.current -= 1;
-    const img = history[historyPointer.current];
-    ctx.putImageData(img, 0, 0);
-  }
-
-  /**
-   * undo한 그림판을 다시 되돌리는 함수입니다.
-   */
-  function redo() {
-    if (historyPointer.current >= history.length - 1) return;
-    historyPointer.current += 1;
-    const img = history[historyPointer.current];
-    ctx.putImageData(img, 0, 0);
-  }
+  useUndoEvent(undo, historyPointer, history, ctx, isDrawingState);
 
   /**
    * 선 굵기를 선택하는 모달을 보여지게/안보여지게 하는 함수입니다.
    */
   function toggleThicknessBtn() {
     setDisplayThicknessBtn((prev) => !prev);
-  }
-
-  /**
-   * 왼쪽에 스프링을 꽂는 구멍을 그려주는 함수입니다.
-   * @returns {HTMLElement[]}
-   */
-  function drawSpring() {
-    const result = [];
-    for (let i = 0; i < 14; i += 1) {
-      result.push(
-        <Spring key={i} style={{ top: `${i * 37.5}px` }}>
-          <SpringLine />
-          <SpringCircle />
-        </Spring>,
-      );
-    }
-    return result;
-  }
-
-  function onKeywordChangeHandler(event) {
-    setKeyword(event.target.value);
   }
 
   useEffect(() => {
@@ -149,93 +101,30 @@ function Paint({
     });
   }
 
-  useEffect(() => {
-    function keyPress(e) {
-      const evtobj = window.event ? window.event : e;
-      if (evtobj.keyCode === 90 && evtobj.ctrlKey) {
-        undo();
-      }
-    }
-    if (isDrawingState) document.addEventListener('keydown', keyPress, false);
-    else document.removeEventListener('keydown', keyPress, false);
-    return () => {
-      document.removeEventListener('keydown', keyPress, false);
-    };
-  }, [isDrawingState, ctx]);
-
   return (
     <Wrapper>
       <CanvasArea>
-        {isDrawingState ? (
-          <KeywordDiv style={{ marginBottom: '2%' }}>
-            <Keyword>{keyword}</Keyword>
-          </KeywordDiv>
-        ) : (
-          <KeywordDiv style={{ position: 'absolute', bottom: '0' }}>
-            <Keyword>
-              {isKeywordState && '키워드를 입력해주세요: '}
-              {isGuessingState && '정답을 맞춰주세요: '}
-              <TextInput
-                value={keyword}
-                onChange={(event) => onKeywordChangeHandler(event)}
-                width="400px"
-                backgroundColor="#c9dbaa"
-                readOnly={isSubmitted}
-              />
-            </Keyword>
-          </KeywordDiv>
-        )}
-
-        <CanvasWrapper isDrawingState={isDrawingState} isSubmitted={isSubmitted}>
-          {drawSpring()}
-          {isDrawingState && (
-            <Canvas
-              isSubmitted={isSubmitted}
-              ref={canvasRef}
-              onClick={(event) => {
-                if (eventState === 'drawing' || eventState === 'eraseing') drawCircle(ctx, event);
-              }}
-              onMouseDown={(event) => {
-                history.push(ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height));
-                historyPointer.current += 1;
-                history.splice(historyPointer.current);
-                if (eventState === 'drawing' || eventState === 'eraseing') {
-                  startDrawing(setIsDrawing);
-                }
-                if (eventState === 'fill') {
-                  fill(canvasRef, setCtx, ctx, event);
-                }
-              }}
-              onMouseUp={() => {
-                if (eventState === 'drawing' || eventState === 'eraseing') {
-                  finishDrawing(setIsDrawing);
-                }
-              }}
-              onMouseMove={(event) => {
-                if (eventState === 'drawing' || eventState === 'eraseing') {
-                  drawing(ctx, isDrawing, event);
-                }
-              }}
-              onMouseLeave={() => {
-                if (eventState === 'drawing' || eventState === 'eraseing') {
-                  finishDrawing(setIsDrawing);
-                }
-              }}
-            />
-          )}
-          {isGuessingState && (
-            <ImageWrapper>
-              <KeywordBackground>
-                <Image src={image} alt={nanoid()} />
-              </KeywordBackground>
-            </ImageWrapper>
-          )}
-          {isKeywordState && (
-            <ImageWrapper>
-              <KeywordBackground />
-            </ImageWrapper>
-          )}
-        </CanvasWrapper>
+        <KeywordArea
+          isDrawingState={isDrawingState}
+          keyword={keyword}
+          isKeywordState={isKeywordState}
+          isGuessingState={isGuessingState}
+          setKeyword={setKeyword}
+          isSubmitted={isSubmitted}
+        />
+        <CanvasWrapper
+          isDrawingState={isDrawingState}
+          isSubmitted={isSubmitted}
+          canvasRef={canvasRef}
+          eventState={eventState}
+          ctx={ctx}
+          setCtx={setCtx}
+          history={history}
+          historyPointer={historyPointer}
+          image={image}
+          isGuessingState={isGuessingState}
+          isKeywordState={isKeywordState}
+        />
       </CanvasArea>
 
       <RightDiv>
@@ -258,9 +147,9 @@ function Paint({
                       height: `${v * 3}px`,
                     }}
                     onClick={() => {
-                      setThickness(thickness[i] * 2, canvasRef, setCtx);
+                      setThickness(thickness[i] * 2, canvasRef, setCtx, eventState);
                       setNowThickness(() => i);
-                      if (eventState === 'fill')
+                      if (eventState === EVENT_STATE.FILL)
                         setDrawing(canvasRef, currentColor.current, setEventState, setCtx);
                     }}
                   >
@@ -280,7 +169,7 @@ function Paint({
           <IconButtonWrapper>
             <Tooltip message="연필">
               <IconButton
-                selected={eventState === 'drawing'}
+                selected={eventState === EVENT_STATE.DRAWING}
                 onClick={() => {
                   setDrawing(canvasRef, currentColor.current, setEventState, setCtx);
                 }}
@@ -290,7 +179,7 @@ function Paint({
             </Tooltip>
             <Tooltip message="지우개">
               <IconButton
-                selected={eventState === 'eraseing'}
+                selected={eventState === EVENT_STATE.ERASEING}
                 onClick={() => setEraser(canvasRef, setEventState, setCtx)}
                 icon={eraser}
                 size="large"
@@ -298,8 +187,8 @@ function Paint({
             </Tooltip>
             <Tooltip message="채우기">
               <IconButton
-                selected={eventState === 'fill'}
-                onClick={() => setEventState('fill')}
+                selected={eventState === EVENT_STATE.FILL}
+                onClick={() => setEventState(EVENT_STATE.FILL)}
                 icon={paint}
                 size="large"
               />
@@ -319,8 +208,8 @@ function Paint({
             {color.map((v, i) => {
               return (
                 <ColorBtn
-                  selected={selectedColorIndex === i && eventState !== 'eraseing'}
-                  disabled={eventState === 'eraseing' || isSubmitted}
+                  selected={selectedColorIndex === i && eventState !== EVENT_STATE.ERASEING}
+                  disabled={eventState === EVENT_STATE.ERASEING || isSubmitted}
                   key={v}
                   style={{ backgroundColor: v }}
                   onClick={() => {
@@ -338,7 +227,7 @@ function Paint({
             <Tooltip message="취소하기">
               <IconButton
                 disabled={isSubmitted}
-                onClick={() => undo()}
+                onClick={() => undo(historyPointer, history, ctx)}
                 size="large"
                 icon={undoIcon}
               />
@@ -346,7 +235,7 @@ function Paint({
             <Tooltip message="되돌리기">
               <IconButton
                 disabled={isSubmitted}
-                onClick={() => redo()}
+                onClick={() => redo(historyPointer, history, ctx)}
                 size="large"
                 icon={redoIcon}
               />
@@ -430,26 +319,6 @@ const UndoRedoWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const KeywordBackground = styled.div`
-  position: relative;
-  background-color: white;
-  width: 100%;
-  height: 100%;
-`;
-
-const ImageWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  position: relative;
-  font-family: 'TTTogether';
-`;
-
-const Image = styled.img`
-  background-color: white;
-  width: 100%;
-  height: 100%;
-`;
-
 const ColorBtnWrapper = styled.div`
   padding: 3px 13px;
   width: 100%;
@@ -469,7 +338,6 @@ const ColorBtn = styled.button`
   height: 15px;
   box-sizing: content-box;
   border-radius: 50%;
-  /* box-shadow: 0 0 0 2px #ff0000, 0 0 0 4px #0000ff; */
   ${(props) =>
     props.selected
       ? css`
@@ -530,33 +398,6 @@ const Wrapper = styled.div`
   height: 100%;
 `;
 
-const KeywordDiv = styled.div`
-  line-height: 100%;
-  width: 100%;
-  height: 15%;
-  background-color: ${({ theme }) => theme.colors.FLORAL_WHITE};
-`;
-
-const CanvasWrapper = styled.div`
-  display: flex;
-  height: 83%;
-  width: 100%;
-  position: relative;
-  background-color: white;
-  ${(props) =>
-    props.isSubmitted && props.isDrawingState
-      ? css`
-          &:hover {
-            cursor: not-allowed;
-          }
-        `
-      : css`
-          &:hover {
-            cursor: default;
-          }
-        `}
-`;
-
 const CanvasArea = styled.div`
   position: relative;
   width: 89%;
@@ -571,55 +412,6 @@ const RightDiv = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-`;
-
-const Keyword = styled.div`
-  font-size: ${({ theme }) => theme.fontSizes.xxl};
-  font-family: 'TTTogether';
-  color: ${({ theme }) => theme.colors.DARK_LAVA};
-  text-align: center;
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-`;
-
-const Spring = styled.div`
-  position: absolute;
-  left: 0;
-  padding: 9.8px 0;
-  display: flex;
-`;
-
-const SpringLine = styled.div`
-  margin: auto 0;
-  width: 8px;
-  height: 4px;
-  background-color: ${({ theme }) => theme.colors.TEA_GREEN};
-  z-index: 2;
-`;
-
-const SpringCircle = styled.div`
-  margin: auto 0;
-  padding: 9px;
-  width: 5px;
-  height: 5px;
-  background-color: ${({ theme }) => theme.colors.TEA_GREEN};
-  border-radius: 50%;
-  z-index: 2;
-`;
-
-const Canvas = styled.canvas`
-  position: relative;
-  background-color: white;
-  ${(props) =>
-    props.isSubmitted
-      ? css`
-          background-color: rgba(0, 0, 0, 0.2);
-          pointer-events: none;
-        `
-      : css`
-          pointer-events: auto;
-        `}
 `;
 
 export default React.memo(Paint);

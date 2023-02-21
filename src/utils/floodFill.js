@@ -62,8 +62,6 @@ export default function floodFill(ctx, x, y, fillColor) {
         continue;
       }
 
-      // RGBA값의 표준편차를 구해 if문의 condition으로 사용 할 수도 있지만, 루트 연산이 성능상 좋지 않을 것 같습니다.
-      // 따라서 일일이 TOLERANCE값과 비교했습니다.
       if (
         R > -TOLERANCE &&
         R < TOLERANCE &&
@@ -74,6 +72,8 @@ export default function floodFill(ctx, x, y, fillColor) {
         A > -TOLERANCE &&
         A < TOLERANCE
       ) {
+        // RGBA값의 표준편차를 구해 if문의 condition으로 사용 할 수도 있지만, 루트 연산이 성능상 좋지 않을 것 같습니다.
+        // 따라서 일일이 TOLERANCE값과 비교했습니다.
         imgData[nPO] = fillColor;
 
         stack[stPtr++] = nextPointX;
