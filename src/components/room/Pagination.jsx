@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { nanoid } from 'nanoid';
 import rightArrow from '../../assets/icons/right-arrow.svg';
 
 function Pagination({ lastPage, page, setPage }) {
@@ -11,11 +12,7 @@ function Pagination({ lastPage, page, setPage }) {
       {Array(lastPage)
         .fill()
         .map((_, i) => (
-          <Button
-            key={String(i + 1)}
-            onClick={() => setPage(i)}
-            aria-current={page === i ? 'page' : null}
-          >
+          <Button key={nanoid} onClick={() => setPage(i)} aria-current={page === i ? 'page' : null}>
             {i + 1}
           </Button>
         ))}

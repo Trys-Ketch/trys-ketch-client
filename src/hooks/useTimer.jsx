@@ -1,27 +1,26 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setForceSubmit } from '../app/slices/ingameSlice';
 import alarm from '../assets/sounds/alarm_sound.wav';
 import useSound from './useSound';
 
-let startTime;
-let timerID;
-
-// 2초 간격으로 세번
+// 2초 간격으로 세번 알람 울리는 시간
 const ALARM_TIME = 6 * 1000;
 
 function useTimer(center, circleRadius, strokeWidth, timeLimit, gameState) {
   const pathRef = useRef(null);
+  const timerID = useRef(null);
+  const startTime = useRef();
+  const alarmTimeoutID = useRef(null);
   const [degree, setDegree] = useState(1);
   const dispatch = useDispatch();
-
   const alarmRef = useSound(alarm);
 
-  function alarmSoundOn() {
+  const alarmSoundOn = useCallback(() => {
     return setTimeout(() => {
       alarmRef.current.play();
     }, timeLimit - ALARM_TIME);
-  }
+  }, [alarmRef, timeLimit]);
 
   function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
     const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
@@ -62,12 +61,12 @@ function useTimer(center, circleRadius, strokeWidth, timeLimit, gameState) {
   }
 
   function getTimerRadius() {
-    timerID = setInterval(() => {
+    timerID.current = setInterval(() => {
       const nowTime = new Date().getTime();
-      setDegree(1 - (nowTime - startTime) / timeLimit);
-      if (nowTime - startTime >= timeLimit) {
+      setDegree(1 - (nowTime - startTime.current) / timeLimit);
+      if (nowTime - startTime.current >= timeLimit) {
         setDegree(0);
-        clearInterval(timerID);
+        clearInterval(timerID.current);
         dispatch(setForceSubmit(true));
       }
     }, 50);
@@ -87,19 +86,19 @@ function useTimer(center, circleRadius, strokeWidth, timeLimit, gameState) {
   }, [degree]);
 
   useEffect(() => {
-    startTime = new Date().getTime();
+    startTime.current = new Date().getTime();
     getTimerRadius();
     return () => {
-      if (timerID) clearInterval(timerID);
-    };
-  }, [gameState, timeLimit]);
-
-  useEffect(() => {
-    const alarmTimeoutID = alarmSoundOn();
-    return () => {
-      clearTimeout(alarmTimeoutID);
+      if (timerID.current) clearInterval(timerID.current);
     };
   }, [gameState]);
+
+  useEffect(() => {
+    alarmTimeoutID.current = alarmSoundOn();
+    return () => {
+      clearTimeout(alarmTimeoutID.current);
+    };
+  }, [alarmSoundOn, gameState]);
 
   return pathRef;
 }

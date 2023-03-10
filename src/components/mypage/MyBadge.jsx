@@ -23,7 +23,7 @@ function MyBadge({ badges, fetchBadge }) {
   };
 
   useEffect(() => {
-    if (badges !== {}) {
+    if (Object.keys(badges).length !== 0) {
       fetchBadge();
     }
   }, []);
